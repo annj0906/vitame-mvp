@@ -51,10 +51,14 @@ window.addEventListener('message',async e=>{
   introPage=0;history.replaceState(null,'',location.pathname+location.search+'#onboarding');
   document.body.dataset.screen='onboarding';
   document.querySelector('#app').insertAdjacentHTML('beforeend',onboarding());
+  const reveal=document.querySelector('.revised-onboarding');
+  reveal.style.opacity='0';reveal.style.pointerEvents='none';
   const target=document.querySelector('.final-brand'),rect=target.getBoundingClientRect();target.style.visibility='hidden';
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   await logo.animate([{top:'50%',left:'50%',transform:getComputedStyle(logo).transform},{top:(rect.top+rect.height/2-bounds.top)+'px',left:(rect.left+rect.width/2-bounds.left)+'px',transform:'translate(-50%, -50%) scale(.21)'}],{duration:reduced?0:850,easing:'cubic-bezier(.22,.7,.2,1)',fill:'forwards'}).finished;
-  target.style.visibility='';intro.remove();logoHandoff=false;
+  target.style.visibility='';
+  await reveal.animate([{opacity:0},{opacity:1}],{duration:reduced?0:650,easing:'ease-out',fill:'forwards'}).finished;
+  reveal.style.opacity='';reveal.style.pointerEvents='';intro.remove();logoHandoff=false;
 });
 let interestDraft=null,checkedDemoId='';
 const welcomeBeforeRoutes=render;

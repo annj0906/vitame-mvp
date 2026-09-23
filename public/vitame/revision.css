@@ -83,9 +83,9 @@ body .slide-dots button:after{inset:auto;left:50%;top:50%;width:12px;height:12px
 .registration-actions .setup-actions{padding-top:0}
 /* Compact brand row and a single sliding content group. */
 body .revised-onboarding{padding:20px 24px 24px;min-height:100dvh;gap:0}
-.onboarding-header{display:flex;align-items:center;justify-content:space-between;height:64px;flex-shrink:0}
+.onboarding-header{display:flex;position:relative;align-items:center;justify-content:center;height:64px;flex-shrink:0}
 body .onboarding-header .final-brand{width:158px;height:60px;margin:0}
-body .onboarding-header .skip{align-self:center;font-size:13px;padding:10px 0 10px 12px}
+body .onboarding-header .skip{position:absolute;right:0;align-self:center;font-size:12px;padding:10px 0}
 .onboarding-window{overflow:hidden;flex:1;display:flex;align-items:center;min-height:380px;margin-top:26px}
 .onboarding-panel{width:100%;flex-shrink:0;touch-action:pan-y;user-select:none}
 body .onboarding-panel .onboarding-art{min-height:0;height:220px;display:grid;place-items:center}
@@ -95,24 +95,29 @@ body .jelly-shadow{display:none}
 @keyframes jelly-float{0%,100%{transform:translateY(4px) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
 body .onboarding-panel h1{font-size:28px;line-height:1.5;margin:18px 0 20px}
 body .onboarding-panel p{font-size:16px;line-height:1.8;margin:0}
-body .revised-onboarding .slide-dots{margin:12px 0 34px;gap:0}
+body .revised-onboarding .slide-dots{margin:12px auto 34px;gap:0;width:90px;align-self:center;flex-shrink:0}
 body .slide-dots button:after{width:7px;height:7px;background:#aeb0ba;transition:width .25s,background .25s}
 body .slide-dots .selected:after{width:17px;height:7px;border-radius:8px;background:#222}
 body .revised-onboarding>.primary{margin:12px 0 18px;min-height:54px}
 body .revised-onboarding .login-link{margin:0;font-size:12px}
 body .frequency-current{display:none}
 body .frequency-control{margin:auto 0;padding:65px 0}
-body .frequency-track{margin:0 12px}
+body .frequency-track{margin:0 10%}
 body .frequency-track input{width:calc(100% + 32px);left:-16px}
 body .frequency-track input::-webkit-slider-runnable-track{background:transparent}
 body .frequency-track input::-moz-range-track{background:transparent}
-.frequency-stops{position:absolute;top:18px;left:0;right:0;height:9px;background:#d9d9d9;border-radius:10px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
-.frequency-stops i{width:8px;height:8px;border-radius:50%;background:white;border:1px solid #ddd}
+.frequency-stops{position:absolute;top:18px;left:0;right:0;height:9px;background:#d9d9d9;border-radius:10px;pointer-events:none}
+.frequency-stops i{position:absolute;top:0;width:9px;height:9px;border-radius:50%;background:white;border:1px solid #ddd;transform:translateX(-50%)}
+.frequency-stops i:nth-child(1){left:0}.frequency-stops i:nth-child(2){left:25%}.frequency-stops i:nth-child(3){left:50%}.frequency-stops i:nth-child(4){left:75%}.frequency-stops i:nth-child(5){left:100%}
 body .frequency-mascot{top:-5px;transition:left .23s cubic-bezier(.2,.8,.2,1)}
 body .frequency-mascot .jelly-scene{position:absolute;inset:0}
 body .frequency-mascot .jelly-body{width:56px;height:56px;top:0;left:-2px}
 body .frequency-labels{gap:0;margin-top:12px}
 body .frequency-labels button{font-size:11px;min-height:48px;line-height:1.55}
+body .setup-interests button{color:#898989;background:#f5f6f7}
+body .setup-interests button.selected{color:#171717;border:1px solid transparent;background:linear-gradient(white,white) padding-box,linear-gradient(125deg,#ffc35d,#fd719e,#ae77fa,#7192ff) border-box}
+body .setup-interests .interest-check{background:transparent;border-color:#cdd1d3}
+body .setup-interests .selected .interest-check{background:#171717;border-color:#171717;color:white}
 body .frequency-track input:focus-visible{outline:2px solid #8f70cb;outline-offset:8px;border-radius:10px}
 @media(max-height:720px){.onboarding-window{margin-top:12px;min-height:340px}body .onboarding-panel .onboarding-art{height:180px}body .onboarding-panel h1{font-size:25px;margin:12px 0}body .revised-onboarding .slide-dots{margin-bottom:12px}}
 @media(prefers-reduced-motion:reduce){body .frequency-mascot,body .slide-dots button:after{transition:none}}

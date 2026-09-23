@@ -1,0 +1,15 @@
+.live-scanner{position:relative;aspect-ratio:3/4;background:#ddd;overflow:hidden;margin:20px 0 16px;display:grid;place-items:center}
+.live-scanner video,.live-scanner>img{position:absolute;width:100%;height:100%;object-fit:contain}
+.live-scanner>img{z-index:1;background:#ddd}
+.live-scan-frame{position:absolute;inset:8%;border:1px solid #fff8;border-radius:12px;pointer-events:none;z-index:2}
+.live-scanner [data-scan-status]{position:absolute;bottom:16px;left:12px;right:12px;background:#ffffffdf;color:#333;padding:10px;border-radius:10px;font-size:12px;text-align:center;z-index:3}
+.live-scan-buttons{display:grid;grid-template-columns:1fr 1.1fr;gap:10px}
+.live-scan-buttons button{font-size:13px;min-height:50px;padding:10px;margin:0;display:flex;align-items:center;justify-content:center;gap:8px}
+.live-scan-buttons .icon{width:20px;height:20px;flex-shrink:0}
+.live-scan-links{display:flex;justify-content:center;gap:20px;margin:10px 0;font-size:12px}
+.live-scan-links [hidden]{display:none}
+.registration-actions .live-scanner{margin-top:0}
+.ocr-review{padding:16px;border:1px solid #e1d4a0;border-radius:16px;background:#fffcf0;margin-bottom:18px;font-size:13px}
+.ocr-review p{line-height:1.7;margin:8px 0}
+.ocr-review pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}
+.live-scan-buttons button:disabled{opacity:.5}
