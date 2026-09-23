@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Vitame Logo Motion</title>
+
+<!-- Quicksand Bold -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap"
+  rel="stylesheet"
+>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  background: #fff;
+}
+
+
+/* ========================================
+   STAGE
+======================================== */
+
+.stage {
+  position: relative;
+
+  width: 100vw;
+  height: 100vh;
+
+  overflow: hidden;
+
+  background: #fff;
+}
+
+
+/* ========================================
+   LOGO GROUP
+======================================== */
+
+#logoGroup {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  /*
+    최종 로고 전체 기준 영역
+  */
+  width: 571px;
+  height: 160px;
+
+  /*
+    실제 전체 크기를 줄임.
+    단순히 width만 줄이는 게 아니라
+    안쪽 심볼/텍스트까지 같이 축소됨.
+  */
+  transform:
+    translate(-50%, -50%)
+    scale(.82);
+
+  transform-origin:
+    center center;
+}
+
+
+/* ========================================
+   SYMBOL
+======================================== */
+
+#symbol {
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 140px;
+  height: 160px;
+
+  transform-origin:
+    70px 80px;
+}
+
+
+/* ========================================
+   WHITE TOP
+======================================== */
+
+#topPart {
+  position: absolute;
+
+  /* CLOSED 상태 */
+  left: 34px;
+  top: 7px;
+
+  width: 72px;
+  height: 76px;
+
+  background: #fff;
+
+  border:
+    13px solid #080808;
+
+  border-radius:
+    38px
+    38px
+    7px
+    7px;
+
+  z-index: 5;
+
+  transform-origin:
+    center center;
+
+  transform:
+    rotate(0deg);
+}
+
+
+/* ========================================
+   BLACK BOTTOM
+======================================== */
+
+#bottomPart {
+  position: absolute;
+
+  left: 34px;
+  top: 70px;
+
+  width: 72px;
+  height: 76px;
+
+  background: #080808;
+
+  border-radius:
+    7px
+    7px
+    38px
+    38px;
+
+  z-index: 2;
+
+  transform-origin:
+    center center;
+}
+
+
+/* ========================================
+   MEDICINES
+======================================== */
+
+.medicine {
+  position: absolute;
+
+  width: 12px;
+  height: 12px;
+
+  border-radius: 50%;
+
+  background: #080808;
+
+  opacity: 0;
+
+  z-index: 20;
+
+  pointer-events: none;
+}
+
+
+/* 첫 번째 먹는 알약 */
+
+#medicine1 {
+  left: 165px;
+  top: 5px;
+}
+
+
+/* 두 번째 먹는 알약 */
+
+#medicine2 {
+  left: 190px;
+  top: 10px;
+}
+
+
+/* ========================================
+   FINAL BRAND DOTS
+======================================== */
+
+.brandDot {
+  position: absolute;
+
+  width: 12px;
+  height: 12px;
+
+  border-radius: 50%;
+
+  background: #080808;
+
+  opacity: 0;
+
+  z-index: 15;
+}
+
+
+/* 최종 확정 위치 */
+
+#brandDot1 {
+  left: 95px;
+  top: -1px;
+}
+
+
+#brandDot2 {
+  left: 65px;
+  top: 29px;
+}
+
+
+/* ========================================
+   WORDMARK
+======================================== */
+
+#wordmark {
+  position: absolute;
+
+  /*
+    최종 시안 기준
+    심볼과 텍스트 거리
+  */
+  left: 148px;
+
+  /*
+    Quicksand의 실제 글자 높이 때문에
+    숫자상 가운데보다 위로 보정
+  */
+  top: -22px;
+
+  color: #080808;
+
+  font-family:
+    "Quicksand",
+    sans-serif;
+
+  font-size: 162px;
+
+  font-weight: 700;
+
+  /*
+    Figma Letter spacing -4%
+  */
+  letter-spacing: -0.04em;
+
+  line-height: 1;
+
+  white-space: nowrap;
+
+  opacity: 0;
+
+  transform:
+    translateX(-18px);
+}
+
+
+/* ========================================
+   REPLAY
+======================================== */
+
+#replay {
+  position: fixed;
+
+  right: 24px;
+  bottom: 24px;
+
+  padding:
+    11px 17px;
+
+  border:
+    1px solid #e5e5e5;
+
+  border-radius: 999px;
+
+  background: #fff;
+
+  color: #555;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  z-index: 100;
+}
+
+
+#replay:active {
+  transform:
+    scale(.96);
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media(max-width: 700px) {
+
+  #logoGroup {
+    transform:
+      translate(-50%, -50%)
+      scale(.42);
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="stage">
+
+
+  <div id="logoGroup">
+
+
+    <!-- =====================================
+         SYMBOL
+    ====================================== -->
+
+    <div id="symbol">
+
+
+      <!-- 흰색 뚜껑 -->
+
+      <div id="topPart"></div>
+
+
+      <!-- 검은 하단 -->
+
+      <div id="bottomPart"></div>
+
+
+      <!-- 먹는 알약 1 -->
+
+      <div
+        class="medicine"
+        id="medicine1"
+      ></div>
+
+
+      <!-- 먹는 알약 2 -->
+
+      <div
+        class="medicine"
+        id="medicine2"
+      ></div>
+
+
+      <!-- 최종 로고 점 -->
+
+      <div
+        class="brandDot"
+        id="brandDot1"
+      ></div>
+
+
+      <div
+        class="brandDot"
+        id="brandDot2"
+      ></div>
+
+
+    </div>
+
+
+    <!-- =====================================
+         WORDMARK
+    ====================================== -->
+
+    <div id="wordmark">
+      vitame
+    </div>
+
+
+  </div>
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+/* ========================================
+   ELEMENTS
+======================================== */
+
+const symbol =
+  document.querySelector("#symbol");
+
+const topPart =
+  document.querySelector("#topPart");
+
+const bottomPart =
+  document.querySelector("#bottomPart");
+
+const medicine1 =
+  document.querySelector("#medicine1");
+
+const medicine2 =
+  document.querySelector("#medicine2");
+
+const brandDot1 =
+  document.querySelector("#brandDot1");
+
+const brandDot2 =
+  document.querySelector("#brandDot2");
+
+const wordmark =
+  document.querySelector("#wordmark");
+
+const replay =
+  document.querySelector("#replay");
+
+
+let playing = false;
+
+
+/* ========================================
+   HELPERS
+======================================== */
+
+const wait = ms =>
+  new Promise(
+    resolve =>
+      setTimeout(resolve, ms)
+  );
+
+
+function motion(
+  element,
+  keyframes,
+  options
+) {
+
+  return element
+    .animate(
+      keyframes,
+      {
+        fill: "forwards",
+        ...options
+      }
+    )
+    .finished;
+}
+
+
+function cancelAll() {
+
+  [
+    symbol,
+    topPart,
+    bottomPart,
+    medicine1,
+    medicine2,
+    brandDot1,
+    brandDot2,
+    wordmark
+  ]
+  .forEach(element => {
+
+    element
+      .getAnimations()
+      .forEach(animation =>
+        animation.cancel()
+      );
+
+  });
+
+}
+
+
+/* ========================================
+   RESET
+======================================== */
+
+function reset() {
+
+  cancelAll();
+
+
+  /* CLOSED CAPSULE */
+
+  topPart.style.left =
+    "34px";
+
+  topPart.style.top =
+    "7px";
+
+  topPart.style.transform =
+    "rotate(0deg)";
+
+
+  bottomPart.style.transform =
+    "translate(0px,0px)";
+
+
+  symbol.style.opacity =
+    "1";
+
+
+  medicine1.style.opacity =
+    "0";
+
+  medicine2.style.opacity =
+    "0";
+
+
+  brandDot1.style.opacity =
+    "0";
+
+  brandDot2.style.opacity =
+    "0";
+
+
+  wordmark.style.opacity =
+    "0";
+
+  wordmark.style.transform =
+    "translateX(-18px)";
+}
+
+
+/* ========================================
+   OPEN CAPSULE
+======================================== */
+
+async function openCapsule() {
+
+  await motion(
+
+    topPart,
+
+    [
+
+      /* CLOSED */
+
+      {
+        left: "34px",
+        top: "7px",
+
+        transform:
+          "rotate(0deg)"
+      },
+
+
+      /* MID */
+
+      {
+        offset: .5,
+
+        left: "4px",
+        top: "1px",
+
+        transform:
+          "rotate(-42deg)"
+      },
+
+
+      /* OPEN */
+
+      {
+        left: "-40px",
+        top: "-4px",
+
+        transform:
+          "rotate(-90deg)"
+      }
+
+    ],
+
+    {
+      duration: 320,
+
+      easing:
+        "cubic-bezier(.2,.75,.25,1)"
+    }
+
+  );
+
+}
+
+
+/* ========================================
+   CLOSE CAPSULE
+======================================== */
+
+async function closeCapsule() {
+
+  await motion(
+
+    topPart,
+
+    [
+
+      /* OPEN */
+
+      {
+        left: "-40px",
+        top: "-4px",
+
+        transform:
+          "rotate(-90deg)"
+      },
+
+
+      /* MID */
+
+      {
+        offset: .5,
+
+        left: "4px",
+        top: "1px",
+
+        transform:
+          "rotate(-42deg)"
+      },
+
+
+      /* CLOSED */
+
+      {
+        left: "34px",
+        top: "7px",
+
+        transform:
+          "rotate(0deg)"
+      }
+
+    ],
+
+    {
+      duration: 260,
+
+      easing:
+        "cubic-bezier(.25,.75,.3,1)"
+    }
+
+  );
+
+}
+
+
+/* ========================================
+   FIRST MEDICINE
+======================================== */
+
+async function throwMedicine1() {
+
+  medicine1.style.opacity =
+    "1";
+
+
+  await motion(
+
+    medicine1,
+
+    [
+
+      {
+        opacity: 0,
+
+        transform:
+          "translate(25px,-15px) scale(.65)"
+      },
+
+
+      {
+        offset: .15,
+
+        opacity: 1,
+
+        transform:
+          "translate(5px,-25px) scale(1)"
+      },
+
+
+      /*
+        살짝 위로 튀기
+      */
+
+      {
+        offset: .42,
+
+        opacity: 1,
+
+        transform:
+          "translate(-30px,-38px) scale(1)"
+      },
+
+
+      /*
+        검은 캡슐 위로 이동
+      */
+
+      {
+        offset: .72,
+
+        opacity: 1,
+
+        transform:
+          "translate(-93px,42px) scale(.9)"
+      },
+
+
+      /*
+        안으로 쏙
+      */
+
+      {
+        opacity: 0,
+
+        transform:
+          "translate(-93px,100px) scale(.4)"
+      }
+
+    ],
+
+    {
+      duration: 430,
+
+      easing:
+        "cubic-bezier(.25,.6,.3,1)"
+    }
+
+  );
+
+
+  /* 검은 몸 반응 */
+
+  await motion(
+
+    bottomPart,
+
+    [
+
+      {
+        transform:
+          "scale(1)"
+      },
+
+      {
+        transform:
+          "scale(1.04,.96)"
+      },
+
+      {
+        transform:
+          "scale(1)"
+      }
+
+    ],
+
+    {
+      duration: 100,
+
+      easing:
+        "ease-out"
+    }
+
+  );
+
+}
+
+
+/* ========================================
+   SECOND MEDICINE
+======================================== */
+
+async function throwMedicine2() {
+
+  medicine2.style.opacity =
+    "1";
+
+
+  await motion(
+
+    medicine2,
+
+    [
+
+      {
+        opacity: 0,
+
+        transform:
+          "translate(30px,-10px) scale(.65)"
+      },
+
+
+      {
+        offset: .12,
+
+        opacity: 1,
+
+        transform:
+          "translate(5px,-20px) scale(1)"
+      },
+
+
+      /*
+        첫 번째보다 살짝 높게
+      */
+
+      {
+        offset: .38,
+
+        opacity: 1,
+
+        transform:
+          "translate(-40px,-48px) scale(1)"
+      },
+
+
+      {
+        offset: .7,
+
+        opacity: 1,
+
+        transform:
+          "translate(-118px,38px) scale(.9)"
+      },
+
+
+      /*
+        안으로 쏙
+      */
+
+      {
+        opacity: 0,
+
+        transform:
+          "translate(-118px,105px) scale(.35)"
+      }
+
+    ],
+
+    {
+      duration: 450,
+
+      easing:
+        "cubic-bezier(.25,.6,.3,1)"
+    }
+
+  );
+
+
+  await motion(
+
+    bottomPart,
+
+    [
+
+      {
+        transform:
+          "scale(1)"
+      },
+
+      {
+        transform:
+          "scale(1.045,.955)"
+      },
+
+      {
+        transform:
+          "scale(1)"
+      }
+
+    ],
+
+    {
+      duration: 105,
+
+      easing:
+        "ease-out"
+    }
+
+  );
+
+}
+
+
+/* ========================================
+   PLAY
+======================================== */
+
+async function play() {
+
+  if (playing)
+    return;
+
+
+  playing = true;
+
+
+
+  reset();
+
+
+  await wait(150);
+
+
+  /* ======================================
+     1. 데굴데굴 등장
+  ====================================== */
+
+  await motion(
+
+    symbol,
+
+    [
+
+      {
+        transform:
+          "translateX(-65vw) rotate(-540deg)"
+      },
+
+
+      {
+        offset: .76,
+
+        transform:
+          "translateX(-18px) rotate(-32deg)"
+      },
+
+
+      /*
+        살짝 지나감
+      */
+
+      {
+        offset: .9,
+
+        transform:
+          "translateX(6px) rotate(6deg)"
+      },
+
+
+      /*
+        딱 세움
+      */
+
+      {
+        transform:
+          "translateX(0px) rotate(0deg)"
+      }
+
+    ],
+
+    {
+      duration: 850,
+
+      easing:
+        "cubic-bezier(.2,.72,.25,1)"
+    }
+
+  );
+
+
+  /* ======================================
+     2. 착지 반동
+  ====================================== */
+
+  await motion(
+
+    symbol,
+
+    [
+
+      {
+        transform:
+          "scale(1)"
+      },
+
+      {
+        transform:
+          "scale(1.035,.97)"
+      },
+
+      {
+        transform:
+          "scale(.99,1.015)"
+      },
+
+      {
+        transform:
+          "scale(1)"
+      }
+
+    ],
+
+    {
+      duration: 150,
+
+      easing:
+        "ease-out"
+    }
+
+  );
+
+
+  await wait(90);
+
+
+  /* ======================================
+     3. OPEN
+  ====================================== */
+
+  await openCapsule();
+
+
+  await wait(80);
+
+
+  /* ======================================
+     4. FIRST MEDICINE
+  ====================================== */
+
+  await throwMedicine1();
+
+
+  await wait(70);
+
+
+  /* ======================================
+     5. SECOND MEDICINE
+  ====================================== */
+
+  await throwMedicine2();
+
+
+  await wait(70);
+
+
+  /* ======================================
+     6. CLOSE
+  ====================================== */
+
+  await closeCapsule();
+
+
+  /* ======================================
+     7. 꿀꺽
+  ====================================== */
+
+  await motion(
+
+    symbol,
+
+    [
+
+      {
+        transform:
+          "scale(1)"
+      },
+
+      {
+        transform:
+          "scale(1.045,.95)"
+      },
+
+      {
+        transform:
+          "scale(1)"
+      }
+
+    ],
+
+    {
+      duration: 150,
+
+      easing:
+        "ease-out"
+    }
+
+  );
+
+
+  /*
+    덜그덕 전에
+    잠깐 정지
+  */
+
+  await wait(85);
+
+
+  /* ======================================
+     8. 덜그덕
+  ====================================== */
+
+  await motion(
+
+    symbol,
+
+    [
+
+      {
+        transform:
+          "translateX(0) rotate(0deg)"
+      },
+
+
+      /* 덜 */
+
+      {
+        offset: .18,
+
+        transform:
+          "translateX(-7px) rotate(-5deg)"
+      },
+
+
+      /* 그덕 */
+
+      {
+        offset: .4,
+
+        transform:
+          "translateX(8px) rotate(6deg)"
+      },
+
+
+      /* 반동 */
+
+      {
+        offset: .62,
+
+        transform:
+          "translateX(-4px) rotate(-2.5deg)"
+      },
+
+
+      {
+        offset: .82,
+
+        transform:
+          "translateX(2px) rotate(1deg)"
+      },
+
+
+      {
+        transform:
+          "translateX(0) rotate(0deg)"
+      }
+
+    ],
+
+    {
+      duration: 330,
+
+      easing:
+        "ease-out"
+    }
+
+  );
+
+
+  await wait(120);
+
+
+  /* ======================================
+     9. 다시 OPEN
+  ====================================== */
+
+  await openCapsule();
+
+
+  await wait(80);
+
+
+  /* ======================================
+     10. 최종 점 등장
+  ====================================== */
+
+  await Promise.all([
+
+
+    motion(
+
+      brandDot1,
+
+      [
+
+        {
+          opacity: 0,
+
+          transform:
+            "translateY(8px) scale(0)"
+        },
+
+
+        {
+          opacity: 1,
+
+          transform:
+            "translateY(-2px) scale(1.15)"
+        },
+
+
+        {
+          opacity: 1,
+
+          transform:
+            "translateY(0) scale(1)"
+        }
+
+      ],
+
+      {
+        duration: 180,
+
+        easing:
+          "ease-out"
+      }
+
+    ),
+
+
+    motion(
+
+      brandDot2,
+
+      [
+
+        {
+          opacity: 0,
+
+          transform:
+            "translateY(8px) scale(0)"
+        },
+
+
+        {
+          opacity: 1,
+
+          transform:
+            "translateY(-2px) scale(1.15)"
+        },
+
+
+        {
+          opacity: 1,
+
+          transform:
+            "translateY(0) scale(1)"
+        }
+
+      ],
+
+      {
+        duration: 180,
+
+        delay: 55,
+
+        easing:
+          "ease-out"
+      }
+
+    )
+
+  ]);
+
+
+  /* ======================================
+     11. 심볼 최종 위치
+  ====================================== */
+
+  await motion(
+
+    symbol,
+
+    [
+
+      {
+        transform:
+          "translateX(0)"
+      },
+
+
+      /*
+        최종 로고 기준
+        살짝 왼쪽 이동
+      */
+
+      {
+        transform:
+          "translateX(-24px)"
+      }
+
+    ],
+
+    {
+      duration: 300,
+
+      easing:
+        "cubic-bezier(.2,.8,.2,1)"
+    }
+
+  );
+
+
+  /* ======================================
+     12. VITAME WORDMARK
+  ====================================== */
+
+  await motion(
+
+    wordmark,
+
+    [
+
+      {
+        opacity: 0,
+
+        transform:
+          "translateX(-16px)"
+      },
+
+
+      {
+        offset: .7,
+
+        opacity: 1,
+
+        transform:
+          "translateX(2px)"
+      },
+
+
+      {
+        opacity: 1,
+
+        transform:
+          "translateX(0)"
+      }
+
+    ],
+
+    {
+      duration: 360,
+
+      easing:
+        "cubic-bezier(.2,.8,.2,1)"
+    }
+
+  );
+
+
+  playing = false;
+  parent.postMessage({type:'vitame-intro-complete'},location.origin);
+
+
+}
+
+
+/* ========================================
+   REPLAY
+======================================== */
+
+
+
+if (new URLSearchParams(location.search).has('static')) {
+  document.querySelector('#logoGroup').style.transform='translate(-50%, -50%) scale(.21)';
+  document.body.style.background = 'transparent';
+  document.querySelector('.stage').style.background = 'transparent';
+  symbol.style.transform = 'translateX(-24px)';
+  topPart.style.left = '-40px';
+  topPart.style.top = '-4px';
+  topPart.style.transform = 'rotate(-90deg)';
+  brandDot1.style.opacity = brandDot2.style.opacity = '1';
+  wordmark.style.opacity = '1';
+  wordmark.style.transform = 'translateX(0)';
+} else {
+  play();
+}
+
+</script>
+
+</body>
+</html>
