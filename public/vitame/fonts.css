@@ -1,0 +1,10 @@
+/* Pretendard v1.3.9 — SIL OFL 1.1; see fonts/LICENSE.txt.
+   Source: https://github.com/orioncactus/pretendard/tree/v1.3.9
+   Use the bundled font, regardless of fonts installed on the device. */
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 45 920;
+  font-display: swap;
+  src: url("fonts/PretendardVariable.woff2") format("woff2");
+}
