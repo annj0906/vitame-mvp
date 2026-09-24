@@ -232,6 +232,41 @@ body[data-screen="dose"] .dose-edit-list:has(.dose-grip) .dose-row{touch-action:
 .score-progress .score-color{fill:none;stroke-width:16}
 .score-example-label{display:block;margin-top:10px;color:#7c8982;font-size:10px}
 .restore-deleted{font-size:12px;color:#777;margin-bottom:12px}
+.difficulty-intro{position:relative;padding-bottom:12px}
+.step-3 .difficulty-intro .setup-description{padding-right:80px;font-size:14px}
+.step-3 .difficulty-intro .setup-mini-jelly{position:absolute;right:8px;bottom:28px;width:78px;height:78px}
+.step-3 .difficulty-intro .jelly-scene{width:78px;height:78px}
+.step-3 .difficulty-intro .jelly-body{width:78px;height:78px;left:0;top:0}
+.difficulty-help{font-size:11px;color:#929995;margin:8px 0}
+.step-3 .difficulty-options{margin-top:0}
+.step-3 .difficulty-options button{min-height:70px;padding:14px}
+.dose-add-action{display:flex;justify-content:flex-start;margin-top:14px}
+.archive-content>.subtle{margin:8px 0 24px;line-height:1.8}
+.archived-supplement h3{overflow-wrap:anywhere}
+.archived-supplement .row>div{min-width:0}
+.archived-supplement p{font-size:12px;margin-top:5px}
+.archive-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px}
+.archive-actions .secondary{font-size:13px}
+.archive-actions .text-btn{color:#ee4956}
+.archive-empty{text-align:center;padding:35px 12px}
+.archive-empty>.icon{width:32px;height:32px;margin-bottom:12px}
+.archive-empty p{margin-top:10px;font-size:12px}
+body[data-screen="home"] .score-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px}
+.score-stats>div{text-align:center}
+.score-stat-count{display:flex;align-items:baseline;justify-content:center;gap:3px;margin-bottom:5px}
+.score-stat-count b{font-size:24px;line-height:1.2;color:#171717}
+.score-stat-count small{font-size:12px;color:#777}
+.score-stat-label{display:inline-block;font-size:11px;line-height:1.45;border:1px solid currentColor;border-radius:20px;padding:0 5px;background:transparent}
+.home-empty-jelly{display:flex;justify-content:center;margin:0 auto 12px;height:110px}
+.home-empty-jelly .jelly-scene{width:110px;height:110px}
+.home-empty-jelly .jelly-body{width:110px;height:110px;top:0;left:0}
+body .home-dose .empty .primary{background:#fff;color:#171717;border:1px solid #dedede;box-shadow:none}
+@media(max-width:360px){
+  .step-3 .difficulty-intro .setup-description{font-size:12px;padding-right:62px}
+  .step-3 .difficulty-intro .setup-mini-jelly,.step-3 .difficulty-intro .jelly-scene,.step-3 .difficulty-intro .jelly-body{width:64px;height:64px}
+  body[data-screen="home"] .score-stats{gap:5px}
+  .score-stat-count b{font-size:21px}
+}
 body .app>.top{position:relative}
 body .app>.top>h2{position:absolute;left:50%;transform:translateX(-50%);margin:0;white-space:nowrap;pointer-events:none}
 body .app>.top .top-actions{margin-left:auto;gap:0}

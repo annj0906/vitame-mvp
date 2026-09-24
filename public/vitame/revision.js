@@ -151,10 +151,16 @@ home=function(){
 document.addEventListener('click',e=>{if(e.target.closest('[data-home-view]')){homeDoseList=!homeDoseList;render();}});
 const doseBeforeEditing=dose;
 const trashIcon='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>';
+const archiveIcon='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v5H3ZM5 8v13h14V8M9 12h6"/></svg>';
+// Preserve items saved by the previous swipe-to-delete implementation.
+if(state.deletedSupplements?.length){
+  state.archivedSupplements=[...(state.archivedSupplements||[]),...state.deletedSupplements];
+  delete state.deletedSupplements;save();
+}
 function doseRows(){
   return state.supplements.map((s,i)=>`<div class="dose-swipe-row" data-row-id="${s.id}">
     <button class="dose-item-edit" data-edit-supplement="${s.id}" aria-label="${esc(s.name)} 상세설정" tabindex="-1">✎<span>편집</span></button>
-    <button class="dose-delete" data-action="delete-supplement" data-id="${s.id}" aria-label="${esc(s.name)} 삭제" tabindex="-1">${trashIcon}</button>
+    <button class="dose-delete" data-archive-supplement="${s.id}" aria-label="${esc(s.name)} 아카이브에 보관" tabindex="-1">${archiveIcon}</button>
     <div class="dose-row-front">
       ${doseEditing?`<button class="dose-grip" data-grip="${s.id}" aria-label="${esc(s.name)} 순서 변경, 위아래 방향키 사용">☰</button>`:''}
       <button class="dose-row ${state.records[selectedDate]?.[s.id]?'taken':''}" ${doseEditing?'':'data-action="toggle"'} data-id="${s.id}" aria-pressed="${!!state.records[selectedDate]?.[s.id]}" ${!doseEditing&&selectedDate>dateKey()?'disabled':''}><span class="pill p${supplementColor(s,i)}"></span><span><b>${esc(s.name)}</b><small>${s.dose}정 · ${s.time} · ${state.records[selectedDate]?.[s.id]?'복용 완료':'미복용'}</small></span><span class="check">✓</span></button>
@@ -162,7 +168,7 @@ function doseRows(){
 }
 dose=function(){
   const base=doseBeforeEditing();const prefix=base.slice(0,base.indexOf('<div class="section-head">'));
-  return prefix+`<div class="section-head"><h2>복용 목록</h2><button data-dose-edit aria-pressed="${doseEditing}">${doseEditing?'완료':'✎ 편집'}</button></div>${doseEditing?'<p class="subtle">왼쪽 손잡이를 위아래로 끌어 순서를 바꿔주세요.</p>':''}<section class="card dose-edit-list">${state.supplements.length?doseRows():'<p>영양제를 등록하면 복용 목록이 표시돼요.</p>'}</section>${button('+ 영양제 등록하기','scan','secondary')}`;
+  return prefix+`<div class="section-head"><h2>복용 목록</h2><button data-dose-edit aria-pressed="${doseEditing}">${doseEditing?'완료':'✎ 편집'}</button></div>${doseEditing?'<p class="subtle">왼쪽 손잡이를 위아래로 끌어 순서를 바꿔주세요.</p>':''}<section class="card dose-edit-list">${state.supplements.length?doseRows():'<p>영양제를 등록하면 복용 목록이 표시돼요.</p>'}</section><div class="dose-add-action">${button('+ 영양제 등록하기','scan','secondary')}</div>`;
 };
 function moveDose(id,index){
   const from=state.supplements.findIndex(s=>s.id===id);
@@ -235,7 +241,7 @@ function endDoseGesture(e){
   }else if(g.cal){if(e.type!=='pointercancel'&&Math.abs(dx)>42)slideCalendar('.dose-calendar',dx<0?1:-1,()=>shiftDoseCalendar(dx<0?1:-1));else g.cal.style.transform='';}
   else{
     g.row.querySelector('.dose-row-front').style.transform='';
-    if(e.type!=='pointercancel'&&dx<-60)deleteDoseNow(g.row.dataset.rowId);
+    if(e.type!=='pointercancel'&&dx<-60)archiveDoseNow(g.row.dataset.rowId);
     else {
       if(e.type!=='pointercancel'&&dx>60){
         editingSupplementId=g.row.dataset.rowId;go('supplement-settings');
@@ -248,24 +254,43 @@ document.addEventListener('pointercancel',endDoseGesture);
 document.addEventListener('click',e=>{
   if(Date.now()<doseBlockUntil&&e.target.closest('.dose-swipe-row,.dose-calendar')){e.preventDefault();e.stopImmediatePropagation();}
 },true);
-function deleteDoseNow(id){
+function archiveDoseNow(id){
   const index=state.supplements.findIndex(s=>s.id===id);if(index<0)return;
   const [item]=state.supplements.splice(index,1);
-  state.deletedSupplements ||= [];state.deletedSupplements.push({item,index});
+  state.archivedSupplements ||= [];state.archivedSupplements.push({item,index});
   save();render();showDoseUndo();
 }
 function showDoseUndo(){
   clearTimeout(doseUndoTimer);
   document.querySelector('.dose-undo')?.remove();
-  if(!state.deletedSupplements?.length)return;
+  if(!state.archivedSupplements?.length)return;
   const bar=document.createElement('div');bar.className='dose-undo';bar.setAttribute('role','status');
-  bar.innerHTML='<span>영양제를 삭제했어요.</span><button data-dose-undo>되돌리기</button>';document.body.append(bar);
-  doseUndoTimer=setTimeout(()=>{bar.classList.add('dismissed');setTimeout(()=>bar.remove(),250);},4500);
+  const id=state.archivedSupplements.at(-1).item.id;
+  bar.innerHTML=`<span>아카이브에 보관되었어요.</span><button data-restore-supplement="${esc(id)}">되돌리기</button>`;document.body.append(bar);
+  doseUndoTimer=setTimeout(()=>{bar.classList.add('dismissed');setTimeout(()=>bar.remove(),250);},2200);
 }
 document.addEventListener('click',e=>{
-  if(e.target.closest('[data-dose-undo]')){
-    const entry=state.deletedSupplements?.pop();if(!entry)return;
-    state.supplements.splice(Math.min(entry.index,state.supplements.length),0,entry.item);save();render();showDoseUndo();
+  const archive=e.target.closest('[data-archive-supplement]');
+  if(archive)archiveDoseNow(archive.dataset.archiveSupplement);
+  const restore=e.target.closest('[data-restore-supplement]');
+  if(restore){
+    const index=(state.archivedSupplements||[]).findIndex(entry=>entry.item.id===restore.dataset.restoreSupplement);
+    if(index<0)return;
+    const [entry]=state.archivedSupplements.splice(index,1);
+    if(!state.supplements.some(s=>s.id===entry.item.id))state.supplements.splice(Math.min(entry.index,state.supplements.length),0,entry.item);
+    clearTimeout(doseUndoTimer);document.querySelector('.dose-undo')?.remove();
+    save();render();toast('복용 목록으로 꺼냈어요.');
+  }
+  const remove=e.target.closest('[data-delete-archived]');
+  if(remove)modal('보관한 영양제를 삭제할까요?','아카이브에서 영구 삭제합니다. 이 영양제의 복용 기록도 삭제되며 되돌릴 수 없어요.',`<button class="secondary" data-confirm-delete-archived="${esc(remove.dataset.deleteArchived)}">영구 삭제</button>`);
+  const confirm=e.target.closest('[data-confirm-delete-archived]');
+  if(confirm){
+    const id=confirm.dataset.confirmDeleteArchived;
+    if(!(state.archivedSupplements||[]).some(entry=>entry.item.id===id))return;
+    state.archivedSupplements=state.archivedSupplements.filter(entry=>entry.item.id!==id);
+    for(const records of Object.values(state.records))delete records[id];
+    clearTimeout(doseUndoTimer);document.querySelector('.dose-undo')?.remove();
+    save();$('#dialog').close();render();toast('보관한 영양제를 삭제했어요.');
   }
   if(e.target.closest('[data-dose-today]')){
     selectedDate=dateKey();doseWeekAnchor=null;
@@ -277,6 +302,11 @@ dose=function(){return doseBeforeTodayPlacement().replace('<div class="segment">
 let editingSupplementId=null;
 const beforeSupplementSettings=render;
 render=function(){
+  if(route()==='archive'){
+    clearTimeout(introTimer);document.body.dataset.screen='archive';document.title='영양제 아카이브 · VITAME';
+    const entries=state.archivedSupplements||[];
+    $('#app').innerHTML=`<header class="top"><button class="icon-btn" data-go="dose" aria-label="복용 관리로 돌아가기">${icon('back')}</button><h2>아카이브</h2></header><main class="content archive-content"><p class="subtle">보관한 영양제는 복용 목록에서 제외돼요.<br>다시 꺼내면 이전 복용 기록도 함께 돌아와요.</p>${entries.length?entries.map(({item:s})=>`<section class="card archived-supplement"><div class="row"><span class="pill p${s.colorIndex??0}"></span><div><h3>${esc(s.name)}</h3><p>${s.dose}정 · ${esc(s.time)}</p></div></div><div class="archive-actions"><button class="secondary" data-restore-supplement="${esc(s.id)}">복용 목록으로 꺼내기</button><button class="text-btn" data-delete-archived="${esc(s.id)}">삭제</button></div></section>`).join(''):'<section class="card archive-empty">'+archiveIcon+'<h3>보관한 영양제가 없어요</h3><p>복용 목록에서 왼쪽으로 밀어 보관해보세요.</p></section>'}</main>${nav('dose')}`;return;
+  }
   if(route()!=='supplement-settings'){beforeSupplementSettings();return;}
   clearTimeout(introTimer);document.body.dataset.screen='supplement-settings';
   document.title='영양제 상세설정 · VITAME';
@@ -311,7 +341,7 @@ dose=function(){
     .replace('<button data-dose-edit', '<button class="dose-time-sort" data-dose-sort aria-label="복용 시간순 정렬"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h12M3 11h9M3 17h6M19 3v17m-4-4 4 4 4-4"/></svg>시간순 정렬</button><button data-dose-edit')
     .replace('✎ 편집',pencilIcon+' 편집')
     .replace(/>✎<span>편집<\/span>/g,'>'+pencilIcon+'<span>편집</span>')
-    .replace('<section class="card dose-edit-list">',`${!doseEditing&&total?'<p class="dose-swipe-hint">좌우로 스와이프 해보세요 · 왼쪽 삭제 / 오른쪽 편집</p>':''}<section class="card dose-edit-list">`);
+    .replace('<section class="card dose-edit-list">',`${!doseEditing&&total?'<p class="dose-swipe-hint">좌우로 스와이프 해보세요 · 왼쪽 보관 / 오른쪽 편집</p>':''}<section class="card dose-edit-list">`);
 };
 document.addEventListener('click',e=>{
   if(e.target.closest('[data-dismiss-alert]')){homeAlertDismissed=true;e.target.closest('.home-alert-wrap').remove();}
@@ -357,11 +387,14 @@ render=function(){
   if(next==='notifications'&&previousScreen!=='notifications'&&!reduce)
     document.querySelector('#app').animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:320,easing:'cubic-bezier(.22,.7,.2,1)'});
   previousScreen=next;
-  if(next==='dose'&&state.deletedSupplements?.length){
-    document.querySelector('.dose-edit-list')?.insertAdjacentHTML('afterend','<button class="text-btn restore-deleted" data-dose-undo>최근 삭제한 영양제 복구</button>');
-  }
+  if(next==='dose')document.querySelector('.top-actions')?.insertAdjacentHTML('beforeend',`<button class="icon-btn" data-go="archive" aria-label="영양제 아카이브">${archiveIcon}</button>`);
   if(next!=='home')return;
   const card=document.querySelector('.health-score-link');if(!card)return;
+  const copy=card.querySelector('.score-copy');
+  copy.querySelectorAll('.stat').forEach(el=>el.remove());
+  copy.insertAdjacentHTML('beforeend',`<div class="score-stats">${groups.map(([label,color])=>`<div><div class="score-stat-count"><b>${nutrients.filter(n=>n[2]===label).length}</b><small>개</small></div><span class="score-stat-label ${color}">${label}</span></div>`).join('')}</div>`);
+  const emptyCard=document.querySelector('.home-dose .empty');
+  if(emptyCard){emptyCard.querySelector('.character')?.remove();emptyCard.insertAdjacentHTML('afterbegin',`<div class="home-empty-jelly" aria-hidden="true">${jellyArt(0)}</div>`);}
   const day=new Date(selectedDate+'T12:00:00'),label=selectedDate===dateKey()?'오늘의 건강 점수':`${day.getMonth()+1}월 ${day.getDate()}일의 건강 점수`;
   const total=state.supplements.length,done=completed();
   // Stable illustrative score, not a medical assessment.
@@ -379,7 +412,6 @@ render=function(){
     return `<path class="score-color" pathLength="100" d="M64 8 A56 56 0 1 0 64 120 A56 56 0 1 0 64 8" stroke="${color}" stroke-dasharray="${size} ${100-size}" stroke-dashoffset="${-start}"/>`;
   }).join('');
   card.querySelector('.score-example-label')?.remove();
-  card.insertAdjacentHTML('beforeend','<small class="score-example-label">체험용 예시 점수 · 날짜와 복용 기록에 따른 시각화</small>');
   if(animate){
     const start=performance.now();
     function tick(now){

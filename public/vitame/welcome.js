@@ -111,8 +111,10 @@ document.addEventListener('submit',e=>{
 });
 const setupRoutes=['health-interests','setup-frequency','setup-difficulty','setup-register'];
 const frequencyLabels=['거의 안 먹어요','가끔 먹어요','절반 정도','자주 먹어요','거의 매일 먹어요'];
-const difficultyLabels=['자주 깜빡해요','언제 먹어야 할지 헷갈려요','여러 개라 관리가 어려워요','잘 먹고 있는지 모르겠어요'];
-let frequencyDraft=state.setupAnswers?.frequency??2,difficultyDraft=state.setupAnswers?.difficulty??null;
+const difficultyLabels=['자주 깜빡해요','언제 먹어야 할지 헷갈려요','여러 개라 관리가 어려워요','잘 먹고 있는지 모르겠어요','기타'];
+let frequencyDraft=state.setupAnswers?.frequency??2;
+// Keep previously saved single-choice answers when moving to multiple choices.
+let difficultyDraft=Array.isArray(state.setupAnswers?.difficulty)?[...state.setupAnswers.difficulty]:Number.isInteger(state.setupAnswers?.difficulty)?[state.setupAnswers.difficulty]:[];
 function setupHeader(step,back){
   return `<header class="setup-header"><button class="icon-btn" data-go="${back}" aria-label="이전 단계">${icon('back')}</button><span><b>${step}</b> / 4</span></header><div class="setup-progress" role="progressbar" aria-label="온보딩 진행" aria-valuemin="0" aria-valuemax="4" aria-valuenow="${step}"><span style="width:${step*25}%"></span></div>`;
 }
@@ -130,7 +132,7 @@ render=function(){
   clearTimeout(introTimer);document.body.dataset.screen=r;document.title=['','','복용 빈도','복용 고민','영양제 등록 안내'][step]+' · VITAME';
   let content='';
   if(step===2)content=`<h1>영양제를 얼마나<br>자주 챙겨 드시나요?</h1><p class="setup-description">대략적인 복용 습관을 알려주시면<br>맞춤 관리에 도움이 돼요.</p><div class="frequency-control"><div class="frequency-track"><div class="frequency-mascot" style="left:${frequencyDraft*25}%" aria-hidden="true">${jellyArt(0)}</div><input id="setup-frequency" aria-label="영양제 복용 빈도" type="range" min="0" max="4" step="1" value="${frequencyDraft}" aria-valuetext="${frequencyLabels[frequencyDraft]}"></div><div class="frequency-labels">${frequencyLabels.map((t,i)=>`<button data-frequency-value="${i}" aria-pressed="${i===frequencyDraft}">${t}</button>`).join('')}</div><p class="frequency-current" aria-live="polite">${frequencyLabels[frequencyDraft]}</p></div>${setupFooter('setup-difficulty')}`;
-  if(step===3)content=`<h1>영양제를 챙겨 먹을 때<br>가장 어려운 점은<br>무엇인가요?</h1><p class="setup-description">복용 습관을 알면 나에게 맞는<br>관리 방법을 찾는 데 도움이 돼요.</p><div class="setup-mini-jelly" aria-hidden="true">${jellyArt(1)}</div><div class="difficulty-options">${difficultyLabels.map((t,i)=>`<button data-difficulty="${i}" aria-pressed="${difficultyDraft===i}" class="${difficultyDraft===i?'selected':''}">${icon(['bell','calendar','pill','info'][i])}<span>${t}</span><span class="interest-check" aria-hidden="true">${difficultyDraft===i?'✓':''}</span></button>`).join('')}</div>${setupFooter('setup-register')}`;
+  if(step===3)content=`<div class="difficulty-intro"><h1>영양제를 챙겨 먹을 때<br>가장 어려운 점은<br>무엇인가요?</h1><p class="setup-description">복용 습관을 알면 나에게 맞는<br>관리 방법을 찾는 데 도움이 돼요.</p><div class="setup-mini-jelly" aria-hidden="true">${jellyArt(1)}</div></div><p class="difficulty-help">여러 개를 선택할 수 있어요.</p><div class="difficulty-options">${difficultyLabels.map((t,i)=>`<button data-difficulty="${i}" aria-pressed="${difficultyDraft.includes(i)}" class="${difficultyDraft.includes(i)?'selected':''}">${icon(['bell','calendar','pill','info','plus'][i])}<span>${t}</span><span class="interest-check" aria-hidden="true">${difficultyDraft.includes(i)?'✓':''}</span></button>`).join('')}</div>${setupFooter('setup-register')}`;
   if(step===4)content=`<h1>복용 중인 영양제를<br>등록해볼까요?</h1><p class="setup-description">제품 라벨과 성분 정보를 등록하고<br>나만의 복용 루틴을 시작해요.</p><div class="registration-preview"><div class="setup-mini-jelly" aria-hidden="true">${jellyArt(2)}</div><div class="registration-bottle">${bottle()}</div><div class="registration-benefits"><span>${icon('camera')}사진으로<br>라벨 확인</span><span>${icon('info')}성분·함량<br>직접 확인</span><span>${icon('pill')}나만의<br>복용 목록</span></div></div><p class="login-demo-note">체험 버전은 자동 인식 대신 직접 입력·샘플 결과를 제공해요.</p><div class="registration-actions"><button class="primary" data-go="scan">${icon('camera')} 영양제 스캔하기</button><div class="registration-or">또는</div><div class="setup-actions"><button class="secondary" data-action="manual">직접 입력하기</button><button class="secondary" data-go="home">나중에 할게요</button></div></div>`;
   $('#app').innerHTML=`<section class="interest-setup setup-step step-${step}">${setupHeader(step,setupRoutes[step-2])}${content}</section>`;
 };
@@ -146,7 +148,7 @@ function updateFrequency(value){
 document.addEventListener('input',e=>{if(e.target.id==='setup-frequency')updateFrequency(e.target.value);});
 document.addEventListener('click',e=>{
   const f=e.target.closest('[data-frequency-value]');if(f)updateFrequency(f.dataset.frequencyValue);
-  const d=e.target.closest('[data-difficulty]');if(d){difficultyDraft=Number(d.dataset.difficulty);render();}
+  const d=e.target.closest('[data-difficulty]');if(d){const value=Number(d.dataset.difficulty);difficultyDraft=difficultyDraft.includes(value)?difficultyDraft.filter(v=>v!==value):[...difficultyDraft,value];render();}
   const skip=e.target.closest('[data-setup-skip]');if(skip){go(skip.dataset.setupSkip);return;}
   const next=e.target.closest('[data-setup-next]');if(next){
     state.setupAnswers ||= {};
@@ -162,13 +164,13 @@ function frequencyCharacter(index){
 }
 function paintFrequencyCharacter(animate=false){
   const mascot=document.querySelector('.frequency-mascot');if(!mascot)return;
-  const old=mascot.firstElementChild;
-  mascot.insertAdjacentHTML('beforeend',frequencyCharacter(frequencyDraft));
-  const next=mascot.lastElementChild;
+  // Replace synchronously: interrupted fades must never leave older characters behind.
+  mascot.querySelectorAll('*').forEach(node=>node.getAnimations().forEach(animation=>animation.cancel()));
+  mascot.innerHTML=frequencyCharacter(frequencyDraft);
+  const next=mascot.firstElementChild;
   if(animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
     next.animate([{opacity:0,transform:'scale(.85)'},{opacity:1,transform:'scale(1)'}],{duration:220});
-    if(old)old.animate([{opacity:1},{opacity:0}],{duration:180}).finished.finally(()=>old.remove());
-  }else old?.remove();
+  }
 }
 const beforeFrequencyPolish=render;
 render=function(){

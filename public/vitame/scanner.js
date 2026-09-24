@@ -5,7 +5,7 @@ const scanRoutes=['scan','setup-register'];
 function stopLabelCamera(){cameraStream?.getTracks().forEach(t=>t.stop());cameraStream=null;}
 function cancelLabelScan(){scanJob++;scanBusy=false;stopLabelCamera();scanWorker?.terminate();scanWorker=null;}
 function scanStatus(message){const el=document.querySelector('[data-scan-status]');if(el)el.textContent=message;}
-function scanControls(){return `<div class="live-scanner"><video autoplay muted playsinline aria-label="영양제 라벨 카메라"></video><div class="live-scan-frame"></div><p data-scan-status role="status">카메라로 제품의 성분표를 비춰주세요.</p></div><div class="live-scan-buttons"><button class="secondary" data-action="manual">직접 입력하기</button><button class="primary" data-label-scan>${icon('camera')} 영양제 스캔하기</button></div><div class="live-scan-links"><button class="text-btn" data-label-photo>사진 선택</button><button class="text-btn" data-label-cancel hidden>스캔 취소</button></div><input type="file" id="label-photo" accept="image/*" hidden><p class="footer-note">카메라를 연결한 뒤 촬영하면 문자 인식을 시작해요.<br>사진은 서버로 전송하지 않습니다. 첫 인식에는 인터넷 연결이 필요해요.</p>`;}
+function scanControls(){return `<div class="live-scanner"><video autoplay muted playsinline aria-label="영양제 라벨 카메라"></video><div class="live-scan-frame"></div><p data-scan-status role="status">카메라로 제품의 성분표를 비춰주세요.</p></div><div class="live-scan-buttons"><button class="secondary" data-label-photo>${icon('image')}<span>사진 선택</span></button><button class="secondary" data-action="manual">${icon('plus')}<span>직접 입력</span></button><button class="primary" data-label-scan>${icon('camera')}<span>스캔하기</span></button></div><div class="live-scan-links"><button class="text-btn" data-label-cancel hidden>스캔 취소</button></div><input type="file" id="label-photo" accept="image/*" hidden><p class="footer-note">카메라를 연결한 뒤 촬영하면 문자 인식을 시작해요.<br>사진은 서버로 전송하지 않습니다. 첫 인식에는 인터넷 연결이 필요해요.</p>`;}
 scan=function(){return `<div class="step"><b>1 영양제 등록</b><span></span><span>2 결과 확인</span></div>${scanControls()}<button class="sample" data-action="sample-scan">샘플 라벨로 스캔 결과 확인하기</button><button class="sample" data-go="home">나중에 할게요</button>`;};
 const renderBeforeScanner=render;
 render=function(){
@@ -33,7 +33,7 @@ async function openLabelCamera(){
     const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1440}},audio:false});
     if(token!==scanJob||!scanRoutes.includes(route())){stream.getTracks().forEach(t=>t.stop());return;}
     cameraStream=stream;const video=document.querySelector('.live-scanner video');video.srcObject=stream;await video.play();
-    document.querySelector('[data-label-scan]').textContent='촬영하고 인식하기';
+    document.querySelector('[data-label-scan] span').textContent='촬영·인식';
     document.querySelector('[data-label-cancel]').hidden=false;
     scanStatus('성분표가 선명하게 보이면 촬영해주세요.');
   }catch(error){
