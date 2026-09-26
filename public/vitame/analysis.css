@@ -1,0 +1,150 @@
+/* Analysis and guide reference screens. Rules are scoped to these surfaces. */
+body[data-screen="analysis"] .content,body[data-screen="nutrients"] .content,body[data-screen="guide"] .content{padding-top:6px}
+body[data-screen="analysis"] .top h2,body[data-screen="nutrients"] .top h2,body[data-screen="guide"] .top h2{color:#171717}
+.wellness-tabs{margin:8px auto 28px;background:#f1f3f4}
+.wellness-tabs button{font-size:13px;min-height:40px;padding:8px 18px}
+.wellness-tabs .selected{background:#fff;color:#111;box-shadow:0 1px 5px #0000000a}
+.analysis-overview{padding:0 0 14px}
+.analysis-month-picker{position:relative;display:inline-flex;align-items:center;margin-bottom:20px;min-height:32px;font-size:16px;font-weight:700;cursor:pointer}
+.analysis-month-picker>span{display:flex;align-items:center;gap:5px}
+.analysis-month-picker .icon{width:15px;height:15px}
+.analysis-month-picker input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.analysis-month-picker:focus-within{outline:2px solid #9551df;outline-offset:4px;border-radius:5px}
+.analysis-score-label{display:flex;align-items:center;gap:5px;font-size:12px;color:#333}
+.analysis-score-label button{padding:0;display:grid;place-items:center;width:28px;min-height:28px;color:#a5aaad}
+.analysis-score-label .icon{width:14px;height:14px}
+body .analysis-month-score{font-size:38px;line-height:1.25;letter-spacing:-1px;margin:0 0 16px;color:#101010}
+.analysis-month-description{font-size:13px;color:#8a8a94;line-height:1.6}
+.analysis-month-description b{color:#9353df;font-weight:700}
+.analysis-month-description .rise{color:#10bc70}.analysis-month-description .decline{color:#ee6375}
+.monthly-chart{position:relative;margin:22px 0 0;min-height:215px;padding-left:24px}
+.chart-scale{position:absolute;left:0;top:0;height:150px;display:flex;flex-direction:column;justify-content:space-between;font-size:9px;color:#a4a4ad}
+.month-bars{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;height:177px}
+.month-bar{padding:0;min-width:0;display:flex;flex-direction:column;gap:10px;align-items:stretch;font-size:10px;color:#8b8b91;border-radius:5px}
+.month-bar-track{display:flex;align-items:flex-end;height:150px;border-bottom:1px solid #f2f2f4}
+.month-bar-track i{display:block;width:100%;height:var(--bar-height);background:#f1f1f3;border-radius:6px 6px 0 0;min-height:4px;transition:background .18s}
+.month-bar.current i{background:#9148e1}.month-bar.current .month-bar-label{font-weight:700;color:#171717}
+.month-bar.picked i{background:#aa70ed;box-shadow:0 0 0 2px #e4d0fd}
+.month-bar.current.picked i{background:#9148e1}.month-bar:disabled{cursor:default;color:#c6c6cc}
+.month-bar:disabled i{background:#f6f6f7}
+.month-tooltip-slot{position:absolute;right:0;top:0;pointer-events:none;max-width:158px}
+.month-comparison{padding:10px 12px;border:1px solid #f0e9fc;border-radius:12px;background:#fffffff2;box-shadow:0 4px 18px #5630750c;backdrop-filter:blur(6px)}
+.month-comparison small{font-size:10px;color:#848492;display:block}
+.month-comparison strong{font-size:22px;color:#418cf9;display:flex;gap:5px;align-items:center}
+.month-comparison .decline{color:#ed6677}.month-comparison .icon{width:17px;height:17px}
+.month-comparison p{font-size:10px;color:#777583;margin-top:2px}
+.chart-hint{font-size:10px;color:#a0a0a9;margin:-20px 0 12px;text-align:center}
+.nutrition-panels{display:grid;gap:12px}
+.nutrition-panel{border-radius:20px;padding:14px 12px;color:#171717;overflow:hidden}
+.nutrition-panel.low{background:linear-gradient(125deg,#fff2f4,#fff8f9);--status-color:#ff5c6e;--status-pale:#ffe5eb}
+.nutrition-panel.high{background:linear-gradient(125deg,#fff8e9,#fffbf2);--status-color:#f3ad21;--status-pale:#fff0c8}
+.nutrition-panel.ok{background:linear-gradient(125deg,#eefbf5,#f5fcf8);--status-color:#44c99a;--status-pale:#daf6e9}
+.nutrition-panel-toggle{display:flex;align-items:center;gap:10px;text-align:left;width:100%;padding:0;min-height:45px}
+.nutrition-panel-toggle>span:nth-child(2){flex:1;min-width:0}
+.nutrition-panel-toggle b{font-size:15px;font-weight:750;letter-spacing:-.5px;display:block}
+.nutrition-panel-toggle small{display:block;font-size:11px;color:#8c9098;margin-top:2px}
+.wellness-symbol{display:grid;place-items:center;width:39px;height:39px;border-radius:50%;flex-shrink:0;background:var(--status-pale,#eaf6ff);color:var(--status-color,#52b7ff)}
+.wellness-symbol .icon{width:21px;height:21px;stroke-width:2.4}
+.nutrition-panel-toggle>.icon{width:17px;height:17px;color:#677383;transition:transform .18s}
+.nutrition-panel-toggle[aria-expanded="true"]>.icon{transform:rotate(180deg)}
+.nutrition-panel-body{margin-top:12px}
+.analysis-nutrient{display:grid;grid-template-columns:18px minmax(60px,1.05fr) 33px minmax(35px,1.2fr) 35px 10px;gap:7px;align-items:center;width:100%;padding:7px 0;min-height:37px;text-align:left;font-size:11px;color:#333}
+.analysis-nutrient>.icon{width:11px;height:11px;color:#9297a0}
+.nutrient-glyph{font-size:17px;color:#343b3b;text-align:center}
+.nutrient-rate{color:#848d98;font-size:10px;text-align:center}
+.nutrient-track{height:7px;border-radius:8px;background:#e9ebed;overflow:hidden}
+.nutrient-track i{display:block;height:100%;background:var(--status-color);border-radius:8px}
+.nutrient-status{font-size:10px;border-radius:15px;text-align:center;color:var(--status-color);background:white;padding:3px 0}
+.nutrition-panel-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.nutrition-panel-chips span{font-size:10px;color:#4c5055;background:#fff;border-radius:20px;padding:7px 10px}
+.nutrition-panel-body[hidden],.nutrition-panel-chips[hidden]{display:none}
+.analysis-guide-cta{margin:22px 2px 8px;padding:22px;border:1px solid #f0f0f0;border-radius:22px;box-shadow:0 4px 12px #00000005;text-align:center;background:#fff}
+.wellness-cta-art{height:80px;display:flex;justify-content:center;margin-bottom:12px}
+.wellness-cta-art .jelly-scene,.wellness-cta-art .jelly-body{width:80px;height:80px;left:0;top:0}
+.analysis-guide-cta h3{font-size:15px}.analysis-guide-cta p{font-size:12px;margin:7px 0 22px;color:#999}
+.analysis-guide-cta .primary{min-height:46px;font-size:13px;border-radius:12px}
+.tone-blue{--wellness-color:#45afff;--wellness-light:#eaf6ff}
+.tone-yellow{--wellness-color:#efb51f;--wellness-light:#fff8df}
+.tone-purple{--wellness-color:#aa65f4;--wellness-light:#f5ecff}
+.tone-pink{--wellness-color:#f36891;--wellness-light:#fff0f5}
+.tone-orange{--wellness-color:#f5b058;--wellness-light:#fff7e9}
+.wellness-guide-hero{background:radial-gradient(ellipse at 65% 40%,#f5eaffaa,transparent 65%),linear-gradient(135deg,#fbf7ff,#f8fcff 65%,#fff);border-radius:20px;padding:20px 18px 16px;scroll-margin-top:20px}
+.guide-hero-symbol{display:grid;place-items:center;width:35px;height:35px;color:#c779f3;background:#f7e8ff;border-radius:50%;margin-bottom:12px}
+.guide-hero-symbol .icon{width:22px;height:22px}
+body .wellness-guide-hero h1{font-size:24px;line-height:1.45;letter-spacing:-.8px;color:#1e222b}
+.wellness-guide-hero>p{font-size:13px;line-height:1.55;color:#8c8c9d;margin-top:12px}
+.guide-health-map{position:relative;height:275px;margin-top:24px}
+.guide-hero-art{position:absolute;top:62px;left:50%;transform:translateX(-50%);width:154px;height:154px}
+.guide-hero-art .jelly-scene,.guide-hero-art .jelly-body{width:154px;height:154px;left:0;top:0}
+.guide-jump-chip{display:inline-flex;align-items:center;justify-content:center;gap:5px;background:#ffffffc9;border:1px solid #ffffff;border-radius:30px;min-height:40px;padding:5px 8px;font-size:11px;white-space:nowrap;color:#414252;box-shadow:0 3px 12px #bfbbda0b}
+.guide-jump-chip>span{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:var(--wellness-light);color:var(--wellness-color);flex-shrink:0}
+.guide-jump-chip .icon{width:18px;height:18px;stroke-width:2}
+.guide-jump-chip:focus-visible{outline-color:var(--wellness-color)}
+.guide-health-map>.guide-jump-chip{position:absolute}
+.map-eyes{left:0;top:0}.map-brain{right:0;top:0}
+.map-gut{left:-3px;top:132px}.map-bones{right:-3px;top:132px}
+.map-energy{left:-3px;bottom:0}.map-immune{left:50%;transform:translateX(-50%);bottom:0}.map-sleep{right:-3px;bottom:0}
+.guide-health-map .map-gut,.guide-health-map .map-bones{flex-direction:column;background:#ffffffad;gap:3px;padding:5px 7px;border:0}
+.wellness-guide-hero .guide-map-hint{font-size:11px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;color:#9498a9;margin-top:10px}
+.guide-map-hint .icon{color:#51b5ff;width:19px;height:19px}
+.guide-interest-summary{position:relative;display:grid;grid-template-columns:35px 1fr;gap:8px;margin:18px 0 28px;padding:18px 14px;background:linear-gradient(115deg,#f0fbf7,#f8fffc);border-radius:19px}
+.guide-interest-summary>.wellness-symbol{width:32px;height:32px;color:#2cb884;background:#d9faed}
+.guide-interest-summary>div:nth-child(2){padding-right:45px}
+.guide-interest-summary h2{font-size:14px;line-height:1.5;letter-spacing:-.5px}
+.guide-interest-summary p{font-size:11px;margin-top:3px;line-height:1.6}
+.guide-interest-art{position:absolute;width:62px;height:62px;right:9px;top:18px}
+.guide-interest-art .jelly-scene,.guide-interest-art .jelly-body{width:62px;height:62px;left:0;top:0}
+.guide-interest-art svg stop:first-child{stop-color:#d5fff0}.guide-interest-art svg stop:last-child{stop-color:#80e0c0}
+.guide-interest-chips{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.guide-interest-chips .guide-jump-chip{min-height:32px;padding:5px 11px;font-size:11px;background:var(--wellness-light);color:var(--wellness-color);border:0}
+.guide-interest-chips .guide-jump-chip>span{display:none}
+.wellness-guide-section{scroll-margin-top:20px;margin:0 0 28px;padding-top:6px}
+.wellness-section-heading{display:flex;gap:10px;align-items:center;margin-bottom:20px}
+.wellness-section-number{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--wellness-light);color:var(--wellness-color);font-size:12px;font-weight:800;flex-shrink:0}
+.wellness-section-heading h2{font-size:19px;line-height:1.4;color:#252832;letter-spacing:-.6px}
+.wellness-section-heading h2:focus{outline:none}.wellness-section-heading h2:focus-visible{outline:2px solid var(--wellness-color);outline-offset:4px}
+.wellness-section-heading p{font-size:11px;line-height:1.55;color:#9695a4;margin-top:3px}
+.wellness-current{display:flex;gap:12px;align-items:flex-start;padding:0 10px 12px}
+.wellness-current>.wellness-symbol{background:var(--wellness-light);color:var(--wellness-color);width:48px;height:48px}
+.wellness-current>div{flex:1;min-width:0}.wellness-current h3{font-size:12px;margin-bottom:7px}.wellness-current h3 small{font-size:9px;font-weight:400;color:#a5a4af}
+.guide-nutrient{display:grid;grid-template-columns:1fr 36px 52px;gap:6px;align-items:center;width:100%;text-align:left;min-height:30px;font-size:11px}
+.guide-nutrient>span:nth-child(2){color:#9293a3;font-size:10px}
+.guide-nutrient b{font-size:10px;font-weight:500;padding:3px;border-radius:20px;text-align:center}
+.wellness-advice{position:relative;background:linear-gradient(135deg,#f9f8ff,#fafbff);border:1px solid #f6f4fa;border-radius:18px;padding:15px 12px 18px}
+.wellness-advice>h3{font-size:13px;margin-bottom:8px;color:#323440}
+.wellness-advice-row{border-bottom:1px solid #efedf5;padding:5px 0}
+.wellness-advice-row:last-of-type{border:0}
+.wellness-advice-row summary{display:flex;align-items:center;gap:10px;cursor:pointer;list-style:none;min-height:62px}
+.wellness-advice-row summary::-webkit-details-marker,.guide-related summary::-webkit-details-marker{display:none}
+.wellness-advice-row summary>span:first-child{width:34px;height:34px;display:grid;place-items:center;background:white;border-radius:50%;color:#5ab6ff;flex-shrink:0}
+.wellness-advice-row summary>span:first-child .icon{width:21px;height:21px}
+.wellness-advice-row summary>span:nth-child(2){flex:1;min-width:0}
+.wellness-advice-row summary b{font-size:12px;display:block;color:#353746}
+.wellness-advice-row summary>span:nth-child(2)>span{display:block;font-size:11px;line-height:1.6;color:#9694a5;margin-top:2px;word-break:keep-all;overflow-wrap:anywhere}
+.wellness-advice-row summary>.icon{width:13px;height:13px;color:#9292a1;flex-shrink:0}
+.wellness-advice-row[open] summary>.icon{transform:rotate(90deg)}
+.wellness-advice-row>p{padding:8px 3px 10px 44px;font-size:11px;line-height:1.7;color:#747382}
+.guide-related{margin:13px 72px 0 0;font-size:11px;position:relative;z-index:1}
+.guide-related>summary{min-height:36px;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;border:1px solid #e9e7ef;border-radius:25px;background:#fff9;list-style:none}
+.guide-related>summary .icon{width:15px;height:15px}.guide-related>summary .icon:last-child{margin-left:auto}.guide-related>summary{padding:0 10px}
+.guide-related[open]>summary .icon:last-child{transform:rotate(180deg)}
+.guide-related>div{padding:12px 0 0}.guide-related>div>button{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;margin-bottom:4px}
+.guide-related b{font-size:11px}.guide-related small{display:block;font-size:9px}.guide-related>div .icon{width:14px;height:14px;flex-shrink:0}.guide-related>div>p{font-size:11px;line-height:1.6}.guide-related .text-btn{font-size:11px}
+.wellness-section-art{position:absolute;right:6px;bottom:-12px;width:72px;height:72px;pointer-events:none}
+.wellness-section-art .jelly-scene,.wellness-section-art .jelly-body{width:72px;height:72px;left:0;top:0}
+.tone-blue .wellness-section-art svg stop:first-child{stop-color:#bde7ff}.tone-blue .wellness-section-art svg stop:last-child{stop-color:#6fb6fc}
+.tone-yellow .wellness-section-art svg stop:first-child{stop-color:#ffe78b}.tone-yellow .wellness-section-art svg stop:last-child{stop-color:#ffc95b}
+.guide-back-top{display:flex;align-items:center;gap:5px;margin:12px 0 0 auto;font-size:10px;color:#9995a6;min-height:32px}
+.guide-back-top .icon{width:12px;height:12px}
+@media(max-width:360px){
+  .nutrition-panel{padding:12px 9px}.nutrition-panel-toggle{gap:7px}.nutrition-panel-toggle b{font-size:13px}.nutrition-panel-toggle small{font-size:10px}
+  .nutrition-panel .wellness-symbol{width:31px;height:31px}.analysis-nutrient{grid-template-columns:16px minmax(50px,1fr) 28px minmax(25px,.85fr) 28px 8px;gap:4px;font-size:10px}.nutrient-status,.nutrient-rate{font-size:9px}
+  .month-bars{gap:5px}.month-tooltip-slot{max-width:135px}.month-comparison{padding:8px}.month-comparison small{font-size:9px}
+  .wellness-guide-hero{padding:18px 12px 14px}body .wellness-guide-hero h1{font-size:21px}.wellness-guide-hero>p{font-size:12px}
+  .guide-jump-chip{font-size:9px;padding:4px 5px;gap:3px}.guide-jump-chip>span{width:23px;height:23px}.guide-jump-chip .icon{width:16px;height:16px}
+  .guide-hero-art,.guide-hero-art .jelly-scene,.guide-hero-art .jelly-body{width:132px;height:132px}.guide-hero-art{top:72px}
+  .wellness-section-heading h2{font-size:17px}.guide-nutrient{grid-template-columns:1fr 30px 40px;font-size:10px}
+  .guide-related{margin-right:58px}.wellness-section-art,.wellness-section-art .jelly-scene,.wellness-section-art .jelly-body{width:61px;height:61px}
+  .guide-interest-summary h2{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){.wellness-guide-section .jelly-body,.wellness-guide-hero .jelly-body,.guide-interest-summary .jelly-body,.analysis-guide-cta .jelly-body{animation:none}.month-bar-track i,.nutrition-panel-toggle>.icon{transition:none}}
