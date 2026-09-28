@@ -1399,6 +1399,8 @@ if (new URLSearchParams(location.search).has('static')) {
   wordmark.style.opacity = '1';
   wordmark.style.transform = 'translateX(0)';
 } else {
+  document.addEventListener('pointerdown',()=>parent.postMessage({type:'vitame-intro-skip'},location.origin),{once:true});
+  document.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' ')parent.postMessage({type:'vitame-intro-skip'},location.origin);});
   play();
 }
 

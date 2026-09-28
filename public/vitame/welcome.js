@@ -38,8 +38,15 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-social-demo]')){go('home');toast('실제 인증 없이 체험용 홈으로 이동했어요.');}
 });
 let logoHandoff=false;
+function skipIntroAnimation(){
+  if(!document.querySelector('.intro-screen'))return;
+  logoHandoff=false;introPage=0;clearTimeout(introTimer);
+  history.replaceState(null,'',location.pathname+location.search+'#onboarding');render();
+}
+document.addEventListener('pointerdown',()=>{if(logoHandoff||route()==='intro')skipIntroAnimation();},true);
 window.addEventListener('message',async e=>{
   const frame=document.querySelector('.intro-screen iframe');
+  if(e.origin===location.origin&&e.source===frame?.contentWindow&&e.data?.type==='vitame-intro-skip'){skipIntroAnimation();return;}
   if(e.origin!==location.origin||e.source!==frame?.contentWindow||e.data?.type!=='vitame-intro-complete'||logoHandoff)return;
   logoHandoff=true;
   const bounds=frame.getBoundingClientRect(),logo=frame.contentDocument.querySelector('#logoGroup');
