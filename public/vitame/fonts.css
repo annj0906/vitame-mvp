@@ -8,3 +8,30 @@
   font-display: swap;
   src: url("fonts/PretendardVariable.woff2") format("woff2");
 }
+
+/* NanumSquareRound — SIL OFL 1.1; see fonts/NanumSquareRound-LICENSE.txt.
+   Webfont source: https://github.com/innks/NanumSquareRound
+   Bundled files avoid depending on installed fonts or runtime CDN access. */
+@font-face {
+  font-family: "NanumSquareRound";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/NanumSquareRoundR.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "NanumSquareRound";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/NanumSquareRoundB.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "NanumSquareRound";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("fonts/NanumSquareRoundEB.woff2") format("woff2");
+}

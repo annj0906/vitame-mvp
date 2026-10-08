@@ -1,0 +1,257 @@
+/* VITAME Figma styles: iCtdR5pozLnO5VAoHQAoJv (2026-10-08).
+   Opt-in tokens/utilities: existing screen selectors and legacy tokens stay intact.
+   Style names are retained for traceability; values follow actual Figma properties.
+   Figma percentage tracking is expressed in em. */
+:root {
+  --vitame-font-pretendard: "Pretendard", sans-serif;
+  --vitame-font-nanum-square-round: "NanumSquareRound", "Pretendard", sans-serif;
+
+  /* Accent Colors/Pink/Main */
+  --vitame-color-accent-pink-main: #f15bb5;
+  /* Accent Colors/Pink/Light */
+  --vitame-color-accent-pink-light: #fdebf6;
+  /* Neutral Colors/White */
+  --vitame-color-neutral-white: #ffffff;
+  /* Neutral Colors/Gray10 */
+  --vitame-color-neutral-gray10: #f8f8f8;
+  /* Neutral Colors/Gray20 */
+  --vitame-color-neutral-gray20: #f1f1f3;
+  /* Neutral Colors/Gray30 */
+  --vitame-color-neutral-gray30: #e5e5e7;
+  /* Neutral Colors/Gray40 */
+  --vitame-color-neutral-gray40: #d1d1d1;
+  /* Neutral Colors/Gray50 */
+  --vitame-color-neutral-gray50: #ababab;
+  /* Neutral Colors/Gray60 */
+  --vitame-color-neutral-gray60: #858585;
+  /* Neutral Colors/Gray70 */
+  --vitame-color-neutral-gray70: #656565;
+  /* Neutral Colors/Black */
+  --vitame-color-neutral-black: #1a1a1a;
+  /* Neutral Colors/Pure-Black */
+  --vitame-color-neutral-pure-black: #000000;
+  /* Accent Colors/Red/Main */
+  --vitame-color-accent-red-main: #ff5c70;
+  /* Accent Colors/Orange/Main */
+  --vitame-color-accent-orange-main: #ff8a3d;
+  /* Accent Colors/Yellow/Main */
+  --vitame-color-accent-yellow-main: #ffc94a;
+  /* Accent Colors/Green/Main */
+  --vitame-color-accent-green-main: #43c982;
+  /* Accent Colors/Cyan/Main */
+  --vitame-color-accent-cyan-main: #4cc9f0;
+  /* Accent Colors/Blue/Main */
+  --vitame-color-accent-blue-main: #5aa9ff;
+  /* Accent Colors/Purple/Main */
+  --vitame-color-accent-purple-main: #9b5cf6;
+  /* Semantic Colors/Deficiency */
+  --vitame-color-semantic-deficiency: #ff5c70;
+  /* Semantic Colors/Caution */
+  --vitame-color-semantic-caution: #ffaa2b;
+  /* Semantic Colors/Optimal */
+  --vitame-color-semantic-optimal: #32c77a;
+  /* Semantic Colors/Info */
+  --vitame-color-semantic-info: #5aa9ff;
+  /* Semantic Colors/Deficiency Light */
+  --vitame-color-semantic-deficiency-light: #fff0f3;
+  /* Semantic Colors/Caution Light */
+  --vitame-color-semantic-caution-light: #fff7e8;
+  /* Semantic Colors/Optimal Light */
+  --vitame-color-semantic-optimal-light: #ecfaf3;
+  /* Semantic Colors/Info Light */
+  --vitame-color-semantic-info-light: #eff6ff;
+  /* Accent Colors/Red/Light */
+  --vitame-color-accent-red-light: #ffebee;
+  /* Accent Colors/Orange/Light */
+  --vitame-color-accent-orange-light: #fff1e8;
+  /* Accent Colors/Yellow/Light */
+  --vitame-color-accent-yellow-light: #fff9e9;
+  /* Accent Colors/Green/Light */
+  --vitame-color-accent-green-light: #e8f9f0;
+  /* Accent Colors/Cyan/Light */
+  --vitame-color-accent-cyan-light: #eaf9fd;
+  /* Accent Colors/Blue/Light */
+  --vitame-color-accent-blue-light: #ebf5ff;
+  /* Accent Colors/Purple/Light */
+  --vitame-color-accent-purple-light: #f3ebfe;
+  /* Neutral Colors/Background */
+  --vitame-color-neutral-background: #fcfcfc;
+
+  /* Pretendard/Display/Semibold/44 */
+  --vitame-type-pretendard-display-semibold-44: 600 44px/1.2 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-display-semibold-44: -0.025em;
+  /* Pretendard/Title1/Bold/28 */
+  --vitame-type-pretendard-title1-bold-28: 700 28px/1.35 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-title1-bold-28: -0.025em;
+  /* Pretendard/Title2/Bold/24 */
+  --vitame-type-pretendard-title2-bold-24: 700 24px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-title2-bold-24: -0.025em;
+  /* Pretendard/Head1/Bold/22 — actual font size is 20px, despite the name */
+  --vitame-type-pretendard-head1-bold-22: 700 20px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-head1-bold-22: -0.02em;
+  /* Pretendard/Head2/Bold/20 */
+  --vitame-type-pretendard-head2-bold-20: 700 20px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-head2-bold-20: -0.02em;
+  /* Pretendard/Subtitle/Semibold/18 */
+  --vitame-type-pretendard-subtitle-semibold-18: 600 18px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-subtitle-semibold-18: -0.02em;
+  /* Pretendard/Body1/Bold/16 */
+  --vitame-type-pretendard-body1-bold-16: 700 16px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-body1-bold-16: -0.02em;
+  /* Pretendard/Body1/Semibold/16 */
+  --vitame-type-pretendard-body1-semibold-16: 600 16px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-body1-semibold-16: -0.02em;
+  /* Pretendard/Body1/Medium/16 */
+  --vitame-type-pretendard-body1-medium-16: 500 16px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-body1-medium-16: -0.02em;
+  /* Pretendard/Body1/Regular/16 */
+  --vitame-type-pretendard-body1-regular-16: 400 16px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-body1-regular-16: -0.02em;
+  /* Pretendard/Body2/Bold/14 */
+  --vitame-type-pretendard-body2-bold-14: 700 14px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-body2-bold-14: -0.02em;
+  /* Pretendard/Body2/Semibold/14 */
+  --vitame-type-pretendard-body2-semibold-14: 600 14px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-body2-semibold-14: -0.02em;
+  /* Pretendard/Body2/Medium/14 */
+  --vitame-type-pretendard-body2-medium-14: 500 14px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-body2-medium-14: -0.02em;
+  /* Pretendard/Body2/Regular/14 */
+  --vitame-type-pretendard-body2-regular-14: 400 14px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-body2-regular-14: -0.02em;
+  /* Pretendard/Caption/Regular/12 */
+  --vitame-type-pretendard-caption-regular-12: 400 12px/1.4 var(--vitame-font-pretendard);
+  --vitame-tracking-pretendard-caption-regular-12: -0.02em;
+  /* NanumSquareRound/Display/ExtraBold/44 */
+  --vitame-type-nanumsquareround-display-extrabold-44: 800 44px/1.2 var(--vitame-font-nanum-square-round);
+  --vitame-tracking-nanumsquareround-display-extrabold-44: -0.025em;
+  /* NanumSquareRound/Metric/Bold/34 */
+  --vitame-type-nanumsquareround-metric-bold-34: 700 34px/1.4 var(--vitame-font-nanum-square-round);
+  --vitame-tracking-nanumsquareround-metric-bold-34: -0.025em;
+  /* NanumSquareRound/Title1/ExtraBold/28 */
+  --vitame-type-nanumsquareround-title1-extrabold-28: 800 28px/1.35 var(--vitame-font-nanum-square-round);
+  --vitame-tracking-nanumsquareround-title1-extrabold-28: -0.025em;
+  /* NanumSquareRound/Title2/ExtraBold/24 */
+  --vitame-type-nanumsquareround-title2-extrabold-24: 800 24px/1.4 var(--vitame-font-nanum-square-round);
+  --vitame-tracking-nanumsquareround-title2-extrabold-24: -0.025em;
+  /* NanumSquareRound/Subtitle/Regular/18 */
+  --vitame-type-nanumsquareround-subtitle-regular-18: 400 18px/1.4 var(--vitame-font-nanum-square-round);
+  --vitame-tracking-nanumsquareround-subtitle-regular-18: -0.02em;
+  /* NanumSquareRound/Body/Bold/16 */
+  --vitame-type-nanumsquareround-body-bold-16: 700 16px/1.2 var(--vitame-font-nanum-square-round);
+  --vitame-tracking-nanumsquareround-body-bold-16: -0.02em;
+  /* NanumSquareRound/Body/Regular/16 */
+  --vitame-type-nanumsquareround-body-regular-16: 400 16px/1.4 var(--vitame-font-nanum-square-round);
+  --vitame-tracking-nanumsquareround-body-regular-16: -0.025em;
+}
+
+.vitame-text-pretendard-display-semibold-44 {
+  font: var(--vitame-type-pretendard-display-semibold-44);
+  letter-spacing: var(--vitame-tracking-pretendard-display-semibold-44);
+}
+
+.vitame-text-pretendard-title1-bold-28 {
+  font: var(--vitame-type-pretendard-title1-bold-28);
+  letter-spacing: var(--vitame-tracking-pretendard-title1-bold-28);
+}
+
+.vitame-text-pretendard-title2-bold-24 {
+  font: var(--vitame-type-pretendard-title2-bold-24);
+  letter-spacing: var(--vitame-tracking-pretendard-title2-bold-24);
+}
+
+.vitame-text-pretendard-head1-bold-22 {
+  font: var(--vitame-type-pretendard-head1-bold-22);
+  letter-spacing: var(--vitame-tracking-pretendard-head1-bold-22);
+}
+
+.vitame-text-pretendard-head2-bold-20 {
+  font: var(--vitame-type-pretendard-head2-bold-20);
+  letter-spacing: var(--vitame-tracking-pretendard-head2-bold-20);
+}
+
+.vitame-text-pretendard-subtitle-semibold-18 {
+  font: var(--vitame-type-pretendard-subtitle-semibold-18);
+  letter-spacing: var(--vitame-tracking-pretendard-subtitle-semibold-18);
+}
+
+.vitame-text-pretendard-body1-bold-16 {
+  font: var(--vitame-type-pretendard-body1-bold-16);
+  letter-spacing: var(--vitame-tracking-pretendard-body1-bold-16);
+}
+
+.vitame-text-pretendard-body1-semibold-16 {
+  font: var(--vitame-type-pretendard-body1-semibold-16);
+  letter-spacing: var(--vitame-tracking-pretendard-body1-semibold-16);
+}
+
+.vitame-text-pretendard-body1-medium-16 {
+  font: var(--vitame-type-pretendard-body1-medium-16);
+  letter-spacing: var(--vitame-tracking-pretendard-body1-medium-16);
+}
+
+.vitame-text-pretendard-body1-regular-16 {
+  font: var(--vitame-type-pretendard-body1-regular-16);
+  letter-spacing: var(--vitame-tracking-pretendard-body1-regular-16);
+}
+
+.vitame-text-pretendard-body2-bold-14 {
+  font: var(--vitame-type-pretendard-body2-bold-14);
+  letter-spacing: var(--vitame-tracking-pretendard-body2-bold-14);
+}
+
+.vitame-text-pretendard-body2-semibold-14 {
+  font: var(--vitame-type-pretendard-body2-semibold-14);
+  letter-spacing: var(--vitame-tracking-pretendard-body2-semibold-14);
+}
+
+.vitame-text-pretendard-body2-medium-14 {
+  font: var(--vitame-type-pretendard-body2-medium-14);
+  letter-spacing: var(--vitame-tracking-pretendard-body2-medium-14);
+}
+
+.vitame-text-pretendard-body2-regular-14 {
+  font: var(--vitame-type-pretendard-body2-regular-14);
+  letter-spacing: var(--vitame-tracking-pretendard-body2-regular-14);
+}
+
+.vitame-text-pretendard-caption-regular-12 {
+  font: var(--vitame-type-pretendard-caption-regular-12);
+  letter-spacing: var(--vitame-tracking-pretendard-caption-regular-12);
+}
+
+.vitame-text-nanumsquareround-display-extrabold-44 {
+  font: var(--vitame-type-nanumsquareround-display-extrabold-44);
+  letter-spacing: var(--vitame-tracking-nanumsquareround-display-extrabold-44);
+}
+
+.vitame-text-nanumsquareround-metric-bold-34 {
+  font: var(--vitame-type-nanumsquareround-metric-bold-34);
+  letter-spacing: var(--vitame-tracking-nanumsquareround-metric-bold-34);
+}
+
+.vitame-text-nanumsquareround-title1-extrabold-28 {
+  font: var(--vitame-type-nanumsquareround-title1-extrabold-28);
+  letter-spacing: var(--vitame-tracking-nanumsquareround-title1-extrabold-28);
+}
+
+.vitame-text-nanumsquareround-title2-extrabold-24 {
+  font: var(--vitame-type-nanumsquareround-title2-extrabold-24);
+  letter-spacing: var(--vitame-tracking-nanumsquareround-title2-extrabold-24);
+}
+
+.vitame-text-nanumsquareround-subtitle-regular-18 {
+  font: var(--vitame-type-nanumsquareround-subtitle-regular-18);
+  letter-spacing: var(--vitame-tracking-nanumsquareround-subtitle-regular-18);
+}
+
+.vitame-text-nanumsquareround-body-bold-16 {
+  font: var(--vitame-type-nanumsquareround-body-bold-16);
+  letter-spacing: var(--vitame-tracking-nanumsquareround-body-bold-16);
+}
+
+.vitame-text-nanumsquareround-body-regular-16 {
+  font: var(--vitame-type-nanumsquareround-body-regular-16);
+  letter-spacing: var(--vitame-tracking-nanumsquareround-body-regular-16);
+}
+
