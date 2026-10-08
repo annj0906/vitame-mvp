@@ -1,0 +1,114 @@
+/* Final Figma onboarding 207:2886, 207:3052, 207:3122.
+   Scoped to the three introduction slides; setup and other routes are unchanged. */
+body .onboarding-final {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: max(640px, 100dvh);
+  padding: 20px 24px 19px;
+  background: var(--vitame-color-neutral-white);
+  color: var(--vitame-color-neutral-black);
+}
+body .onboarding-final .onboarding-header { height: 64px; }
+body .onboarding-final .final-brand {
+  width: 158px; height: 60px; margin: 0; display: grid; place-items: center;
+}
+body .onboarding-final .final-brand img { width: 136px; height: 29px; object-fit: contain; }
+body .onboarding-final .skip {
+  right: 4px; padding: 10px 0;
+  font: var(--vitame-type-pretendard-body2-bold-14);
+  letter-spacing: var(--vitame-tracking-pretendard-body2-bold-14);
+  color: var(--vitame-color-neutral-gray60);
+}
+body .onboarding-final .onboarding-window {
+  flex: 1; min-height: 355px; margin: 0; overflow: visible;
+  display: flex; align-items: center;
+}
+body .onboarding-final .onboarding-panel { transform: translateY(-3px); }
+body .onboarding-final .onboarding-art { height: 201px; min-height: 201px; display: block; }
+body .onboarding-final h1 {
+  margin: 0;
+  font: var(--vitame-type-nanumsquareround-title1-extrabold-28);
+  letter-spacing: var(--vitame-tracking-nanumsquareround-title1-extrabold-28);
+  color: var(--vitame-color-neutral-black);
+}
+body .onboarding-final .onboarding-description {
+  margin: 14px 0 0;
+  font: var(--vitame-type-nanumsquareround-body-regular-16);
+  letter-spacing: var(--vitame-tracking-nanumsquareround-body-regular-16);
+  color: var(--vitame-color-neutral-gray60);
+}
+body .onboarding-final .slide-dots { width: 90px; height: 32px; margin: 12px auto 20px; gap: 0; }
+body .onboarding-final .slide-dots button { width: 20px; flex: 0 0 20px; }
+body .onboarding-final .slide-dots button:after { background: var(--vitame-color-neutral-gray40); }
+body .onboarding-final .slide-dots .selected:after { background: var(--vitame-color-neutral-black); }
+body .onboarding-final > .primary {
+  margin: 0; padding: 0 20px; height: 56px; min-height: 56px; border: 0;
+  border-radius: 999px; background: var(--vitame-color-neutral-black);
+  color: var(--vitame-color-neutral-white);
+  font: var(--vitame-type-pretendard-body1-bold-16);
+  letter-spacing: var(--vitame-tracking-pretendard-body1-bold-16);
+}
+body .onboarding-final .login-link {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  height: 62px; padding-top: 18px; margin: 0;
+  font: var(--vitame-type-pretendard-body2-regular-14);
+  letter-spacing: var(--vitame-tracking-pretendard-body2-regular-14);
+  color: var(--vitame-color-neutral-gray60);
+}
+body .onboarding-final .login-link .text-btn {
+  padding: 10px 4px; margin: 0;
+  font: var(--vitame-type-pretendard-body2-bold-14);
+  letter-spacing: var(--vitame-tracking-pretendard-body2-bold-14);
+  text-decoration: underline; text-underline-offset: 3px;
+  color: var(--vitame-color-neutral-black);
+}
+.onboarding-final .ob-character-slot {
+  position: absolute; left: calc(50% - 60.5px); top: 22px;
+  width: 121px; height: 121px;
+}
+.onboarding-final .ob-character {
+  position: absolute; min-height: 0; max-width: none;
+}
+.onboarding-final .ob-good-charBtn {
+  width: 156.21px; height: 158.82px; left: -19.81px; top: -23.44px;
+}
+.onboarding-final .ob-bad-charBtn {
+  width: 148.38px; height: 148.25px; left: -16.34px; top: -15.45px;
+}
+.onboarding-final .ob-very-bad-charBtn {
+  width: 174.60px; height: 154.30px; left: -29.65px; top: -21.93px;
+}
+.onboarding-final .ob-shadow {
+  position: absolute; left: calc(50% - 66px); top: 151px; width: 132px; height: 29px;
+  pointer-events: none;
+}
+.onboarding-final .ob-decoration { position: absolute; pointer-events: none; }
+.onboarding-final .ob-square-cyan {
+  left: calc(50% + 54px); top: 10px; width: 33px; height: 33px; border-radius: 4px;
+  background: var(--vitame-color-accent-cyan-main); transform: rotate(-22.4deg);
+}
+.onboarding-final .ob-square-green {
+  left: calc(50% - 91px); top: 85px; width: 13.395px; height: 13.395px; border-radius: 4px;
+  background: var(--vitame-color-accent-green-main); transform: rotate(-10.97deg);
+}
+.onboarding-final .ob-dash-red {
+  left: calc(50% + 70px); top: 127.2px; width: 11px; height: 7px; border-radius: 4px;
+  background: var(--vitame-color-accent-red-main);
+}
+.onboarding-final .ob-circle-yellow { left: calc(50% - 93px); top: -15.8px; width: 38px; height: 38px; }
+.onboarding-final .ob-circle-green { left: calc(50% + 87px); top: 28.2px; width: 9px; height: 9px; }
+.onboarding-final .ob-circle-blue { left: calc(50% + 29px); top: -46.8px; width: 20px; height: 20px; }
+.onboarding-final .ob-triangle { display: grid; place-items: center; }
+.onboarding-final .ob-triangle-blue {
+  left: calc(50% + 18px); top: -24.94px; width: 50px; height: 50px; transform: rotate(15.8deg);
+}
+.onboarding-final .ob-triangle-red {
+  left: calc(50% - 105.07px); top: 120.13px; width: 21.442px; height: 21.442px; transform: rotate(-59.93deg);
+}
+.onboarding-final .ob-triangle-purple {
+  left: calc(50% + 113.52px); top: 74.44px; width: 33.278px; height: 33.278px; transform: rotate(8.58deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .onboarding-final .ob-character, .onboarding-final .ob-character * { animation: none !important; }
+}
