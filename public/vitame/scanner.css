@@ -14,3 +14,30 @@
 .ocr-review p{line-height:1.7;margin:8px 0}
 .ocr-review pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}
 .live-scan-buttons button:disabled{opacity:.5}
+
+/* Final Figma scan (207:4172); isolated from setup registration and OCR results. */
+.scan-final{min-height:100dvh;background:var(--vitame-color-neutral-background);color:var(--vitame-color-neutral-black);padding-bottom:73px}
+.scan-final-header{height:64px;display:flex;align-items:center;position:relative;padding:0 20px}
+.scan-final-header button{display:grid;place-items:center;width:44px;height:44px;margin-left:-10px;padding:10px}
+.scan-final-header h1{position:absolute;left:50%;transform:translateX(-50%);margin:0;white-space:nowrap;font:var(--vitame-type-pretendard-subtitle-semibold-18);letter-spacing:var(--vitame-tracking-pretendard-subtitle-semibold-18)}
+.scan-final-content{padding:40px 20px 0}
+.scan-final .live-scanner{height:clamp(400px,calc(100dvh - 305px),627px);aspect-ratio:auto;margin:0;border-radius:16px;background:#d9d9d9}
+.scan-final .live-scanner video{object-fit:cover}
+.scan-final .live-scanner>img{object-fit:contain}
+.scan-final-guides{position:absolute;inset:23px;z-index:2;pointer-events:none}
+.scan-final .scan-corner{position:absolute}
+.scan-final .top-left{left:0;top:0;transform:scaleY(-1)}
+.scan-final .top-right{right:0;top:0;transform:rotate(180deg)}
+.scan-final .bottom-left{left:0;bottom:0}
+.scan-final .bottom-right{right:0;bottom:0;transform:scaleX(-1)}
+.scan-final .scan-line{position:absolute;top:50%;left:1px;right:1px;height:2px;overflow:hidden;display:flex;justify-content:center;transform:translateY(-1px)}
+.scan-final .scan-line img{max-width:none;flex-shrink:0}
+.scan-final .live-scanner [data-scan-status]{top:48px;bottom:auto;left:50%;right:auto;transform:translateX(-50%);width:max-content;max-width:calc(100% - 48px);margin:0;padding:8px;border-radius:999px;background:#1a1a1a66;color:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-semibold-14);letter-spacing:var(--vitame-tracking-pretendard-body2-semibold-14)}
+.scan-final .scan-shutter{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);width:64px;height:64px;padding:0;display:grid;place-items:center;border-radius:50%;background:var(--vitame-color-neutral-black);box-shadow:0 10px 5px #0000000d;z-index:3}
+.scan-final .scan-shutter:disabled{opacity:.5;cursor:wait}
+.scan-final .scan-cancel{position:absolute;bottom:102px;left:50%;transform:translateX(-50%);z-index:3;padding:6px 12px;border-radius:999px;background:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-semibold-14)}
+.scan-final [hidden]{display:none}
+.scan-final-actions{display:grid;grid-template-columns:188fr 186fr;gap:16px;margin-top:24px}
+.scan-final-actions button{height:104px;padding:20px 24px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-gray60);font:var(--vitame-type-pretendard-body1-semibold-16);letter-spacing:var(--vitame-tracking-pretendard-body1-semibold-16)}
+.scan-final img{display:block}
+.scan-final .scan-sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}

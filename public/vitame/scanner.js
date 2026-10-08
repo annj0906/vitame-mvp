@@ -6,10 +6,16 @@ function stopLabelCamera(){cameraStream?.getTracks().forEach(t=>t.stop());camera
 function cancelLabelScan(){scanJob++;scanBusy=false;stopLabelCamera();scanWorker?.terminate();scanWorker=null;}
 function scanStatus(message){const el=document.querySelector('[data-scan-status]');if(el)el.textContent=message;}
 function scanControls(){return `<div class="live-scanner"><video autoplay muted playsinline aria-label="영양제 라벨 카메라"></video><div class="live-scan-frame"></div><p data-scan-status role="status">카메라로 제품의 성분표를 비춰주세요.</p></div><div class="live-scan-buttons"><button class="secondary" data-label-photo>${icon('image')}<span>사진 선택</span></button><button class="secondary" data-action="manual">${icon('plus')}<span>직접 입력</span></button><button class="primary" data-label-scan>${icon('camera')}<span>스캔하기</span></button></div><div class="live-scan-links"><button class="text-btn" data-label-cancel hidden>스캔 취소</button></div><input type="file" id="label-photo" accept="image/*" hidden><p class="footer-note">카메라를 연결한 뒤 촬영하면 문자 인식을 시작해요.<br>사진은 서버로 전송하지 않습니다. 첫 인식에는 인터넷 연결이 필요해요.</p>`;}
-scan=function(){return `<div class="step"><b>1 영양제 등록</b><span></span><span>2 결과 확인</span></div>${scanControls()}<button class="sample" data-action="sample-scan">샘플 라벨로 스캔 결과 확인하기</button><button class="sample" data-go="home">나중에 할게요</button>`;};
+scan=function(){
+  const asset=name=>`assets/scan/${name}.svg`;
+  return `<section class="scan-final"><header class="scan-final-header"><button data-go="home" aria-label="뒤로"><img src="${asset('back')}" alt=""></button><h1>영양제 등록</h1></header><main class="scan-final-content"><div class="live-scanner"><video autoplay muted playsinline aria-label="영양제 라벨 카메라"></video><div class="scan-final-guides" aria-hidden="true"><img class="scan-corner top-left" src="${asset('corner-left')}" alt=""><img class="scan-corner top-right" src="${asset('corner-right')}" alt=""><img class="scan-corner bottom-left" src="${asset('corner-left')}" alt=""><img class="scan-corner bottom-right" src="${asset('corner-right')}" alt=""><div class="scan-line"><img src="${asset('line')}" alt=""></div></div><p data-scan-status role="status">성분표를 프레임 안에 맞춰주세요</p><button class="scan-shutter" data-label-scan aria-label="카메라 연결 및 촬영"><img src="${asset('camera')}" alt=""><span class="scan-sr-only">촬영하기</span></button><button class="scan-cancel" data-label-cancel hidden>스캔 취소</button></div><div class="scan-final-actions"><button data-label-photo><img src="${asset('gallery')}" alt=""><span>갤러리</span></button><button data-action="manual"><img src="${asset('manual')}" alt=""><span>직접 입력</span></button></div><input type="file" id="label-photo" accept="image/*" hidden></main></section>`;
+};
 const renderBeforeScanner=render;
 render=function(){
-  renderBeforeScanner();
+  if(route()==='scan'){
+    clearTimeout(introTimer);document.body.dataset.screen='scan';
+    document.title='영양제 등록 · VITAME';document.querySelector('#app').innerHTML=scan();
+  }else renderBeforeScanner();
   if(route()==='setup-register'){
     const screen=document.querySelector('.step-4');
     screen.querySelector('.registration-preview')?.remove();screen.querySelector('.login-demo-note')?.remove();
