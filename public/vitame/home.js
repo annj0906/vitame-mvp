@@ -19,7 +19,12 @@ home = function() {
   template.innerHTML = homeBeforeFinalDesign();
   const alert = template.content.querySelector('.home-alert-wrap');
   // Reuse the existing session-only dismissal state and handler.
-  if (alert) alert.outerHTML = `<section class="home-alert-wrap home-scan-banner"><button class="alert-close" data-dismiss-alert aria-label="스캔 안내 닫기">${homeAsset('close')}</button><h2>스캔 한 번으로<br>비타미와 오늘을 시작해요</h2><button class="home-scan-link" data-go="scan">영양제 스캔하러 가기${homeAsset('banner-arrow')}</button><div class="home-banner-character">${initialCharacter('very-good')}<span class="home-banner-shadow">${homeAsset('shadow')}</span></div></section>`;
+  if (alert) {
+    // Older WebKit throws when outerHTML replaces a DocumentFragment child.
+    const replacement = document.createElement('template');
+    replacement.innerHTML = `<section class="home-alert-wrap home-scan-banner"><button class="alert-close" data-dismiss-alert aria-label="스캔 안내 닫기">${homeAsset('close')}</button><h2>스캔 한 번으로<br>비타미와 오늘을 시작해요</h2><button class="home-scan-link" data-go="scan">영양제 스캔하러 가기${homeAsset('banner-arrow')}</button><div class="home-banner-character">${initialCharacter('very-good')}<span class="home-banner-shadow">${homeAsset('shadow')}</span></div></section>`;
+    alert.replaceWith(replacement.content);
+  }
   const banner = template.content.querySelector('.home-scan-banner');
   if (banner) template.content.prepend(banner);
   template.content.querySelector('.footer-note')?.remove();
