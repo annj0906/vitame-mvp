@@ -82,6 +82,7 @@ document.addEventListener('click',event=>{
   }
   const jump=event.target.closest('[data-guide-jump]'),top=event.target.closest('[data-guide-top]');
   if(jump||top){
+    if(jump&&document.querySelector('.ai-guide-page')){openFinalGuide(jump.dataset.guideJump,true);return;}
     const target=document.getElementById(jump?'guide-'+jump.dataset.guideJump:'guide-navigation');if(!target)return;
     const focus=jump?target.querySelector('h2'):target.querySelector('[data-guide-jump]');
     focus?.focus({preventScroll:true});
@@ -169,8 +170,49 @@ function refreshedGuideSection(g,index){
 guide=function(){
   const preferred=wellnessGuides.filter(g=>state.interests.includes(g.interest));
   const ordered=[...preferred,...wellnessGuides.filter(g=>!preferred.includes(g))];
-  return `${analysisTabs(true)}<section class="wellness-guide-hero" id="guide-navigation"><h1>내 몸에 맞는<br>관리 가이드를 찾아보세요</h1><p>관심 있는 건강 영역을 선택하면<br>관리 가이드 예시를 알려드려요.</p><div class="guide-health-map" aria-label="내 관심 건강 영역">${guideOrbit()}</div><div class="guide-add-area"><p>관심 있는 건강을 끌어다 상단에 추가해보세요</p><small>누르거나 키보드로 선택해도 추가할 수 있어요.</small><div class="guide-available">${guideAvailable()}</div><p class="guide-add-status" role="status" aria-live="polite"></p></div><p class="guide-map-hint">${wellnessIcon('chevron')}원 안의 영역을 선택하면 해당 가이드로 이동해요</p></section>${ordered.map(refreshedGuideSection).join('')}<button class="guide-fixed-top" data-guide-top aria-label="맨 위로 이동">${wellnessIcon('up')}<span>맨 위</span></button>${note()}`;
+  return `${analysisTabs(true)}<div class="ai-guide-page"><section class="ai-guide-hero" id="guide-navigation"><h1>${esc(state.name)} 님,<br>오늘도 잘 하고 있어요!</h1><div class="ai-character-stage">${finalGuideCharacters()}</div><section class="ai-interests"><div class="ai-interest-heading"><div><h2>나의 관심 건강</h2><p>버튼을 눌러 가이드로 이동해보세요</p></div><button data-go="profile"><img src="assets/care/edit.svg" alt="">편집</button></div><div class="ai-interest-tags">${(preferred.length?preferred:ordered).map(g=>`<button data-guide-jump="${g.id}">${finalGuideIcon(g)}<span>${g.id==='eyes'?'눈':g.title}</span></button>`).join('')}</div></section><span class="ai-guide-down" aria-hidden="true">${wellnessIcon('chevron')}</span></section><div class="ai-guide-cards">${ordered.map(finalGuideCard).join('')}</div></div><button class="guide-fixed-top" data-guide-top aria-label="맨 위로 이동">${wellnessIcon('up')}<span>맨 위</span></button>`;
 };
+
+// Reuse setup artwork and the existing data/catalog; no generated AI diagnosis.
+function finalGuideIcon(g){
+  const option=initialHealthOptions.find(o=>o[1]===g.interest);
+  return `<span class="ai-health-icon" style="--health-tint:var(--vitame-color-accent-${option[3]}-light)"><img src="${setupAsset(option[2])}" alt=""></span>`;
+}
+function finalGuideCharacters(){
+  const keys=['bad','very-bad','good','normal','very-good'],i=guideCharacter%keys.length;
+  return `<button class="ai-guide-message" data-ai-character="1">관심 건강의 관리 습관을 살펴보세요<img src="assets/setup/refresh.svg" alt=""></button><img class="ai-bubble-tail" src="assets/setup/bubble-tail.svg" alt=""><div class="ai-character-row"><button data-ai-character="-1" aria-label="이전 캐릭터">${icon('back')}</button><div class="ai-character-side" aria-hidden="true">${initialCharacter(keys[(i+keys.length-1)%keys.length])}</div><button class="ai-character-main" data-ai-character="1" aria-label="다음 캐릭터">${initialCharacter(keys[i])}</button><div class="ai-character-side" aria-hidden="true">${initialCharacter(keys[(i+1)%keys.length])}</div><button data-ai-character="1" aria-label="다음 캐릭터 보기">${icon('arrow')}</button></div><img class="ai-character-shadow" src="assets/setup/shadow.svg" alt="">`;
+}
+function finalGuideCard(g){
+  // nutrients is explicitly an illustrative dataset, not personal AI analysis.
+  const current=state.demo?g.names.map(name=>nutrients.find(n=>n[0]===name)).filter(Boolean):[];
+  const related=products.filter(p=>g.names.includes(p.nutrient));
+  return `<section class="ai-guide-card" id="guide-${g.id}"><h2><button class="ai-guide-toggle" data-ai-guide-toggle="${g.id}" aria-expanded="false" aria-controls="ai-guide-body-${g.id}">${finalGuideIcon(g)}<span>${esc(g.title)} 가이드</span>${wellnessIcon('chevron')}</button></h2><p class="ai-guide-description">${esc(g.description)}</p><div class="ai-guide-reveal" id="ai-guide-body-${g.id}" inert aria-hidden="true"><div class="ai-guide-inner"><div class="ai-guide-details"><div class="ai-guide-status">${current.length?`<small>예시 분석 · 개인 분석 결과가 아니에요</small>${current.map(n=>`<div class="ai-guide-nutrient" data-status="${n[2]}"><button data-action="nutrient" data-name="${esc(n[0])}">${esc(n[0])}</button><span class="ai-guide-track" role="meter" aria-label="${esc(n[0])} 예시 섭취 비율" aria-valuemin="0" aria-valuemax="${Math.max(100,n[1])}" aria-valuenow="${n[1]}"><i style="width:${Math.max(0,Math.min(n[1],100))}%"></i></span><span>${n[1]}%</span><b>${n[2]}</b></div>`).join('')}`:'<p>아직 확인할 수 있는 개인 분석 데이터가 없어요.</p>'}</div><p class="ai-guide-copy">${esc(g.food)}<br><br>${esc(g.habit)}</p><div class="ai-guide-tips">${[['very-good','채워보기',g.food],['bad','함께 확인','등록한 제품의 성분과 표시된 섭취량을 확인해보세요.'],['normal','오늘의 루틴',g.habit]].map(([key,title,copy])=>`<div class="ai-guide-tip"><div class="ai-tip-character" aria-hidden="true">${initialCharacter(key)}</div><div><small>${title}</small><p>${esc(copy)}</p></div></div>`).join('')}</div><section class="ai-guide-products"><div class="ai-product-heading"><div><h3>${esc(g.title)} 추천 제품</h3><p>관련 성분의 등록 제품을 확인해보세요.</p></div><button data-go="shop">전체보기 ${icon('arrow')}</button></div><div class="ai-product-grid">${related.length?related.map(p=>`<button class="ai-product" data-action="product" data-id="${p.id}"><span class="ai-product-art">${bottle(p)}</span><span>VITAME</span><span>${esc(p.name)}</span><strong>${money(p.price)}</strong></button>`).join(''):'<p>관련 제품이 아직 없어요.</p>'}</div></section></div></div></div></section>`;
+}
+let finalGuideScrollTimer;
+function openFinalGuide(id,jump=false){
+  const target=document.getElementById('guide-'+id);if(!target)return;
+  const opening=jump||target.querySelector('[data-ai-guide-toggle]').getAttribute('aria-expanded')!=='true';
+  clearTimeout(finalGuideScrollTimer);stopGuideScroll();
+  document.querySelectorAll('.ai-guide-card').forEach(card=>{
+    const expanded=card===target&&opening,body=card.querySelector('.ai-guide-reveal');
+    card.querySelector('[data-ai-guide-toggle]').setAttribute('aria-expanded',String(expanded));
+    card.classList.toggle('is-open',expanded);body.inert=!expanded;body.setAttribute('aria-hidden',String(!expanded));
+  });
+  if(jump){
+    target.querySelector('[data-ai-guide-toggle]').focus({preventScroll:true});
+    // Wait for both cards' heights to settle before measuring the scroll target.
+    finalGuideScrollTimer=setTimeout(()=>{if(target.isConnected)scrollToGuide(target);},matchMedia('(prefers-reduced-motion: reduce)').matches?0:280);
+  }
+}
+document.addEventListener('click',event=>{
+  if(route()!=='guide')return;
+  const toggle=event.target.closest('[data-ai-guide-toggle]');if(toggle)openFinalGuide(toggle.dataset.aiGuideToggle);
+  const character=event.target.closest('[data-ai-character]');
+  if(character){guideCharacter=(guideCharacter+Number(character.dataset.aiCharacter)+5)%5;document.querySelector('.ai-character-stage').innerHTML=finalGuideCharacters();}
+});
+window.addEventListener('hashchange',()=>clearTimeout(finalGuideScrollTimer));
+window.addEventListener('touchstart',()=>clearTimeout(finalGuideScrollTimer),{passive:true});
+window.addEventListener('wheel',()=>clearTimeout(finalGuideScrollTimer),{passive:true});
 function addGuide(id){
   const g=wellnessGuides.find(g=>g.id===id);if(!g||state.interests.includes(g.interest))return;
   state.interests.push(g.interest);save();

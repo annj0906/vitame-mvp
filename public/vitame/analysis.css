@@ -192,3 +192,83 @@ body .wellness-guide-hero h1{font-size:24px;line-height:1.45;letter-spacing:-.8p
 .guide-fixed-top .icon{width:17px;height:17px}
 @media(max-width:360px){.guide-health-map{height:320px}.guide-orbit-node{width:66px}.guide-orbit-node b{font-size:9px}.guide-orbit-node small{font-size:7px}.period-column .month-bar-label{font-size:8px}.wellness-guide-hero{padding-left:0;padding-right:0}}
 @media(prefers-reduced-motion:reduce){.guide-health-map{transition:none}}
+
+/* Final AI guide only. Shared analysis and shopping presentation is unchanged. */
+body[data-screen="guide"]{background:var(--vitame-color-neutral-background)}
+body[data-screen="guide"] .app{background:var(--vitame-color-neutral-background)}
+body[data-screen="guide"] .top{height:64px;background:transparent;border:0;justify-content:center;position:relative}
+body[data-screen="guide"] .top>.icon-btn,body[data-screen="guide"] .top-actions{display:none}
+body[data-screen="guide"] .top h2{font:var(--vitame-type-pretendard-subtitle-semibold-18)}
+body[data-screen="guide"] .content{padding:0 20px 126px}
+body[data-screen="guide"] .wellness-tabs{margin:0 auto 24px;padding:4px;background:var(--vitame-color-accent-green-main);border-radius:999px;width:167px}
+body[data-screen="guide"] .wellness-tabs button{min-height:44px;padding:12px 10px;font:var(--vitame-type-pretendard-body2-medium-14);color:var(--vitame-color-neutral-white)}
+body[data-screen="guide"] .wellness-tabs button.selected{color:var(--vitame-color-neutral-black);background:var(--vitame-color-neutral-white);font-weight:700}
+.ai-guide-page{color:var(--vitame-color-neutral-black);font:var(--vitame-type-pretendard-body2-regular-14);letter-spacing:-.02em}
+.ai-guide-page h1,.ai-guide-page h2,.ai-guide-page h3,.ai-guide-page p{margin:0}
+.ai-guide-hero{display:flex;flex-direction:column;align-items:center;gap:40px;margin-bottom:40px}
+.ai-guide-hero h1{text-align:center;font:var(--vitame-type-nanumsquareround-title2-extrabold-24);letter-spacing:-.025em}
+.ai-character-stage{width:100%;display:flex;flex-direction:column;align-items:center}
+.ai-guide-message{display:flex;align-items:center;gap:10px;padding:8px 16px;max-width:100%;border-radius:20px;background:var(--vitame-color-neutral-white);box-shadow:0 2px 5px #0000000d;font:var(--vitame-type-nanumsquareround-body-bold-16)}
+.ai-guide-message img{flex:none}.ai-bubble-tail{display:block;margin-bottom:24px}
+.ai-character-row{display:flex;width:100%;align-items:center;justify-content:space-between;gap:4px}
+.ai-character-row>button:not(.ai-character-main){width:24px;flex:none;padding:0;color:var(--vitame-color-neutral-gray60)}
+.ai-character-main{width:121px;height:121px;flex:none;padding:0;background:none}
+.ai-guide-page .ob-good-charBtn{width:156.21px;height:158.82px;left:-19.81px;top:-23.44px}
+.ai-guide-page .ob-bad-charBtn{width:148.38px;height:148.25px;left:-16.34px;top:-15.45px}
+.ai-guide-page .ob-very-bad-charBtn{width:174.60px;height:154.30px;left:-29.65px;top:-21.93px}
+.ai-guide-page .ob-normal-charBtn{width:121px;height:121px;left:0;top:0}
+.ai-guide-page .ob-very-good-charBtn{width:121px;height:122.4px;left:0;top:0}
+.ai-character-side{width:67px;height:67px;filter:blur(3px);opacity:.45;pointer-events:none}
+.ai-character-side .initial-character-box{transform:scale(.55);transform-origin:top left}
+.ai-character-shadow{margin-top:22px;max-width:170px}
+.ai-interests{width:100%;padding:0 24px}
+.ai-interest-heading{display:flex;align-items:start;justify-content:space-between;gap:8px;margin-bottom:16px}
+.ai-interest-heading h2{font:var(--vitame-type-pretendard-subtitle-semibold-18);margin-bottom:6px}
+.ai-interest-heading p{font:var(--vitame-type-pretendard-body1-regular-16);color:var(--vitame-color-neutral-gray70)}
+.ai-interest-heading>button{display:flex;align-items:center;gap:4px;white-space:nowrap;padding:0;color:var(--vitame-color-neutral-gray60);font:var(--vitame-type-pretendard-body2-regular-14)}
+.ai-interest-tags{display:flex;flex-wrap:wrap;gap:6px}
+.ai-interest-tags>button{display:flex;align-items:center;gap:6px;padding:8px;border:1px solid var(--vitame-color-neutral-gray20);border-radius:30px;background:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-semibold-14)}
+.ai-health-icon{display:grid;place-items:center;background:var(--health-tint);width:28px;height:28px;border-radius:50%;flex:none}
+.ai-health-icon img{display:block;max-width:24px;max-height:24px}
+.ai-guide-down{color:var(--vitame-color-neutral-gray50);display:block;margin-top:0}
+.ai-guide-down .icon{width:16px;height:16px}
+.ai-guide-cards{display:flex;flex-direction:column;gap:16px}
+.ai-guide-card{background:var(--vitame-color-neutral-white);border-radius:20px;padding:20px 24px;box-shadow:0 4px 8px #00000008;scroll-margin-top:20px;min-width:0}
+.ai-guide-card h2{font:var(--vitame-type-pretendard-subtitle-semibold-18)}
+.ai-guide-toggle{display:grid;grid-template-columns:1fr 20px;gap:9px;width:100%;padding:0;text-align:left;font:inherit}
+.ai-guide-toggle .ai-health-icon{width:36px;height:36px;grid-column:1/-1}
+.ai-guide-toggle>.icon{width:18px;height:18px;align-self:center;transition:transform .28s}
+.ai-guide-toggle[aria-expanded="true"]>.icon{transform:rotate(180deg)}
+.ai-guide-description{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60);padding-top:6px}
+.ai-guide-reveal{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s ease;visibility:hidden}
+.ai-guide-card.is-open .ai-guide-reveal{grid-template-rows:1fr;visibility:visible}
+.ai-guide-card:not(.is-open) .ai-guide-reveal{transition:grid-template-rows .28s ease,visibility 0s .28s}
+.ai-guide-inner{min-height:0;overflow:hidden}
+.ai-guide-details{padding-top:24px}
+.ai-guide-status{display:flex;flex-direction:column;gap:4px;font:var(--vitame-type-pretendard-caption-regular-12);color:var(--vitame-color-neutral-gray60)}
+.ai-guide-nutrient{display:grid;grid-template-columns:78px minmax(30px,1fr) 32px 28px;gap:8px;align-items:center;--status:var(--vitame-color-semantic-optimal);--status-light:var(--vitame-color-semantic-optimal-light)}
+.ai-guide-nutrient[data-status="부족"]{--status:var(--vitame-color-semantic-deficiency);--status-light:var(--vitame-color-semantic-deficiency-light)}
+.ai-guide-nutrient[data-status="주의"]{--status:var(--vitame-color-semantic-caution);--status-light:var(--vitame-color-semantic-caution-light)}
+.ai-guide-nutrient>button{font:var(--vitame-type-pretendard-body2-regular-14);text-align:left;padding:5px 4px;color:var(--vitame-color-neutral-black)}
+.ai-guide-nutrient>b{font-size:10px;font-weight:400;background:var(--status-light);color:var(--status);text-align:center;border-radius:99px}
+.ai-guide-track{height:4px;border-radius:9px;background:var(--vitame-color-neutral-gray20);overflow:hidden}.ai-guide-track i{display:block;height:100%;background:var(--status)}
+.ai-guide-copy{padding-top:24px;color:var(--vitame-color-neutral-gray70);font:var(--vitame-type-pretendard-body2-regular-14)}
+.ai-guide-tips{display:flex;flex-direction:column;gap:32px;margin-top:40px}
+.ai-guide-tip{display:flex;gap:18px;align-items:start}.ai-guide-tip>div:last-child{flex:1;min-width:0}
+.ai-tip-character{width:20px;height:20px;flex:none}.ai-tip-character .initial-character-box{transform:scale(.165);transform-origin:top left}
+.ai-guide-tip small{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60)}
+.ai-guide-tip p{font:var(--vitame-type-pretendard-body1-medium-16);padding-top:4px}
+.ai-guide-products{margin-top:40px;padding-top:24px;border-top:1px solid var(--vitame-color-neutral-gray20)}
+.ai-product-heading{display:flex;justify-content:space-between;gap:8px;margin-bottom:24px}.ai-product-heading h3{font:var(--vitame-type-pretendard-subtitle-semibold-18)}
+.ai-product-heading p{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray70);margin-top:4px}
+.ai-product-heading>button{white-space:nowrap;padding:0;align-self:start;font:var(--vitame-type-pretendard-caption-regular-12);color:var(--vitame-color-neutral-gray60)}
+.ai-product-heading .icon{width:12px;height:12px}
+.ai-product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ai-product{padding:0;display:flex;flex-direction:column;gap:6px;text-align:left;min-width:0;font:var(--vitame-type-pretendard-body2-regular-14)}
+.ai-product-art{width:100%;aspect-ratio:1;border-radius:16px;background:var(--vitame-color-neutral-gray20);display:grid;place-items:center;overflow:hidden}
+.ai-product-art .bottle{transform:scale(.62);margin:0}.ai-product strong{font:var(--vitame-type-pretendard-body1-semibold-16)}
+body[data-screen="guide"] .nav{left:50%;right:auto;bottom:25px;transform:translateX(-50%);width:calc(100% - 80px);max-width:348px;height:66px;padding:4px;border:0;border-radius:999px;background:var(--vitame-color-neutral-white);box-shadow:0 10px 10px #0000000d;display:flex;gap:0}
+body[data-screen="guide"] .nav button{flex:1;min-width:0;padding:6px 0 7px;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font:600 12px/1.4 var(--vitame-font-pretendard)}
+body[data-screen="guide"] .nav .active{background:var(--vitame-color-accent-green-main);color:var(--vitame-color-neutral-white)}
+@media(max-width:390px){.ai-interests{padding:0 8px}.ai-guide-card{padding:20px 16px}.ai-character-side{width:48px;height:48px}.ai-character-side .initial-character-box{transform:scale(.397)}.ai-guide-message{font-size:14px;padding:8px 10px}.ai-interest-heading p{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.ai-guide-reveal,.ai-guide-card:not(.is-open) .ai-guide-reveal,.ai-guide-toggle>.icon{transition:none}}
