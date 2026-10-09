@@ -190,7 +190,7 @@ document.addEventListener('keydown',e=>{
 document.addEventListener('pointerdown',e=>{
   if(e.button!==0)return;
   const cal=e.target.closest('.dose-calendar'),row=e.target.closest('.dose-swipe-row'),grip=doseEditing&&row?row.querySelector('[data-grip]'):null;
-  if(!cal&&!grip&&(!row||doseEditing||e.target.closest('.dose-delete,.dose-item-edit')))return;
+  if(!cal&&!grip&&(!row||(doseEditing&&!row.dataset.archivedId)||e.target.closest('.dose-delete,.dose-item-edit')))return;
   doseBlockUntil=0;
   const el=cal||grip||row;
   doseGesture={el,cal,row,grip,id:e.pointerId,x:e.clientX,y:e.clientY,active:false,open:row?.classList.contains('revealed')};
@@ -217,10 +217,10 @@ document.addEventListener('pointermove',e=>{
   }
   if(!g.active){
     if(Math.abs(dy)>12&&Math.abs(dy)>Math.abs(dx)){doseGesture=null;return;}
-    if(Math.abs(dx)<12)return;
+    if(Math.abs(dx)<12||Math.abs(dx)<=Math.abs(dy))return;
     g.active=true;g.el.setPointerCapture(e.pointerId);
   }
-  if(g.row)g.row.querySelector('.dose-row-front').style.transform=`translateX(${Math.max(-72,Math.min(72,dx))}px)`;
+  if(g.row)g.row.querySelector('.dose-row-front').style.transform=`translateX(${Math.max(-96,Math.min(96,dx))}px)`;
   if(g.cal)g.cal.style.transform=`translateX(${dx}px)`;
 });
 function endDoseGesture(e){
@@ -237,7 +237,11 @@ function endDoseGesture(e){
   }else if(g.cal){if(e.type!=='pointercancel'&&Math.abs(dx)>42)slideCalendar('.dose-calendar',dx<0?1:-1,()=>shiftDoseCalendar(dx<0?1:-1));else g.cal.style.transform='';}
   else{
     g.row.querySelector('.dose-row-front').style.transform='';
-    if(e.type!=='pointercancel'&&dx<-60)archiveDoseNow(g.row.dataset.rowId);
+    if(g.row.dataset.archivedId){
+      if(e.type!=='pointercancel'&&dx<-60)deleteArchivedNow(g.row.dataset.archivedId);
+      else if(e.type!=='pointercancel'&&dx>60)restoreArchivedNow(g.row.dataset.archivedId);
+    }
+    else if(e.type!=='pointercancel'&&dx<-60)archiveDoseNow(g.row.dataset.rowId);
     else {
       if(e.type!=='pointercancel'&&dx>60){
         editingSupplementId=g.row.dataset.rowId;go('supplement-settings');
@@ -247,6 +251,26 @@ function endDoseGesture(e){
 }
 document.addEventListener('pointerup',endDoseGesture);
 document.addEventListener('pointercancel',endDoseGesture);
+function restoreArchivedNow(id){
+  const index=(state.archivedSupplements||[]).findIndex(entry=>entry.item.id===id);
+  if(index<0)return;
+  const [entry]=state.archivedSupplements.splice(index,1);
+  if(!state.supplements.some(s=>s.id===id))state.supplements.splice(Math.min(entry.index,state.supplements.length),0,entry.item);
+  clearTimeout(doseUndoTimer);document.querySelector('.dose-undo')?.remove();
+  save();render();toast('복용 목록으로 꺼냈어요.');
+}
+let deletedArchiveUndo=null;
+function deleteArchivedNow(id){
+  const index=(state.archivedSupplements||[]).findIndex(entry=>entry.item.id===id);
+  if(index<0)return;
+  const [entry]=state.archivedSupplements.splice(index,1),records={};
+  for(const [day,values] of Object.entries(state.records))if(Object.prototype.hasOwnProperty.call(values,id)){records[day]=values[id];delete values[id];}
+  deletedArchiveUndo={entry,index,records};save();render();
+  clearTimeout(doseUndoTimer);document.querySelector('.dose-undo')?.remove();
+  const bar=document.createElement('div');bar.className='dose-undo';bar.setAttribute('role','status');
+  bar.innerHTML='<span>영양제를 삭제했어요.</span><button data-undo-archive-delete>되돌리기</button>';document.body.append(bar);
+  doseUndoTimer=setTimeout(()=>{bar.remove();deletedArchiveUndo=null;},5000);
+}
 document.addEventListener('click',e=>{
   if(Date.now()<doseBlockUntil&&e.target.closest('.dose-swipe-row,.dose-calendar')){e.preventDefault();e.stopImmediatePropagation();}
 },true);
@@ -269,24 +293,14 @@ document.addEventListener('click',e=>{
   const archive=e.target.closest('[data-archive-supplement]');
   if(archive)archiveDoseNow(archive.dataset.archiveSupplement);
   const restore=e.target.closest('[data-restore-supplement]');
-  if(restore){
-    const index=(state.archivedSupplements||[]).findIndex(entry=>entry.item.id===restore.dataset.restoreSupplement);
-    if(index<0)return;
-    const [entry]=state.archivedSupplements.splice(index,1);
-    if(!state.supplements.some(s=>s.id===entry.item.id))state.supplements.splice(Math.min(entry.index,state.supplements.length),0,entry.item);
-    clearTimeout(doseUndoTimer);document.querySelector('.dose-undo')?.remove();
-    save();render();toast('복용 목록으로 꺼냈어요.');
-  }
+  if(restore)restoreArchivedNow(restore.dataset.restoreSupplement);
   const remove=e.target.closest('[data-delete-archived]');
-  if(remove)modal('보관한 영양제를 삭제할까요?','아카이브에서 영구 삭제합니다. 이 영양제의 복용 기록도 삭제되며 되돌릴 수 없어요.',`<button class="secondary" data-confirm-delete-archived="${esc(remove.dataset.deleteArchived)}">영구 삭제</button>`);
-  const confirm=e.target.closest('[data-confirm-delete-archived]');
-  if(confirm){
-    const id=confirm.dataset.confirmDeleteArchived;
-    if(!(state.archivedSupplements||[]).some(entry=>entry.item.id===id))return;
-    state.archivedSupplements=state.archivedSupplements.filter(entry=>entry.item.id!==id);
-    for(const records of Object.values(state.records))delete records[id];
-    clearTimeout(doseUndoTimer);document.querySelector('.dose-undo')?.remove();
-    save();$('#dialog').close();render();toast('보관한 영양제를 삭제했어요.');
+  if(remove)deleteArchivedNow(remove.dataset.deleteArchived);
+  if(e.target.closest('[data-undo-archive-delete]')&&deletedArchiveUndo){
+    const {entry,index,records}=deletedArchiveUndo;deletedArchiveUndo=null;
+    state.archivedSupplements.splice(index,0,entry);
+    for(const [day,value] of Object.entries(records)){state.records[day]||={};state.records[day][entry.item.id]=value;}
+    clearTimeout(doseUndoTimer);document.querySelector('.dose-undo')?.remove();save();render();
   }
   if(e.target.closest('[data-dose-today]')){
     selectedDate=dateKey();doseWeekAnchor=null;

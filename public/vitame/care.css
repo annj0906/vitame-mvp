@@ -1,0 +1,122 @@
+/* Final dose/archive/analysis only. Existing behavior and tokens remain shared. */
+body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) #app{background:var(--vitame-color-neutral-background);color:var(--vitame-color-neutral-black)}
+body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) .top{position:relative;height:64px;padding:0 20px;background:transparent}
+body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) .top h2{position:absolute;left:50%;transform:translateX(-50%);font:var(--vitame-type-pretendard-subtitle-semibold-18);letter-spacing:-.02em;white-space:nowrap}
+body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) .top-actions{margin-left:auto;gap:18px;align-items:center}
+body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) .top .icon-btn{width:24px;padding:0;display:grid;place-items:center}
+body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) .content{padding:0 20px 120px}
+body[data-screen="dose"] .dose-period-toolbar{height:52px;margin:0;position:relative}
+body[data-screen="dose"] .dose-period-toolbar .segment{position:absolute;left:50%;transform:translateX(-50%);margin:0;padding:4px;background:var(--vitame-color-accent-orange-main);border-radius:999px;width:166px}
+body[data-screen="dose"] .segment button{flex:1;padding:12px 8px;min-height:44px;white-space:nowrap;color:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-medium-14)}
+body[data-screen="dose"] .segment .selected{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);font-weight:700;box-shadow:0 4px 2px #0000000d}
+body[data-screen="dose"] .calendar-today{position:absolute;right:0;top:8px;border-radius:999px;min-height:36px;padding:8px 11px;border-color:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-black);font:var(--vitame-type-pretendard-body2-regular-14)}
+body[data-screen="dose"] .dose-calendar{margin:24px 0 40px}
+body[data-screen="dose"] .calendar-week .calendar-day{height:78px;min-height:78px;padding:8px 0;gap:9px;border-radius:999px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-black)}
+body[data-screen="dose"] .calendar-day.picked{background:var(--vitame-color-neutral-gray20);font-weight:700}
+body[data-screen="dose"] .calendar-day .day-label{font:inherit;color:inherit}
+body[data-screen="dose"] .calendar-day.is-today .day-number{color:inherit}
+body[data-screen="dose"] .dose-progress-card{margin:0 0 40px;padding:20px 24px;border-radius:20px;background:var(--vitame-color-neutral-white);box-shadow:0 2px 10px #0000000d;color:var(--vitame-color-neutral-black)}
+body[data-screen="dose"] .dose-progress-card h2{margin-bottom:24px;font:var(--vitame-type-pretendard-subtitle-semibold-18)}
+body[data-screen="dose"] .dose-progress-summary>span,body[data-screen="dose"] .dose-progress-summary small{color:var(--vitame-color-neutral-gray50)}
+body[data-screen="dose"] .dose-progress-summary strong{font:var(--vitame-type-nanumsquareround-title2-extrabold-24)}
+body[data-screen="dose"] .dose-progress-summary .done-count{font-size:36px}
+body[data-screen="dose"] .dose-progress-track{background:var(--vitame-color-neutral-gray30);margin-top:4px}
+body[data-screen="dose"] .dose-progress-track>span{background:var(--vitame-color-accent-orange-main)}
+body[data-screen="dose"] .section-head{margin:0 8px 16px;gap:8px}
+body[data-screen="dose"] .section-head h2{font:var(--vitame-type-pretendard-subtitle-semibold-18);margin-right:auto}
+body[data-screen="dose"] .section-head button{padding:0;display:flex;align-items:center;gap:3px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60);white-space:nowrap}
+body[data-screen="dose"] .dose-edit-list{padding:0;margin:0;border:0;background:transparent;box-shadow:none;display:flex;flex-direction:column;gap:8px;overflow:visible}
+body:is([data-screen="dose"],[data-screen="archive"]) .dose-swipe-row{height:80px;margin:0;position:relative;overflow:hidden;border-radius:16px;touch-action:pan-y;background:var(--vitame-color-neutral-white)}
+body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front{position:relative;height:80px;border:0;border-radius:16px;background:var(--vitame-color-neutral-gray20);touch-action:pan-y;transition:transform .16s ease-out;user-select:none}
+body:is([data-screen="dose"],[data-screen="archive"]) .dose-swipe-row:has(.taken),body[data-screen="archive"] .dose-swipe-row{box-shadow:0 2px 10px #0000000d}
+body[data-screen="dose"] .dose-row{height:80px;min-height:80px;border:0;border-radius:16px;margin:0;padding:20px 24px;gap:24px;background:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-gray60)}
+body[data-screen="dose"] .dose-row.taken{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black)}
+body[data-screen="dose"] .dose-row b{font:var(--vitame-type-pretendard-body2-semibold-14);max-width:155px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+body[data-screen="dose"] .dose-row small{font:var(--vitame-type-pretendard-body2-regular-14);color:inherit}
+body:is([data-screen="dose"],[data-screen="archive"]) .pill{width:24px;height:10px;min-width:24px;border-radius:999px;transform:none;box-shadow:none;background:var(--vitame-color-neutral-gray60)}
+body[data-screen="dose"] .taken .pill,body[data-screen="archive"] .p0{background:var(--vitame-color-accent-yellow-main)}
+body[data-screen="archive"] .p1{background:var(--vitame-color-accent-green-main)}
+body[data-screen="archive"] .p2{background:var(--vitame-color-accent-purple-main)}
+body[data-screen="archive"] .p3{background:var(--vitame-color-accent-blue-main)}
+body[data-screen="dose"] .check{width:20px;height:20px;min-width:20px;border:0;background:var(--vitame-color-neutral-gray40);display:grid;place-items:center}
+body[data-screen="dose"] .taken .check{background:var(--vitame-color-neutral-black)}
+body[data-screen="dose"] .care-swipe-hint{position:absolute;right:88px;top:31px;color:var(--vitame-color-neutral-gray50);font:400 10px/1.4 var(--vitame-font-pretendard);pointer-events:none}
+body[data-screen="dose"] .dose-row:has(.care-swipe-hint) b{max-width:88px}
+body:is([data-screen="dose"],[data-screen="archive"]) .dose-item-edit,body:is([data-screen="dose"],[data-screen="archive"]) .dose-delete{width:64px;background:var(--vitame-color-neutral-white);border:0;z-index:0;min-height:80px}
+body:is([data-screen="dose"],[data-screen="archive"]) .dose-item-edit:focus-visible,body:is([data-screen="dose"],[data-screen="archive"]) .dose-delete:focus-visible{z-index:3}
+body[data-screen="dose"] .dose-add-action{margin-top:8px;justify-content:flex-start}
+body[data-screen="dose"] .dose-add-action button{background:var(--vitame-color-neutral-white);box-shadow:0 2px 5px #0000000d;border:0;border-radius:13px;padding:11px 13px;color:var(--vitame-color-neutral-black);font:var(--vitame-type-pretendard-body2-bold-14)}
+body[data-screen="archive"] .archive-content{padding-top:40px}
+body[data-screen="archive"] .care-archive-copy{margin-bottom:24px}
+body[data-screen="archive"] .care-archive-copy h3{font:var(--vitame-type-pretendard-subtitle-semibold-18);letter-spacing:-.02em}
+body[data-screen="archive"] .care-archive-copy p{margin-top:4px;font:var(--vitame-type-pretendard-body1-regular-16);color:var(--vitame-color-neutral-gray60);letter-spacing:-.02em}
+body[data-screen="archive"] .care-archive-list{display:flex;flex-direction:column;gap:8px}
+body[data-screen="archive"] .dose-row-front{background:var(--vitame-color-neutral-white)}
+body[data-screen="archive"] .care-archive-row{height:80px;padding:20px 24px;display:flex;align-items:center;gap:24px}
+body[data-screen="archive"] .care-archive-row b{font:var(--vitame-type-pretendard-body2-semibold-14);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body[data-screen="archive"] .care-archive-row small{margin-left:auto;color:var(--vitame-color-neutral-gray50);font:var(--vitame-type-pretendard-caption-regular-12);white-space:nowrap}
+body[data-screen="analysis"] .wellness-tabs{margin:0 auto 24px;padding:4px;background:var(--vitame-color-accent-yellow-main);border-radius:999px}
+body[data-screen="analysis"] .wellness-tabs button{color:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-medium-14);min-height:44px;padding:12px 14px}
+body[data-screen="analysis"] .wellness-tabs .selected{color:var(--vitame-color-neutral-black);font-weight:700}
+body[data-screen="analysis"] .analysis-periods{margin:0 24px 28px;padding:8px;background:var(--vitame-color-neutral-gray20);border-radius:999px;display:flex}
+body[data-screen="analysis"] .analysis-periods button{flex:1;min-width:0;padding:8px 0;border-radius:999px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60)}
+body[data-screen="analysis"] .analysis-periods button[aria-pressed="true"]{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);font-weight:700}
+body[data-screen="analysis"] .analysis-overview{margin:0 24px 40px;padding:0}
+body[data-screen="analysis"] .period-navigation{margin:0 0 4px;justify-content:space-between;font:var(--vitame-type-pretendard-subtitle-semibold-18)}
+body[data-screen="analysis"] .analysis-score-label{font:var(--vitame-type-pretendard-caption-regular-12);color:var(--vitame-color-neutral-gray60)}
+body[data-screen="analysis"] .analysis-month-score{font:var(--vitame-type-nanumsquareround-display-extrabold-44);letter-spacing:-.025em;margin:0 0 16px}
+body[data-screen="analysis"] .analysis-month-score small{font:var(--vitame-type-pretendard-body2-regular-14);margin-left:4px;color:var(--vitame-color-neutral-black)}
+body[data-screen="analysis"] .analysis-month-description{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-black)}
+body[data-screen="analysis"] .analysis-month-description b{color:inherit}
+body[data-screen="analysis"] .period-chart{margin-top:32px}
+body[data-screen="analysis"] .month-bar-track{border-radius:999px 999px 0 0;overflow:hidden}
+body[data-screen="analysis"] .month-bar-track i{background:var(--vitame-color-neutral-gray20);border-radius:999px 999px 0 0}
+body[data-screen="analysis"] .month-bar.current .month-bar-track i{background:var(--vitame-color-accent-yellow-main)}
+body[data-screen="analysis"] .nutrition-panels{display:flex;flex-direction:column;gap:8px}
+body[data-screen="analysis"] .nutrition-panel{margin:0;padding:20px 24px;border-radius:16px;background:var(--vitame-color-neutral-white);box-shadow:0 2px 5px #0000000d;border:0}
+body[data-screen="analysis"] .nutrition-panel.low{--status:var(--vitame-color-semantic-deficiency);--status-light:var(--vitame-color-semantic-deficiency-light)}
+body[data-screen="analysis"] .nutrition-panel.high{--status:var(--vitame-color-semantic-caution);--status-light:var(--vitame-color-semantic-caution-light)}
+body[data-screen="analysis"] .nutrition-panel.ok{--status:var(--vitame-color-semantic-optimal);--status-light:var(--vitame-color-semantic-optimal-light)}
+body[data-screen="analysis"] .nutrition-panel-toggle{display:flex;gap:10px;width:100%;padding:0;align-items:flex-start;text-align:left;min-height:44px;background:transparent}
+body[data-screen="analysis"] .wellness-symbol{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;border-radius:50%;background:var(--status-light);color:var(--status)}
+body[data-screen="analysis"] .care-nutrition-title{flex:1;min-width:0}
+body[data-screen="analysis"] .care-nutrition-title b{display:block;font:var(--vitame-type-pretendard-body1-semibold-16)}
+body[data-screen="analysis"] .care-nutrition-title small{display:block;margin-top:2px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60)}
+body[data-screen="analysis"] .care-nutrition-count{font:var(--vitame-type-pretendard-body1-semibold-16);white-space:nowrap}
+body[data-screen="analysis"] .nutrition-panel-toggle>img{margin-top:3px;flex-shrink:0}
+body[data-screen="analysis"] .nutrition-panel-toggle[aria-expanded="true"]>img{transform:rotate(180deg)}
+body[data-screen="analysis"] .nutrition-panel-body{padding:16px 0 0 48px;display:flex;flex-direction:column;gap:4px}
+body[data-screen="analysis"] .care-nutrient{display:grid;grid-template-columns:minmax(64px,1fr) minmax(40px,104px) 29px 30px;align-items:center;gap:4px;color:var(--vitame-color-neutral-gray60)}
+body[data-screen="analysis"] .care-nutrient-name{justify-self:start;min-height:30px;padding:4px 8px;border:1px solid var(--vitame-color-neutral-gray20);border-radius:999px;font:var(--vitame-type-pretendard-body2-regular-14);white-space:nowrap;color:var(--vitame-color-neutral-black)}
+body[data-screen="analysis"] .nutrient-track{height:4px;border-radius:100px;background:var(--vitame-color-neutral-gray20);overflow:hidden}
+body[data-screen="analysis"] .nutrient-track i{display:block;height:100%;border-radius:inherit;background:var(--status)}
+body[data-screen="analysis"] .nutrient-rate{font:400 10px/15.5px var(--vitame-font-pretendard);text-align:right}
+body[data-screen="analysis"] .nutrient-status{padding:0 4px;border-radius:999px;background:var(--status-light);color:var(--status);font:500 10px/15.5px var(--vitame-font-pretendard)}
+body[data-screen="analysis"] .nutrition-panel-chips{padding:16px 0 0 48px;display:flex;flex-wrap:wrap;gap:4px}
+body[data-screen="analysis"] .nutrition-panel-chips span{padding:4px 8px;background:var(--vitame-color-neutral-white);border:1px solid var(--vitame-color-neutral-gray20);border-radius:999px;font:var(--vitame-type-pretendard-body2-regular-14)}
+body[data-screen="analysis"] .nutrition-panel [hidden]{display:none}
+body[data-screen="analysis"] .analysis-guide-cta{margin:40px 24px 0;padding:0;background:none;border:0;box-shadow:none;text-align:center}
+body[data-screen="analysis"] .analysis-guide-cta h3{font:var(--vitame-type-pretendard-body1-semibold-16)}
+body[data-screen="analysis"] .analysis-guide-cta p{margin-top:4px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60)}
+body[data-screen="analysis"] .care-guide-character{display:flex;flex-direction:column;align-items:center;gap:16px;margin:24px auto}
+body[data-screen="analysis"] .care-guide-character .initial-character-box{width:84px;height:84px}
+body[data-screen="analysis"] .care-guide-character .ob-normal-charBtn{width:84px;height:84px;left:0;top:0}
+body[data-screen="analysis"] .analysis-guide-cta .primary{border-radius:999px;height:52px;margin:0;background:var(--vitame-color-neutral-black);font:var(--vitame-type-pretendard-body2-semibold-14)}
+body:is([data-screen="dose"],[data-screen="analysis"]) .nav{left:50%;right:auto;bottom:25px;transform:translateX(-50%);width:calc(100% - 80px);max-width:348px;height:66px;padding:4px;border:0;border-radius:999px;background:var(--vitame-color-neutral-white);box-shadow:0 10px 10px #0000000d;display:flex;gap:0}
+body:is([data-screen="dose"],[data-screen="analysis"]) .nav button{flex:1;min-width:0;padding:6px 0 7px;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:var(--vitame-color-neutral-gray60);font:600 12px/1.4 var(--vitame-font-pretendard)}
+body[data-screen="dose"] .nav .active{background:var(--vitame-color-accent-orange-main);color:var(--vitame-color-neutral-white)}
+body[data-screen="analysis"] .nav .active{background:var(--vitame-color-accent-yellow-main);color:var(--vitame-color-neutral-white)}
+.care-nav-icon{height:28px;display:grid;place-items:center}
+@media(max-width:390px){
+ body[data-screen="dose"] .care-swipe-hint{display:none}
+ body[data-screen="archive"] .care-archive-row{gap:12px;padding:20px 16px;flex-wrap:wrap;position:relative}
+ body[data-screen="archive"] .care-archive-row b{flex:1}
+ body[data-screen="archive"] .care-archive-row small{position:absolute;left:52px;bottom:9px}
+ body[data-screen="analysis"] .analysis-overview,body[data-screen="analysis"] .analysis-periods{margin-left:8px;margin-right:8px}
+ body[data-screen="analysis"] .nutrition-panel{padding:20px 16px}
+ body[data-screen="analysis"] .nutrition-panel-body,body[data-screen="analysis"] .nutrition-panel-chips{padding-left:0}
+ body[data-screen="analysis"] .nutrition-panel-toggle{gap:8px}
+ body[data-screen="analysis"] .care-nutrition-title small{font-size:12px}
+ body:is([data-screen="dose"],[data-screen="analysis"]) .nav{width:calc(100% - 48px)}
+}
+@media(prefers-reduced-motion:reduce){body[data-screen="analysis"] .care-guide-character *{animation:none!important}body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front{transition:none}}
