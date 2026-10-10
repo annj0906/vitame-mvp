@@ -180,7 +180,7 @@ function finalGuideIcon(g){
 }
 function finalGuideCharacters(){
   const keys=['bad','very-bad','good','normal','very-good'],i=guideCharacter%keys.length;
-  return `<button class="ai-guide-message" data-ai-character="1">관심 건강의 관리 습관을 살펴보세요<img src="assets/setup/refresh.svg" alt=""></button><img class="ai-bubble-tail" src="assets/setup/bubble-tail.svg" alt=""><div class="ai-character-row"><button data-ai-character="-1" aria-label="이전 캐릭터">${icon('back')}</button><div class="ai-character-side" aria-hidden="true">${initialCharacter(keys[(i+keys.length-1)%keys.length])}</div><button class="ai-character-main" data-ai-character="1" aria-label="다음 캐릭터">${initialCharacter(keys[i])}</button><div class="ai-character-side" aria-hidden="true">${initialCharacter(keys[(i+1)%keys.length])}</div><button data-ai-character="1" aria-label="다음 캐릭터 보기">${icon('arrow')}</button></div><img class="ai-character-shadow" src="assets/setup/shadow.svg" alt="">`;
+  return `<div class="ai-character-viewport"><button class="ai-guide-message" data-ai-character="1">관심 건강의 관리 습관을 살펴보세요<img src="assets/setup/refresh.svg" alt=""></button><img class="ai-bubble-tail" src="assets/setup/bubble-tail.svg" alt=""><div class="ai-character-row"><div class="ai-character-side" aria-hidden="true">${initialCharacter(keys[(i+keys.length-1)%keys.length])}</div><button class="ai-character-main" data-ai-character="1" aria-label="다음 캐릭터">${initialCharacter(keys[i])}</button><div class="ai-character-side" aria-hidden="true">${initialCharacter(keys[(i+1)%keys.length])}</div></div><img class="ai-character-shadow" src="assets/setup/shadow.svg" alt=""></div><button class="ai-character-prev" data-ai-character="-1" aria-label="이전 캐릭터">${icon('back')}</button><button class="ai-character-next" data-ai-character="1" aria-label="다음 캐릭터 보기">${icon('arrow')}</button>`;
 }
 function finalGuideCard(g){
   // nutrients is explicitly an illustrative dataset, not personal AI analysis.
@@ -189,6 +189,26 @@ function finalGuideCard(g){
   return `<section class="ai-guide-card" id="guide-${g.id}"><h2><button class="ai-guide-toggle" data-ai-guide-toggle="${g.id}" aria-expanded="false" aria-controls="ai-guide-body-${g.id}">${finalGuideIcon(g)}<span>${esc(g.title)} 가이드</span>${wellnessIcon('chevron')}</button></h2><p class="ai-guide-description">${esc(g.description)}</p><div class="ai-guide-reveal" id="ai-guide-body-${g.id}" inert aria-hidden="true"><div class="ai-guide-inner"><div class="ai-guide-details"><div class="ai-guide-status">${current.length?`<small>예시 분석 · 개인 분석 결과가 아니에요</small>${current.map(n=>`<div class="ai-guide-nutrient" data-status="${n[2]}"><button data-action="nutrient" data-name="${esc(n[0])}">${esc(n[0])}</button><span class="ai-guide-track" role="meter" aria-label="${esc(n[0])} 예시 섭취 비율" aria-valuemin="0" aria-valuemax="${Math.max(100,n[1])}" aria-valuenow="${n[1]}"><i style="width:${Math.max(0,Math.min(n[1],100))}%"></i></span><span>${n[1]}%</span><b>${n[2]}</b></div>`).join('')}`:'<p>아직 확인할 수 있는 개인 분석 데이터가 없어요.</p>'}</div><p class="ai-guide-copy">${esc(g.food)}<br><br>${esc(g.habit)}</p><div class="ai-guide-tips">${[['very-good','채워보기',g.food],['bad','함께 확인','등록한 제품의 성분과 표시된 섭취량을 확인해보세요.'],['normal','오늘의 루틴',g.habit]].map(([key,title,copy])=>`<div class="ai-guide-tip"><div class="ai-tip-character" aria-hidden="true">${initialCharacter(key)}</div><div><small>${title}</small><p>${esc(copy)}</p></div></div>`).join('')}</div><section class="ai-guide-products"><div class="ai-product-heading"><div><h3>${esc(g.title)} 추천 제품</h3><p>관련 성분의 등록 제품을 확인해보세요.</p></div><button data-go="shop">전체보기 ${icon('arrow')}</button></div><div class="ai-product-grid">${related.length?related.map(p=>`<button class="ai-product" data-action="product" data-id="${p.id}"><span class="ai-product-art">${bottle(p)}</span><span>VITAME</span><span>${esc(p.name)}</span><strong>${money(p.price)}</strong></button>`).join(''):'<p>관련 제품이 아직 없어요.</p>'}</div></section></div></div></div></section>`;
 }
 let finalGuideScrollTimer;
+const characterSlideAdapter={
+  selector:'.ai-character-viewport',
+  preview(direction){
+    const previous=guideCharacter;
+    try{guideCharacter=(guideCharacter+direction+5)%5;return slideElement(finalGuideCharacters(),'.ai-character-viewport');}
+    finally{guideCharacter=previous;}
+  },
+  commit(direction){guideCharacter=(guideCharacter+direction+5)%5;document.querySelector('.ai-character-stage').innerHTML=finalGuideCharacters();}
+};
+slideAdapters.push(characterSlideAdapter);
+slideAdapters.push({
+  selector:'.period-chart',
+  preview(direction){
+    const previous=chartAnchor,selection=chartSelection,next=periodOffset(chartAnchor,direction);
+    if(next>periodStart(dateKey())||next<'2000-01-01')return null;
+    try{chartAnchor=next;chartSelection=null;return slideElement(periodChart(),'.period-chart');}
+    finally{chartAnchor=previous;chartSelection=selection;}
+  },
+  commit(direction){chartAnchor=periodOffset(chartAnchor,direction);chartSelection=null;render();}
+});
 function openFinalGuide(id,jump=false){
   const target=document.getElementById('guide-'+id);if(!target)return;
   const opening=jump||target.querySelector('[data-ai-guide-toggle]').getAttribute('aria-expanded')!=='true';
@@ -208,7 +228,7 @@ document.addEventListener('click',event=>{
   if(route()!=='guide')return;
   const toggle=event.target.closest('[data-ai-guide-toggle]');if(toggle)openFinalGuide(toggle.dataset.aiGuideToggle);
   const character=event.target.closest('[data-ai-character]');
-  if(character){guideCharacter=(guideCharacter+Number(character.dataset.aiCharacter)+5)%5;document.querySelector('.ai-character-stage').innerHTML=finalGuideCharacters();}
+  if(character)animateSlide(document.querySelector('.ai-character-viewport'),characterSlideAdapter,Number(character.dataset.aiCharacter));
 });
 window.addEventListener('hashchange',()=>clearTimeout(finalGuideScrollTimer));
 window.addEventListener('touchstart',()=>clearTimeout(finalGuideScrollTimer),{passive:true});

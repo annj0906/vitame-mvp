@@ -6,7 +6,7 @@ const elements=new Map();
 const context=vm.createContext({
   dateKey:(d=new Date(2026,8,28))=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,
   analysis(){},nutrientPage(){},guide(){},render(){},route:()=> 'test',
-  state:{interests:['눈 건강']},save(){},paths:{},icon:name=>`<svg data-icon="${name}"></svg>`,
+  state:{interests:['눈 건강']},save(){},paths:{},slideAdapters:[],icon:name=>`<svg data-icon="${name}"></svg>`,
   jellyArt:()=>'<div class="jelly-scene"><svg></svg><div></div></div>',esc:String,button:()=>'',note:()=>'',
   nutrients:[['비타민 A',35,'부족'],['오메가-3',112,'주의'],['칼슘',82,'적정']],products:[],
   window:{addEventListener(){}},document:{addEventListener(){},querySelector:s=>elements.get(s)},

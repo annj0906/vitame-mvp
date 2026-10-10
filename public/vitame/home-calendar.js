@@ -1,18 +1,113 @@
 'use strict';
-function slideCalendar(selector,direction,update){
-  const old=document.querySelector(selector);
-  if(!old||matchMedia('(prefers-reduced-motion: reduce)').matches){update();return;}
-  const rect=old.getBoundingClientRect(),ghost=old.cloneNode(true);
-  ghost.setAttribute('aria-hidden','true');ghost.inert=true;
-  const overlay=document.createElement('div');
-  Object.assign(overlay.style,{position:'fixed',left:'0',top:rect.top+'px',width:'100%',height:rect.height+'px',overflow:'hidden',pointerEvents:'none',zIndex:'20'});
-  Object.assign(ghost.style,{position:'absolute',left:rect.left+'px',top:'0',width:rect.width+'px',margin:'0',transform:'none',background:'#fff'});
-  overlay.append(ghost);document.body.append(overlay);
-  update();const next=document.querySelector(selector);
-  const options={duration:320,easing:'cubic-bezier(.22,.7,.2,1)'};
-  ghost.animate([{transform:'translateX(0)'},{transform:`translateX(${-direction*rect.width}px)`}],options).finished.finally(()=>overlay.remove());
-  next?.animate([{transform:`translateX(${direction*rect.width}px)`},{transform:'translateX(0)'}],options);
+
+// A local three-page viewport: both neighbours exist before the first drag frame.
+// Adapters render previews with temporary state, then commit only after settling.
+const slideAdapters=[];
+const slideImageSources=new Set();
+let liveSlide=null,slideClickUntil=0;
+function slideElement(html,selector){
+  const template=document.createElement('template');template.innerHTML=html;
+  return template.content.querySelector(selector);
 }
+function prepareSlide(element,adapter){
+  const neighbours=[adapter.preview(-1),adapter.preview(1)];
+  neighbours.filter(Boolean).forEach(node=>node.querySelectorAll('img').forEach(img=>{
+    if(slideImageSources.has(img.src))return;
+    slideImageSources.add(img.src);const preload=new Image();preload.src=img.src;
+    if(preload.decode)preload.decode().catch(()=>slideImageSources.delete(img.src));
+  }));
+  return {element,adapter,neighbours,width:element.getBoundingClientRect().width};
+}
+function mountSlide(s){
+  const frame=document.createElement('div');frame.className='continuous-slide-viewport';
+  const rect=s.element.getBoundingClientRect();s.originalStyle=s.element.getAttribute('style');
+  frame.style.height=rect.height+'px';s.element.before(frame);frame.append(s.element);
+  s.frame=frame;s.pages=[s.element];s.transforms=[getComputedStyle(s.element).transform];
+  s.neighbours.forEach((node,i)=>{
+    if(!node)return;
+    node.inert=true;node.setAttribute('aria-hidden','true');node.classList.add('continuous-slide-preview');
+    frame.append(node);s.pages.push(node);s.transforms.push(getComputedStyle(node).transform);
+    node.dataset.slideSide=i===0?'-1':'1';
+  });
+  s.pages.forEach(node=>{node.style.width=s.width+'px';node.style.margin='0';node.style.transition='none';});
+  // Reserve enough room for six-week months while dragging; never crop their last row.
+  frame.style.height=Math.max(rect.height,...s.pages.map(node=>node.scrollHeight))+'px';
+  moveSlide(s,0);
+}
+function moveSlide(s,dx){
+  const direction=dx<0?1:-1;
+  s.offset=s.neighbours[direction===1?1:0]?Math.max(-s.width,Math.min(s.width,dx)):dx*.2;
+  s.pages.forEach((node,i)=>{
+    const base=i===0?0:Number(node.dataset.slideSide)*s.width;
+    node.style.transform=`translate3d(${base+s.offset}px,0,0) ${s.transforms[i]==='none'?'':s.transforms[i]}`;
+  });
+}
+function cleanSlide(s){
+  if(!s.frame)return;
+  if(s.originalStyle===null)s.element.removeAttribute('style');else s.element.setAttribute('style',s.originalStyle);
+  if(s.frame.isConnected)s.frame.replaceWith(s.element);
+}
+function settleSlide(s,direction){
+  s.settling=true;
+  if(!s.neighbours[direction===1?1:0])direction=0;
+  const from=s.offset,to=-direction*s.width,duration=matchMedia('(prefers-reduced-motion: reduce)').matches?0:240;
+  const started=performance.now();
+  function tick(now){
+    if(liveSlide!==s||!s.frame.isConnected)return;
+    const t=duration?Math.min(1,(now-started)/duration):1;
+    moveSlide(s,from+(to-from)*(1-Math.pow(1-t,3)));
+    if(t<1)s.animation=requestAnimationFrame(tick);
+    else{cleanSlide(s);liveSlide=null;if(direction){s.adapter.commit(direction);warmSlideImages();}}
+  }
+  s.animation=requestAnimationFrame(tick);
+}
+function animateSlide(element,adapter,direction){
+  if(liveSlide)return;
+  const s=prepareSlide(element,adapter);liveSlide=s;mountSlide(s);settleSlide(s,direction);
+}
+document.addEventListener('pointerdown',e=>{
+  if(e.button!==0||!e.isPrimary)return;
+  const adapter=slideAdapters.find(a=>e.target.closest(a.selector));if(!adapter)return;
+  e.stopImmediatePropagation();if(liveSlide)return;
+  const element=e.target.closest(adapter.selector),s=prepareSlide(element,adapter);
+  Object.assign(s,{id:e.pointerId,x:e.clientX,y:e.clientY,lastX:e.clientX,lastTime:performance.now(),velocity:0,active:false,handle:!!e.target.closest('.calendar-handle')});
+  liveSlide=s;
+},true);
+document.addEventListener('pointermove',e=>{
+  const s=liveSlide;if(!s||s.settling||s.id!==e.pointerId)return;
+  const dx=e.clientX-s.x,dy=e.clientY-s.y,now=performance.now();
+  if(!s.active){
+    if(Math.abs(dy)>6&&Math.abs(dy)>Math.abs(dx)){if(s.handle){s.vertical=true;return;}liveSlide=null;return;}
+    if(Math.abs(dx)<6||Math.abs(dx)<=Math.abs(dy))return;
+    s.active=true;mountSlide(s);s.frame.setPointerCapture(e.pointerId);
+  }
+  e.preventDefault();e.stopImmediatePropagation();
+  s.velocity=(e.clientX-s.lastX)/Math.max(1,now-s.lastTime);s.lastX=e.clientX;s.lastTime=now;
+  moveSlide(s,dx);
+},{capture:true,passive:false});
+function endLiveSlide(e){
+  const s=liveSlide;if(!s||s.settling||s.id!==e.pointerId)return;
+  if(!s.active){liveSlide=null;if(s.vertical&&e.type!=='pointercancel'&&Math.abs(e.clientY-s.y)>42){slideClickUntil=performance.now()+350;setCalendarOpen(e.clientY>s.y);}return;}
+  e.stopImmediatePropagation();slideClickUntil=performance.now()+350;
+  const dx=e.clientX-s.x,velocity=performance.now()-s.lastTime<100?s.velocity:0;
+  const advance=e.type!=='pointercancel'&&(Math.abs(dx)>s.width*.22||(Math.abs(dx)>10&&Math.abs(velocity)>.45&&dx*velocity>0));
+  settleSlide(s,advance?(dx<0?1:-1):0);
+}
+document.addEventListener('pointerup',endLiveSlide,true);
+document.addEventListener('pointercancel',endLiveSlide,true);
+document.addEventListener('click',e=>{
+  if(performance.now()<slideClickUntil&&e.target.closest('.continuous-slide-viewport,'+slideAdapters.map(a=>a.selector).join(','))){e.preventDefault();e.stopImmediatePropagation();}
+},true);
+function cancelLiveSlide(){if(liveSlide){cancelAnimationFrame(liveSlide.animation);cleanSlide(liveSlide);liveSlide=null;}}
+window.addEventListener('hashchange',cancelLiveSlide);
+function warmSlideImages(){
+  slideAdapters.forEach(adapter=>{const element=document.querySelector(adapter.selector);if(element)prepareSlide(element,adapter);});
+}
+window.addEventListener('hashchange',()=>requestAnimationFrame(warmSlideImages));
+window.addEventListener('resize',cancelLiveSlide);
+window.addEventListener('blur',cancelLiveSlide);
+document.addEventListener('lostpointercapture',e=>{const s=liveSlide;if(s?.active&&!s.settling&&s.id===e.pointerId)settleSlide(s,0);},true);
+document.addEventListener('dragstart',e=>{if(slideAdapters.some(a=>e.target.closest(a.selector)))e.preventDefault();});
 let calendarOpen = false;
 let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -41,40 +136,20 @@ document.addEventListener('click', event => {
   if (b.dataset.cal === 'toggle') setCalendarOpen(!calendarOpen);
   else if (b.dataset.cal === 'select') { selectedDate = b.dataset.date; render(); }
   else if (b.dataset.cal === 'today') { selectedDate = dateKey(); calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1); render(); }
-  else { calendarMonth.setMonth(calendarMonth.getMonth() + (b.dataset.cal === 'prev' ? -1 : 1)); document.querySelector('.home-calendar').outerHTML = homeCalendar(); }
+  else animateSlide(document.querySelector('.calendar-surface'),homeSlideAdapter,b.dataset.cal==='prev'?-1:1);
 });
-// Touch and mouse share the same pull gesture; only the calendar surface captures it.
-let calendarDrag = null, suppressCalendarClick = false;
-document.addEventListener('pointerdown', e => {
-  const surface = e.target.closest('.calendar-surface');
-  if (!surface || e.button !== 0) return;
-  calendarDrag = {x:e.clientX,y:e.clientY,id:e.pointerId,surface};
-});
-document.addEventListener('pointermove', e => {
-  if (!calendarDrag || e.pointerId !== calendarDrag.id) return;
-  const dy=e.clientY-calendarDrag.y, dx=e.clientX-calendarDrag.x;
-  calendarDrag.dx=dx;
-  calendarDrag.dy=dy;
-  if ((calendarOpen && Math.abs(dx)>12 && Math.abs(dx)>Math.abs(dy)) || (Math.abs(dy)>12 && Math.abs(dy)>Math.abs(dx))) {
-    if (!calendarDrag.surface.hasPointerCapture(e.pointerId)) calendarDrag.surface.setPointerCapture(e.pointerId);
-    if(Math.abs(dy)>Math.abs(dx)) calendarDrag.surface.style.setProperty('--pull', `${Math.max(-8, Math.min(24, dy/4))}px`);
-    else calendarDrag.surface.style.transform=`translateX(${dx}px)`;
-  }
-});
-document.addEventListener('pointerup', e => {
-  if (!calendarDrag || e.pointerId!==calendarDrag.id) return;
-  const drag=calendarDrag; calendarDrag=null;
-  drag.surface.style.removeProperty('--pull');
-  const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
-  if (calendarOpen && Math.abs(dx)>42 && Math.abs(dx)>Math.abs(dy)) {
-    suppressCalendarClick=true;
-    slideCalendar('.calendar-surface',dx<0?1:-1,()=>{calendarMonth.setMonth(calendarMonth.getMonth()+(dx<0?1:-1));document.querySelector('.home-calendar').outerHTML=homeCalendar();});
-    setTimeout(()=>{suppressCalendarClick=false},0);
-  } else if (Math.abs(dy)>42 && Math.abs(dy)>Math.abs(dx)) {
-    suppressCalendarClick=true;
-    setCalendarOpen(dy>0);
-    setTimeout(()=>{suppressCalendarClick=false},0);
-  } else drag.surface.style.transform='';
-});
-document.addEventListener('pointercancel',()=>{if(calendarDrag){calendarDrag.surface.style.removeProperty('--pull');calendarDrag.surface.style.transform='';}calendarDrag=null;});
-document.addEventListener('click', e=>{if(suppressCalendarClick){e.preventDefault();e.stopImmediatePropagation();}},true);
+
+function shiftHomeSlide(direction){
+  if(calendarOpen)calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+direction,1);
+  else{const d=new Date(selectedDate+'T12:00:00');d.setDate(d.getDate()+direction*7);selectedDate=dateKey(d);}
+}
+const homeSlideAdapter={
+  selector:'.calendar-surface',
+  preview(direction){
+    const month=calendarMonth,date=selectedDate;
+    try{shiftHomeSlide(direction);return slideElement(homeCalendar(),'.calendar-surface');}
+    finally{calendarMonth=month;selectedDate=date;}
+  },
+  commit(direction){shiftHomeSlide(direction);render();}
+};
+slideAdapters.push(homeSlideAdapter);

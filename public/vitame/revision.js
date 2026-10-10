@@ -94,7 +94,7 @@ document.addEventListener('pointerdown',e=>{
   const rail=e.target.closest('.home-dose .dose-mini');
   if(!rail || rail.closest('.list-mode') || e.button!==0)return;
   blockDoseTapUntil=0;
-  doseSwipe={rail,id:e.pointerId,x:e.clientX,y:e.clientY,left:rail.scrollLeft,active:false};
+  doseSwipe={rail,id:e.pointerId,x:e.clientX,y:e.clientY,left:rail.scrollLeft,active:false,lastX:e.clientX,lastTime:performance.now(),velocity:0};
 });
 document.addEventListener('pointermove',e=>{
   const s=doseSwipe;if(!s||s.id!==e.pointerId)return;
@@ -104,6 +104,7 @@ document.addEventListener('pointermove',e=>{
     if(Math.abs(dx)<10)return;
     s.active=true;s.rail.setPointerCapture(e.pointerId);s.rail.classList.add('is-swiping');
   }
+  const now=performance.now();s.velocity=(e.clientX-s.lastX)/Math.max(1,now-s.lastTime);s.lastX=e.clientX;s.lastTime=now;
   s.rail.scrollLeft=s.left-dx;
 });
 function finishDoseSwipe(e){
@@ -113,9 +114,10 @@ function finishDoseSwipe(e){
   blockDoseTapUntil=Date.now()+500;
   const step=(s.rail.firstElementChild?.getBoundingClientRect().width||80)+8;
   const dx=e.clientX-s.x;
+  const flick=performance.now()-s.lastTime<100&&Math.abs(s.velocity)>.45&&dx*s.velocity>0&&Math.abs(dx)>10;
   const index=Math.round(s.left/step);
   const target=e.type==='pointercancel'?index*step:
-    Math.abs(dx)>30?(index+(dx<0?1:-1)*Math.max(1,Math.round(Math.abs(dx)/step)))*step:s.left;
+    Math.abs(dx)>30||flick?(index+(dx<0?1:-1)*Math.max(1,Math.round(Math.abs(dx)/step)))*step:s.left;
   s.rail.scrollTo({left:Math.max(0,Math.min(s.rail.scrollWidth-s.rail.clientWidth,target)),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
 }
 document.addEventListener('pointerup',finishDoseSwipe);
@@ -171,13 +173,21 @@ function moveDose(id,index){
   if(from<0)return;const [item]=state.supplements.splice(from,1);
   state.supplements.splice(Math.max(0,Math.min(index,state.supplements.length)),0,item);save();
 }
-function shiftDoseCalendar(delta){
+function shiftDoseCalendar(delta,repaint=true){
   const base=new Date(dosePeriod==='month'?doseMonth:(doseWeekAnchor||new Date(selectedDate+'T12:00:00')));
-  const day=base.getDate();base.setDate(1);base.setMonth(base.getMonth()+delta);
-  if(dosePeriod==='month')doseMonth=base;
-  else {base.setDate(Math.min(day,new Date(base.getFullYear(),base.getMonth()+1,0).getDate()));doseWeekAnchor=base;}
-  render();
+  if(dosePeriod==='month'){base.setDate(1);base.setMonth(base.getMonth()+delta);doseMonth=base;}
+  else {base.setDate(base.getDate()+delta*7);doseWeekAnchor=base;}
+  if(repaint)render();
 }
+slideAdapters.push({
+  selector:'.dose-calendar',
+  preview(direction){
+    const month=doseMonth,week=doseWeekAnchor;
+    try{shiftDoseCalendar(direction,false);return slideElement(doseCalendar(),'.dose-calendar');}
+    finally{doseMonth=month;doseWeekAnchor=week;}
+  },
+  commit:direction=>shiftDoseCalendar(direction)
+});
 document.addEventListener('click',e=>{
   if(e.target.closest('[data-dose-edit]')){doseEditing=!doseEditing;render();}
 });
@@ -189,11 +199,11 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('pointerdown',e=>{
   if(e.button!==0)return;
-  const cal=e.target.closest('.dose-calendar'),row=e.target.closest('.dose-swipe-row'),grip=doseEditing&&row?row.querySelector('[data-grip]'):null;
-  if(!cal&&!grip&&(!row||(doseEditing&&!row.dataset.archivedId)||e.target.closest('.dose-delete,.dose-item-edit')))return;
+  const row=e.target.closest('.dose-swipe-row'),grip=doseEditing&&row?row.querySelector('[data-grip]'):null;
+  if(!grip&&(!row||(doseEditing&&!row.dataset.archivedId)||e.target.closest('.dose-delete,.dose-item-edit')))return;
   doseBlockUntil=0;
-  const el=cal||grip||row;
-  doseGesture={el,cal,row,grip,id:e.pointerId,x:e.clientX,y:e.clientY,active:false,open:row?.classList.contains('revealed')};
+  const el=grip||row;
+  doseGesture={el,row,grip,id:e.pointerId,x:e.clientX,y:e.clientY,active:false,open:row?.classList.contains('revealed')};
   if(grip){
     e.preventDefault();el.setPointerCapture(e.pointerId);
     const rect=row.getBoundingClientRect();
@@ -221,7 +231,6 @@ document.addEventListener('pointermove',e=>{
     g.active=true;g.el.setPointerCapture(e.pointerId);
   }
   if(g.row)g.row.querySelector('.dose-row-front').style.transform=`translateX(${Math.max(-96,Math.min(96,dx))}px)`;
-  if(g.cal)g.cal.style.transform=`translateX(${dx}px)`;
 });
 function endDoseGesture(e){
   const g=doseGesture;if(!g||g.id!==e.pointerId)return;doseGesture=null;
@@ -234,7 +243,7 @@ function endDoseGesture(e){
     if(e.type!=='pointercancel'){
       moveDose(g.grip.dataset.grip,g.target??g.centers.filter(y=>e.clientY>y).length);render();
     }
-  }else if(g.cal){if(e.type!=='pointercancel'&&Math.abs(dx)>42)slideCalendar('.dose-calendar',dx<0?1:-1,()=>shiftDoseCalendar(dx<0?1:-1));else g.cal.style.transform='';}
+  }
   else{
     g.row.querySelector('.dose-row-front').style.transform='';
     if(g.row.dataset.archivedId){
