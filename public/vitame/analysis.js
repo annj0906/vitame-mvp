@@ -174,31 +174,132 @@ guide=function(){
 };
 
 // Reuse setup artwork and the existing data/catalog; no generated AI diagnosis.
-function finalGuideIcon(g){
+function finalGuideIcon(g, large=false){
   const option=initialHealthOptions.find(o=>o[1]===g.interest);
-  return `<span class="ai-health-icon" style="--health-tint:var(--vitame-color-accent-${option[3]}-light)"><img src="${setupAsset(option[2])}" alt=""></span>`;
+  const active={eyes:'eye',energy:'energy',sleep:'sleep',immune:'immunity',gut:'digestion'};
+  const asset=active[g.id]?`assets/guide/${active[g.id]}${large&&g.id==='eyes'?'-large':''}-active.svg`:setupAsset(option[2]);
+  return `<span class="ai-health-icon${large?' ai-health-icon-large':''}" style="--health-tint:var(--vitame-color-accent-${option[3]}-light)"><img src="${asset}" alt=""></span>`;
 }
+const guideCharacterKeys=['bad','very-bad','good','normal','very-good'];
+const guideCharacterMessages={
+  bad:['작은 관리 습관부터 함께 살펴봐요.','오늘은 잠시 쉬어가는 시간을 챙겨봐요.'],
+  'very-bad':['한 번에 모두 바꾸지 않아도 괜찮아요.','지금 할 수 있는 작은 습관부터 시작해요.'],
+  good:['오늘의 작은 습관을 이어가 볼까요?','꾸준히 기록하는 나를 응원해요!'],
+  normal:['나에게 맞는 일상의 균형을 찾아봐요.','식사와 휴식 습관도 함께 돌아봐요.'],
+  'very-good':['꾸준한 나의 루틴을 응원해요!','오늘도 나를 챙기는 시간을 가져봐요.']
+};
+let guideMessageIndex=0;
 function finalGuideCharacters(){
-  const keys=['bad','very-bad','good','normal','very-good'],i=guideCharacter%keys.length;
-  return `<div class="ai-character-viewport"><button class="ai-guide-message" data-ai-character="1">관심 건강의 관리 습관을 살펴보세요<img src="assets/setup/refresh.svg" alt=""></button><img class="ai-bubble-tail" src="assets/setup/bubble-tail.svg" alt=""><div class="ai-character-row"><div class="ai-character-side" aria-hidden="true">${initialCharacter(keys[(i+keys.length-1)%keys.length])}</div><button class="ai-character-main" data-ai-character="1" aria-label="다음 캐릭터">${initialCharacter(keys[i])}</button><div class="ai-character-side" aria-hidden="true">${initialCharacter(keys[(i+1)%keys.length])}</div></div>${characterShadow(keys[i], 'ai-character-shadow')}</div><button class="ai-character-prev" data-ai-character="-1" aria-label="이전 캐릭터">${icon('back')}</button><button class="ai-character-next" data-ai-character="1" aria-label="다음 캐릭터 보기">${icon('arrow')}</button>`;
+  return `<button class="ai-guide-message" data-ai-refresh aria-label="캐릭터 안내 새로고침"><span aria-live="polite">${guideCharacterMessages[guideCharacterKeys[guideCharacter]][guideMessageIndex%2]}</span><img src="assets/setup/refresh.svg" alt=""></button><img class="ai-bubble-tail" src="assets/setup/bubble-tail.svg" alt=""><div class="ai-character-viewport" aria-label="캐릭터 캐러셀">${guideCharacterKeys.map((key,i)=>{const position=((i-guideCharacter+7)%5)-2;return `<div class="ai-character-item" data-ai-item="${i}" style="--position:${position};--scale:${position===0?1:.55};--opacity:${Math.abs(position)>1?0:position===0?1:.45};--blur:${position===0?0:3}px"><button class="ai-character-main" data-ai-tap aria-label="${key} 캐릭터 터치" tabindex="${position===0?0:-1}" ${position===0?'':'disabled'}>${initialCharacter(key)}</button>${characterShadow(key,'ai-character-shadow')}</div>`;}).join('')}</div><button class="ai-character-prev" data-ai-character="-1" aria-label="이전 캐릭터">${icon('back')}</button><button class="ai-character-next" data-ai-character="1" aria-label="다음 캐릭터 보기">${icon('arrow')}</button>`;
+}
+const eyeGuideContent={
+  paragraphs:[
+    '영양 관리는 평소 식사에서 쉽게 만날 수 있는 음식부터 돌아보세요. 당근이나 달걀, 시금치처럼 자주 먹는 식재료를 다양하게 챙겨보세요.',
+    '화면을 오래 보는 날에는 영양 관리와 함께 눈을 쉬게 해주는 습관도 중요해요. 중간중간 먼 곳을 바라보거나 잠깐 화면에서 시선을 떼어보세요. 완벽하게 관리하려고 하기보다 일상에서 실천할 수 있는 것부터 하나씩 바꿔보세요.'
+  ],
+  tips:[['very-bad','채워보기','비타민 A는 식사에서 먼저 챙겨봐요'],['bad','잠깐 확인','오메가-3가 포함된 제품의 성분과 함량을 확인해요'],['normal','오늘의 루틴','오후에 화면을 오래 본 날엔 눈 쉬는 시간을 챙겨봐요']]
+};
+// Opt-in reusable detail shell. Other health guides retain their existing content.
+function detailedGuideCard(g,content){
+  const current=state.demo?g.names.map(name=>nutrients.find(n=>n[0]===name)).filter(Boolean):[];
+  const related=products.filter(p=>g.names.includes(p.nutrient));
+const status=current.length?`<small class="ai-analysis-disclaimer">예시 데이터 · 개인 분석 결과가 아니에요</small>${current.map(n=>`<div class="ai-guide-nutrient" data-status="${esc(n[2])}"><button data-action="nutrient" data-name="${esc(n[0])}">${esc(n[0])}</button><span class="ai-guide-track" role="meter" aria-label="${esc(n[0])} 예시 섭취 비율" aria-valuemin="0" aria-valuemax="${Math.max(100,n[1])}" aria-valuenow="${n[1]}"><i style="width:${Math.max(0,Math.min(n[1],100))}%"></i></span><span>${n[1]}%</span><b>${esc(n[2])}</b></div>`).join('')}`:'<p>아직 확인할 수 있는 개인 분석 데이터가 없어요.</p>';
+  return `<section class="ai-guide-card ai-detail-card" id="guide-${g.id}"><div class="ai-detail-surface"><h2><button class="ai-guide-toggle" data-ai-guide-toggle="${g.id}" aria-expanded="false" aria-controls="ai-guide-body-${g.id}">${finalGuideIcon(g,true)}<span>${esc(g.title)} 가이드</span>${wellnessIcon('chevron')}</button></h2><p class="ai-guide-description">${esc(g.description)}</p></div><div class="ai-guide-reveal" id="ai-guide-body-${g.id}" inert aria-hidden="true"><div class="ai-guide-inner"><div class="ai-detail-content"><div class="ai-guide-status">${status}</div><div class="ai-guide-copy">${content.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="ai-guide-tips">${content.tips.map(([key,title,copy])=>`<div class="ai-guide-tip"><div class="ai-tip-character" aria-hidden="true">${initialCharacter(key)}</div><div><small>${esc(title)}</small><p>${esc(copy)}</p></div></div>`).join('')}</div></div><section class="ai-guide-products"><div class="ai-product-heading"><div><h3>${esc(g.title)} 추천 제품</h3><p>눈 건강 관련 성분의 제품을 살펴보세요.</p></div><button data-go="shop">전체보기 ${icon('arrow')}</button></div><div class="ai-product-grid">${related.map(p=>`<button class="ai-product" data-action="product" data-id="${p.id}"><span class="ai-product-art">${bottle(p)}</span><span>VITAME</span><span>${esc(p.name)}</span><strong>${money(p.price)}</strong></button>`).join('')||'<p>관련 제품이 아직 없어요.</p>'}</div></section></div></div></section>`;
 }
 function finalGuideCard(g){
+  if(g.id==='eyes')return detailedGuideCard(g,eyeGuideContent);
   // nutrients is explicitly an illustrative dataset, not personal AI analysis.
   const current=state.demo?g.names.map(name=>nutrients.find(n=>n[0]===name)).filter(Boolean):[];
   const related=products.filter(p=>g.names.includes(p.nutrient));
   return `<section class="ai-guide-card" id="guide-${g.id}"><h2><button class="ai-guide-toggle" data-ai-guide-toggle="${g.id}" aria-expanded="false" aria-controls="ai-guide-body-${g.id}">${finalGuideIcon(g)}<span>${esc(g.title)} 가이드</span>${wellnessIcon('chevron')}</button></h2><p class="ai-guide-description">${esc(g.description)}</p><div class="ai-guide-reveal" id="ai-guide-body-${g.id}" inert aria-hidden="true"><div class="ai-guide-inner"><div class="ai-guide-details"><div class="ai-guide-status">${current.length?`<small>예시 분석 · 개인 분석 결과가 아니에요</small>${current.map(n=>`<div class="ai-guide-nutrient" data-status="${n[2]}"><button data-action="nutrient" data-name="${esc(n[0])}">${esc(n[0])}</button><span class="ai-guide-track" role="meter" aria-label="${esc(n[0])} 예시 섭취 비율" aria-valuemin="0" aria-valuemax="${Math.max(100,n[1])}" aria-valuenow="${n[1]}"><i style="width:${Math.max(0,Math.min(n[1],100))}%"></i></span><span>${n[1]}%</span><b>${n[2]}</b></div>`).join('')}`:'<p>아직 확인할 수 있는 개인 분석 데이터가 없어요.</p>'}</div><p class="ai-guide-copy">${esc(g.food)}<br><br>${esc(g.habit)}</p><div class="ai-guide-tips">${[['very-good','채워보기',g.food],['bad','함께 확인','등록한 제품의 성분과 표시된 섭취량을 확인해보세요.'],['normal','오늘의 루틴',g.habit]].map(([key,title,copy])=>`<div class="ai-guide-tip"><div class="ai-tip-character" aria-hidden="true">${initialCharacter(key)}</div><div><small>${title}</small><p>${esc(copy)}</p></div></div>`).join('')}</div><section class="ai-guide-products"><div class="ai-product-heading"><div><h3>${esc(g.title)} 추천 제품</h3><p>관련 성분의 등록 제품을 확인해보세요.</p></div><button data-go="shop">전체보기 ${icon('arrow')}</button></div><div class="ai-product-grid">${related.length?related.map(p=>`<button class="ai-product" data-action="product" data-id="${p.id}"><span class="ai-product-art">${bottle(p)}</span><span>VITAME</span><span>${esc(p.name)}</span><strong>${money(p.price)}</strong></button>`).join(''):'<p>관련 제품이 아직 없어요.</p>'}</div></section></div></div></div></section>`;
 }
 let finalGuideScrollTimer;
-const characterSlideAdapter={
-  selector:'.ai-character-viewport',
-  preview(direction){
-    const previous=guideCharacter;
-    try{guideCharacter=(guideCharacter+direction+5)%5;return slideElement(finalGuideCharacters(),'.ai-character-viewport');}
-    finally{guideCharacter=previous;}
-  },
-  commit(direction){guideCharacter=(guideCharacter+direction+5)%5;document.querySelector('.ai-character-stage').innerHTML=finalGuideCharacters();}
-};
-slideAdapters.push(characterSlideAdapter);
+// Only the guide uses this carousel. Character DOM and original motion keyframes stay intact.
+const guideCarousel={offset:0,frame:0,drag:null,queue:0,suppressUntil:0,motionTimer:0,tapPending:false};
+function paintGuideCarousel(){
+  document.querySelectorAll('[data-ai-item]').forEach(item=>{
+    let position=Number(item.dataset.aiItem)-guideCharacter-guideCarousel.offset;
+    while(position>2.5)position-=5;while(position< -2.5)position+=5;
+    const distance=Math.abs(position),near=Math.min(distance,1);
+    item.style.setProperty('--position',position);
+    item.style.setProperty('--scale',1-.45*near);
+    item.style.setProperty('--blur',`${3*near}px`);
+    item.style.setProperty('--opacity',distance<=1?1-.55*distance:.45*Math.max(0,2-distance));
+    item.style.zIndex=String(Math.round((3-distance)*10));
+    const central=distance<.01,button=item.querySelector('[data-ai-tap]');
+    button.disabled=!central;button.tabIndex=central?0:-1;
+    item.setAttribute('aria-hidden',String(!central));
+  });
+}
+function clearGuideMotion(){
+  clearTimeout(guideCarousel.motionTimer);guideCarousel.tapPending=false;
+  guideCarousel.arrivalPending=false;
+  guideCarousel.motionCleanup?.();guideCarousel.motionCleanup=null;
+  document.querySelectorAll('.ai-character-item .initial-character').forEach(el=>{
+    const key=el.closest('[data-character-key]').dataset.characterKey;
+    el.classList.remove(`ob-${key}-tap`,`ob-${key}-success`);
+    delete el.dataset.motion;
+  });
+}
+function guideMessage(refresh=false){
+  if(refresh)guideMessageIndex++;
+  const label=document.querySelector('.ai-guide-message [aria-live]');
+  if(label)label.textContent=guideCharacterMessages[guideCharacterKeys[guideCharacter]][guideMessageIndex%2];
+}
+function playGuideMotion(type){
+  const item=document.querySelector(`[data-ai-item="${guideCharacter}"]`),el=item?.querySelector('.initial-character');
+  if(!el)return;
+  if(type==='tap')guideMessage(true);
+  if(el.dataset.motion){guideCarousel.tapPending=type==='tap';return;}
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const key=guideCharacterKeys[guideCharacter],name=`ob-${key}-${type}`;
+  el.dataset.motion=type;el.classList.add(name);
+  const action=el.querySelector('[data-initial-action]');
+  const finish=(discard=false)=>{el.classList.remove(name);delete el.dataset.motion;clearTimeout(guideCarousel.motionTimer);action.removeEventListener('animationend',end);guideCarousel.motionCleanup=null;if(discard)return;if(guideCarousel.arrivalPending&&!guideCarousel.drag&&!guideCarousel.frame){guideCarousel.arrivalPending=false;playGuideMotion('success');}else if(guideCarousel.queue&&el.isConnected&&!guideCarousel.drag&&!guideCarousel.frame){const next=Math.sign(guideCarousel.queue);guideCarousel.queue-=next;moveGuideCharacter(next);}else if(guideCarousel.tapPending&&el.isConnected&&!guideCarousel.drag&&!guideCarousel.frame){guideCarousel.tapPending=false;playGuideMotion('tap');}};
+  const end=e=>{if(e.target===action)finish();};
+  guideCarousel.motionCleanup=()=>finish(true);
+  action.addEventListener('animationend',end);
+  guideCarousel.motionTimer=setTimeout(finish,parseFloat(getComputedStyle(action).animationDuration)*1000+80);
+}
+function settleGuideCarousel(target){
+  cancelAnimationFrame(guideCarousel.frame);
+  const from=guideCarousel.offset,start=performance.now(),duration=matchMedia('(prefers-reduced-motion: reduce)').matches?0:320;
+  const tick=now=>{
+    const t=duration?Math.min(1,(now-start)/duration):1;
+    guideCarousel.offset=from+(target-from)*(1-Math.pow(1-t,3));paintGuideCarousel();
+    if(t<1){guideCarousel.frame=requestAnimationFrame(tick);return;}
+    guideCarousel.frame=0;guideCarousel.offset=0;
+    guideCharacter=(guideCharacter+target+5)%5;paintGuideCarousel();guideMessage();
+    if(guideCarousel.queue){const next=Math.sign(guideCarousel.queue);guideCarousel.queue-=next;moveGuideCharacter(next);}
+    else if(target){if(guideCarousel.motionCleanup)guideCarousel.arrivalPending=true;else playGuideMotion('success');}
+  };
+  guideCarousel.frame=requestAnimationFrame(tick);
+}
+function moveGuideCharacter(direction){
+  if(guideCarousel.frame||guideCarousel.drag||guideCarousel.motionCleanup){guideCarousel.queue+=direction;return;}
+  clearGuideMotion();settleGuideCarousel(direction);
+}
+document.addEventListener('pointerdown',e=>{
+  const viewport=e.target.closest('.ai-character-viewport');
+  if(route()!=='guide'||!viewport||e.button!==0||guideCarousel.frame)return;
+  guideCarousel.drag={id:e.pointerId,x:e.clientX,y:e.clientY,viewport,moved:false};
+});
+document.addEventListener('pointermove',e=>{
+  const d=guideCarousel.drag;if(!d||d.id!==e.pointerId)return;
+  const dx=e.clientX-d.x,dy=e.clientY-d.y;
+  if(!d.moved){if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>8){guideCarousel.drag=null;return;}if(Math.abs(dx)<8)return;d.moved=true;guideCarousel.tapPending=false;d.viewport.setPointerCapture(e.pointerId);}
+  e.preventDefault();guideCarousel.offset=Math.max(-1,Math.min(1,-dx/(d.viewport.clientWidth*.29)));paintGuideCarousel();
+});
+function endGuideDrag(e){
+  const d=guideCarousel.drag;if(!d||d.id!==e.pointerId)return;guideCarousel.drag=null;
+  if(d.viewport.hasPointerCapture(e.pointerId))d.viewport.releasePointerCapture(e.pointerId);
+  if(!d.moved)return;
+  guideCarousel.suppressUntil=performance.now()+400;
+  settleGuideCarousel(e.type==='pointercancel'?0:Math.abs(guideCarousel.offset)>.25?Math.sign(guideCarousel.offset):0);
+}
+document.addEventListener('pointerup',endGuideDrag);document.addEventListener('pointercancel',endGuideDrag);
+document.addEventListener('click',e=>{if(e.target.closest('.ai-character-viewport')&&performance.now()<guideCarousel.suppressUntil){e.preventDefault();e.stopImmediatePropagation();}},true);
+window.addEventListener('hashchange',()=>{cancelAnimationFrame(guideCarousel.frame);clearGuideMotion();Object.assign(guideCarousel,{offset:0,frame:0,drag:null,queue:0});});
 slideAdapters.push({
   selector:'.period-chart',
   preview(direction){
@@ -228,7 +329,9 @@ document.addEventListener('click',event=>{
   if(route()!=='guide')return;
   const toggle=event.target.closest('[data-ai-guide-toggle]');if(toggle)openFinalGuide(toggle.dataset.aiGuideToggle);
   const character=event.target.closest('[data-ai-character]');
-  if(character)animateSlide(document.querySelector('.ai-character-viewport'),characterSlideAdapter,Number(character.dataset.aiCharacter));
+  if(character)moveGuideCharacter(Number(character.dataset.aiCharacter));
+  if(event.target.closest('[data-ai-tap]')&&!guideCarousel.frame)playGuideMotion('tap');
+  if(event.target.closest('[data-ai-refresh]'))guideMessage(true);
 });
 window.addEventListener('hashchange',()=>clearTimeout(finalGuideScrollTimer));
 window.addEventListener('touchstart',()=>clearTimeout(finalGuideScrollTimer),{passive:true});

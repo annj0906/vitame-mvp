@@ -278,3 +278,37 @@ body[data-screen="guide"] .nav .active{background:var(--vitame-color-accent-gree
 .ai-character-viewport .ai-character-row{padding:0 28px}
 .ai-character-prev,.ai-character-next{position:absolute;top:50%;width:24px;padding:0;z-index:1;color:var(--vitame-color-neutral-gray60)}
 .ai-character-prev{left:0}.ai-character-next{right:0}
+/* Guide-only continuous carousel: transforms wrap, original character motions do not. */
+body[data-screen="guide"] .ai-character-viewport{position:relative;display:block;height:190px;overflow:hidden;touch-action:pan-y;user-select:none;cursor:grab;container-type:inline-size}
+body[data-screen="guide"] .ai-character-item{position:absolute;left:50%;top:16px;width:170px;display:flex;flex-direction:column;align-items:center;transform:translateX(calc(-50% + var(--position)*29cqw)) scale(var(--scale));transform-origin:85px 65px;opacity:var(--opacity);filter:blur(var(--blur));will-change:transform,opacity,filter}
+body[data-screen="guide"] .ai-character-main{display:block;position:relative;pointer-events:auto}
+body[data-screen="guide"] .ai-character-main:disabled{opacity:1;cursor:grab}
+body[data-screen="guide"] .ai-character-main .initial-character-box{pointer-events:none}
+body[data-screen="guide"] .ai-character-item .ai-character-shadow{margin-top:22px}
+body[data-screen="guide"] .ai-character-item:has([class$="-tap"])>.character-shadow>img{animation:var(--shadow-tap) var(--shadow-tap-duration) ease-out 1}
+body[data-screen="guide"] .ai-character-item:has([class$="-success"])>.character-shadow>img{animation:var(--shadow-success) var(--shadow-success-duration) ease-in-out 1}
+body[data-screen="guide"] .ai-character-prev,body[data-screen="guide"] .ai-character-next{top:128px;width:28px;height:44px;z-index:40}
+body[data-screen="guide"] .ai-guide-message{min-height:36px;justify-content:center}
+body[data-screen="guide"] .ai-bubble-tail{margin-bottom:8px}
+body[data-screen="guide"] .ai-health-icon img{max-width:none;max-height:none;width:auto;height:auto;filter:none}
+body[data-screen="guide"] .ai-detail-card{padding:0;background:none;box-shadow:none;border-radius:20px}
+body[data-screen="guide"] .ai-detail-surface{background:var(--vitame-color-neutral-white);padding:20px 24px;border-radius:20px;transition:border-radius .28s}
+body[data-screen="guide"] .ai-detail-card.is-open .ai-detail-surface{border-radius:20px 20px 0 0;padding-bottom:0}
+body[data-screen="guide"] .ai-detail-card .ai-guide-description{font:var(--vitame-type-pretendard-body1-regular-16);color:var(--vitame-color-neutral-gray60);line-height:1.4}
+body[data-screen="guide"] .ai-detail-content{background:var(--vitame-color-neutral-white);padding:24px 24px 40px;border-radius:0 0 20px 20px;box-shadow:0 4px 5px #0000000d}
+body[data-screen="guide"] .ai-detail-card .ai-guide-status{max-width:270px}
+body[data-screen="guide"] .ai-detail-card .ai-guide-nutrient{grid-template-columns:80px minmax(36px,104px) 30px 28px;gap:6px}
+body[data-screen="guide"] .ai-detail-card .ai-guide-nutrient>button{border:1px solid var(--vitame-color-neutral-gray20);border-radius:15px;padding:4px 8px;white-space:nowrap;text-align:center}
+body[data-screen="guide"] .ai-detail-card .ai-guide-nutrient>span:not(.ai-guide-track){font-size:10px;text-align:right}
+body[data-screen="guide"] .ai-detail-card .ai-guide-copy{padding-top:25px;display:grid;gap:20px;word-break:keep-all;overflow-wrap:anywhere}
+body[data-screen="guide"] .ai-detail-card .ai-guide-tips{margin-top:40px;gap:32px}
+body[data-screen="guide"] .ai-detail-card .ai-guide-tip p{font:var(--vitame-type-nanumsquareround-body-bold-16);word-break:keep-all;overflow-wrap:anywhere}
+body[data-screen="guide"] .ai-detail-card .ai-guide-products{padding:0 20px;margin-top:32px;border:0}
+body[data-screen="guide"] .ai-detail-card .ai-product-heading{position:relative;display:block;padding-top:0}
+body[data-screen="guide"] .ai-detail-card .ai-product-heading h3{padding-right:66px}
+body[data-screen="guide"] .ai-detail-card .ai-product-heading>button{position:absolute;right:0;top:3px}
+body[data-screen="guide"] .ai-detail-card .ai-product-heading p{font:var(--vitame-type-pretendard-body1-medium-16);word-break:keep-all}
+body[data-screen="guide"] .ai-detail-card .ai-product-grid{gap:12px;grid-template-columns:repeat(2,minmax(0,142px))}
+body[data-screen="guide"] .ai-detail-card .ai-guide-inner{padding-bottom:5px}
+body[data-screen="guide"] .ai-analysis-disclaimer{font:var(--vitame-type-pretendard-caption-regular-12);margin-bottom:6px}
+@media(prefers-reduced-motion:reduce){body[data-screen="guide"] .ai-character-item>.character-shadow>img{animation:none!important}body[data-screen="guide"] .ai-detail-surface{transition:none}}

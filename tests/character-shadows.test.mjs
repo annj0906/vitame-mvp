@@ -27,16 +27,16 @@ for (const [index, key] of ['good', 'bad', 'very-bad'].entries()) {
   assert.equal((markup.match(/data-shadow-key=/g) || []).length, 1);
   assert.doesNotMatch(markup, /shadow-.*\.svg/);
 }
-// Carousel previews and commits both call this same renderer.
-const guideSource = read('analysis.js').split('function finalGuideCharacters(){')[1].split('function finalGuideCard(')[0];
+// Each persistent carousel slot owns its matching shadow.
+const guideSource = read('analysis.js').split('const guideCharacterKeys=')[1].split('const eyeGuideContent=')[0];
 context.initialCharacter = key => `<span data-character-key="${key}"></span>`;
 context.icon = () => '';
-vm.runInContext('function finalGuideCharacters(){' + guideSource, context);
+vm.runInContext('const guideCharacterKeys=' + guideSource, context);
 for (const [index, key] of ['bad', 'very-bad', 'good', 'normal', 'very-good'].entries()) {
   context.guideCharacter = index;
   const markup = run('finalGuideCharacters()');
   assert.ok(markup.includes(`data-shadow-key="${key}"`));
-  assert.equal((markup.match(/data-shadow-key=/g) || []).length, 1);
+  assert.equal((markup.match(/data-shadow-key=/g) || []).length, 5);
 }
 const css = read('onboarding.css');
 assert.match(css, /object-fit: contain/);
