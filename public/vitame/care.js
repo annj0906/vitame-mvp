@@ -45,7 +45,7 @@ render=function(){
   if(r==='dose')header.querySelector('.top-actions').innerHTML=`<button class="icon-btn" data-go="scan" aria-label="영양제 스캔"><img src="assets/home/scan.svg" alt=""></button><button class="icon-btn" data-go="archive" aria-label="영양제 아카이브">${careAsset('archive')}</button>`;
   if(r==='analysis'){
     const cta=document.querySelector('.analysis-guide-cta');
-    cta.querySelector('button').insertAdjacentHTML('beforebegin',`<div class="care-guide-character">${initialCharacter('normal')}${careAsset('shadow')}</div>`);
+    cta.querySelector('button').insertAdjacentHTML('beforebegin',`<div class="care-guide-character">${initialCharacter('normal')}${characterShadow('normal', 'care-character-shadow')}</div>`);
     document.querySelector('.analysis-month-score').innerHTML=document.querySelector('.analysis-month-score').textContent.replace('점','<small>점</small>');
   }
   document.querySelectorAll('.nav button').forEach(b=>{const key=b.dataset.go;b.innerHTML=`<span class="care-nav-icon">${careAsset('nav-'+key+(key===r?'-active':''))}</span><span>${({home:'홈',dose:'복용',analysis:'분석',shop:'쇼핑',my:'마이'})[key]}</span>`;});

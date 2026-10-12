@@ -22,7 +22,7 @@ home = function() {
   if (alert) {
     // Older WebKit throws when outerHTML replaces a DocumentFragment child.
     const replacement = document.createElement('template');
-    replacement.innerHTML = `<section class="home-alert-wrap home-scan-banner"><button class="alert-close" data-dismiss-alert aria-label="스캔 안내 닫기">${homeAsset('close')}</button><h2>스캔 한 번으로<br>비타미와 오늘을 시작해요</h2><button class="home-scan-link" data-go="scan">영양제 스캔하러 가기${homeAsset('banner-arrow')}</button><div class="home-banner-character">${initialCharacter('very-good')}<span class="home-banner-shadow">${homeAsset('shadow')}</span></div></section>`;
+    replacement.innerHTML = `<section class="home-alert-wrap home-scan-banner"><button class="alert-close" data-dismiss-alert aria-label="스캔 안내 닫기">${homeAsset('close')}</button><h2>스캔 한 번으로<br>비타미와 오늘을 시작해요</h2><button class="home-scan-link" data-go="scan">영양제 스캔하러 가기${homeAsset('banner-arrow')}</button><div class="home-banner-character">${initialCharacter('very-good')}${characterShadow('very-good', 'home-banner-shadow')}</div></section>`;
     alert.replaceWith(replacement.content);
   }
   const banner = template.content.querySelector('.home-scan-banner');

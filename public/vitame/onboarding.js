@@ -1,5 +1,13 @@
 'use strict';
 
+// Original transparent WebP exports, matched by the supplied Korean state names.
+function characterShadow(key, className) {
+  const sizes = { 'very-bad': [2848, 624], bad: [2848, 628], normal: [2892, 624], good: [2848, 624], 'very-good': [2892, 624] };
+  if (!Object.hasOwn(sizes, key)) throw new Error('Unknown character shadow: ' + key);
+  const [width, height] = sizes[key];
+  return `<span class="character-shadow ${className}" data-shadow-key="${key}" aria-hidden="true"><img src="assets/character-shadows/${key}.webp" width="${width}" height="${height}" alt="" draggable="false"></span>`;
+}
+
 // Only the three introduction slides use these supplied character layers.
 function onboardingCharacter(index) {
   const key = ['good', 'bad', 'very-bad'][index];
@@ -7,7 +15,7 @@ function onboardingCharacter(index) {
   const prefix = 'ob-' + key + '-';
   const asset = 'assets/onboarding/' + key + '/';
   const eye = side => `<span class="${prefix}part ${prefix}eyeWrap ${prefix}eye${side}"><img class="${prefix}eyeVisual" src="${asset}Eye_${side}.png" alt="" draggable="false"></span>`;
-  return `<div class="ob-character-slot"><button type="button" class="ob-character ${prefix}charBtn" data-onboarding-character aria-label="${label} 캐릭터 터치"><span class="${prefix}idleMotion"><span class="${prefix}actionMotion" data-character-action><span class="${prefix}char"><img class="${prefix}part ${prefix}body" src="${asset}Body.png" alt="" draggable="false">${eye('L')}${eye('R')}<span class="${prefix}part ${prefix}mouthWrap"><img class="${prefix}mouthVisual" src="${asset}Mouth.png" alt="" draggable="false"></span></span></span></span></button></div><img class="ob-shadow" src="assets/onboarding/shadow-${key}.svg" alt="">`;
+  return `<div class="ob-character-slot"><button type="button" class="ob-character ${prefix}charBtn" data-onboarding-character aria-label="${label} 캐릭터 터치"><span class="${prefix}idleMotion"><span class="${prefix}actionMotion" data-character-action><span class="${prefix}char"><img class="${prefix}part ${prefix}body" src="${asset}Body.png" alt="" draggable="false">${eye('L')}${eye('R')}<span class="${prefix}part ${prefix}mouthWrap"><img class="${prefix}mouthVisual" src="${asset}Mouth.png" alt="" draggable="false"></span></span></span></span></button></div>${characterShadow(key, 'ob-shadow')}`;
 }
 
 function onboardingDecorations(index) {

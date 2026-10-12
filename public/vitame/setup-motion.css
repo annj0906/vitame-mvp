@@ -27,8 +27,8 @@
   width:42%;
   height:5%;
   border-radius:999px;
-  background:rgba(87,58,20,.10);
-  filter:blur(10px);
+  background:none;
+  filter:none;
   transform:translateX(-50%);
   animation:ob-normal-shadowIdle 4.7s linear infinite;
 }
@@ -215,7 +215,7 @@
 .ob-very-good-charBtn {appearance:none;border:0;background:transparent;padding:0;width:min(330px,80vw);aspect-ratio:867/877;position:relative;cursor:pointer;outline:none;touch-action:manipulation}
 .ob-very-good-charBtn:focus-visible {outline:3px solid rgba(73,103,255,.28);outline-offset:9px;border-radius:26px}
 .ob-very-good-shadow {position:absolute;left:50%;bottom:7.5%;width:42%;height:6%;transform:translateX(-50%);animation:ob-very-good-shadowIdle 3.2s cubic-bezier(.45,0,.55,1) infinite;will-change:transform,opacity}
-.ob-very-good-shadowPulse {width:100%;height:100%;border-radius:999px;background:rgba(25,34,68,.12);filter:blur(10px);transform-origin:center;will-change:transform,opacity}
+.ob-very-good-shadowPulse {width:100%;height:100%;border-radius:999px;background:none;filter:none;transform-origin:center;will-change:transform,opacity}
 .ob-very-good-char {position:absolute;inset:0;transform-origin:50% 76%;animation:ob-very-good-idle 3.2s cubic-bezier(.45,0,.55,1) infinite;will-change:transform}
 .ob-very-good-gesture {position:absolute;inset:0;transform-origin:50% 76%;will-change:transform}
 .ob-very-good-part {position:absolute;display:block;pointer-events:none;user-select:none;-webkit-user-drag:none;will-change:transform}

@@ -83,6 +83,53 @@ body .onboarding-final .login-link .text-btn {
   position: absolute; left: calc(50% - 66px); top: 151px; width: 132px; height: 29px;
   pointer-events: none;
 }
+
+/* Figma shadow slots (207:2909/3075/3145, 224:859, 147:679,
+   112:1092/1106). Only the shadow layer moves; surrounding layout is unchanged.
+   Contain keeps the original WebP alpha and ratio without stretching/cropping. */
+.character-shadow {
+  display: block; flex: none; pointer-events: none;
+  background: none; border: 0; border-radius: 0; box-shadow: none; filter: none;
+}
+.character-shadow > img {
+  display: block; width: 100%; height: 100%; max-width: none;
+  object-fit: contain; object-position: center;
+  background: none; box-shadow: none; filter: none;
+  transform-origin: center; will-change: transform, opacity;
+  animation: var(--shadow-idle) var(--shadow-duration) var(--shadow-easing, ease-in-out) infinite;
+}
+.initial-complete-shadow.character-shadow, .ai-character-shadow.character-shadow { width: 170px; height: 32.0755px; }
+.home-banner-shadow.character-shadow { width: 134px; height: 29px; }
+.care-character-shadow.character-shadow { width: 94.877px; height: 17.9013px; }
+.character-shadow[data-shadow-key="good"] { --shadow-idle: vitame-shadow-good-idle; --shadow-duration: 4.6s; --shadow-tap: vitame-shadow-good-tap; --shadow-tap-duration: .72s; --shadow-success: vitame-shadow-good-success; --shadow-success-duration: 1.25s; }
+.character-shadow[data-shadow-key="bad"] { --shadow-idle: vitame-shadow-bad-idle; --shadow-duration: 4.8s; --shadow-tap: vitame-shadow-bad-tap; --shadow-tap-duration: .62s; --shadow-success: vitame-shadow-bad-success; --shadow-success-duration: .96s; }
+.character-shadow[data-shadow-key="very-bad"] { --shadow-idle: vitame-shadow-very-bad-idle; --shadow-duration: 2.9s; --shadow-tap: vitame-shadow-very-bad-tap; --shadow-tap-duration: .72s; --shadow-success: vitame-shadow-very-bad-success; --shadow-success-duration: 1.02s; }
+.character-shadow[data-shadow-key="normal"] { --shadow-idle: vitame-shadow-normal-idle; --shadow-duration: 4.7s; --shadow-easing: linear; --shadow-tap: vitame-shadow-normal-tap; --shadow-tap-duration: .54s; --shadow-success: vitame-shadow-normal-success; --shadow-success-duration: .66s; }
+.character-shadow[data-shadow-key="very-good"] { --shadow-idle: vitame-shadow-very-good-idle; --shadow-duration: 3.2s; --shadow-easing: cubic-bezier(.45,0,.55,1); --shadow-tap: vitame-shadow-very-good-tap; --shadow-tap-duration: .62s; --shadow-success: vitame-shadow-very-good-success; --shadow-success-duration: 1.15s; }
+:is(.onboarding-art,.initial-completion-art,.home-banner-character,.care-guide-character,.ai-character-viewport):has(
+  .ob-good-tap,.ob-bad-tap,.ob-very-bad-tap,.ob-normal-tap,.ob-very-good-tap
+) > .character-shadow > img { animation: var(--shadow-tap) var(--shadow-tap-duration) ease-out; }
+:is(.onboarding-art,.initial-completion-art,.home-banner-character,.care-guide-character,.ai-character-viewport):has(
+  .ob-good-success,.ob-bad-success,.ob-very-bad-success,.ob-normal-success,.ob-very-good-success
+) > .character-shadow > img { animation: var(--shadow-success) var(--shadow-success-duration) ease-out; }
+@keyframes vitame-shadow-good-idle { 0%,100% { transform:scale(1); opacity:1 } 52% { transform:scale(.94); opacity:.78 } }
+@keyframes vitame-shadow-bad-idle { 0%,100% { transform:scale(1); opacity:.9 } 32%,78% { transform:scale(1.03); opacity:1 } }
+@keyframes vitame-shadow-very-bad-idle { 0%,100% { transform:scale(1); opacity:.94 } 48%,84% { transform:scale(1.02); opacity:1 } }
+@keyframes vitame-shadow-normal-idle { 0%,100% { transform:scale(1); opacity:1 } 25%,75% { transform:scale(.97); opacity:.91 } 50% { transform:scale(.94); opacity:.8 } }
+@keyframes vitame-shadow-very-good-idle { 0%,100% { transform:scale(1); opacity:1 } 50% { transform:scale(.89); opacity:.65 } }
+@keyframes vitame-shadow-good-tap { 0%,100% { transform:scale(1); opacity:1 } 40% { transform:scale(.9); opacity:.68 } }
+@keyframes vitame-shadow-bad-tap { 0%,100% { transform:scale(1); opacity:.9 } 18% { transform:scale(1.08); opacity:1 } 44% { transform:scale(.98); opacity:.85 } }
+@keyframes vitame-shadow-very-bad-tap { 0%,100% { transform:scale(1); opacity:.94 } 14% { transform:translateX(-1px) scale(1.025); opacity:1 } 28% { transform:translateX(1px) scale(.99); opacity:.88 } }
+@keyframes vitame-shadow-normal-tap { 0%,100% { transform:scale(1); opacity:1 } 22% { transform:scale(1.015); opacity:1 } 48% { transform:scale(.96); opacity:.87 } 74% { transform:scale(.985); opacity:.95 } }
+@keyframes vitame-shadow-very-good-tap { 0%,100% { transform:scale(1); opacity:1 } 20% { transform:scale(1.1); opacity:1 } 48% { transform:scale(.82); opacity:.48 } }
+@keyframes vitame-shadow-good-success { 0%,100% { transform:scale(1); opacity:1 } 40%,60% { transform:scale(.86); opacity:.56 } }
+@keyframes vitame-shadow-bad-success { 0%,100% { transform:scale(1); opacity:.9 } 7% { transform:scale(1.03); opacity:1 } 47% { transform:scale(.92); opacity:.7 } }
+@keyframes vitame-shadow-very-bad-success { 0%,100% { transform:scale(1); opacity:.94 } 24% { transform:scale(1.04); opacity:1 } 48% { transform:scale(.94); opacity:.75 } }
+@keyframes vitame-shadow-normal-success { 0%,100% { transform:scale(1); opacity:1 } 6% { transform:scale(1.01); opacity:1 } 42% { transform:scale(.88); opacity:.65 } 82% { transform:scale(1.015); opacity:1 } }
+@keyframes vitame-shadow-very-good-success { 0%,100% { transform:scale(1); opacity:1 } 16% { transform:scale(1.12); opacity:1 } 40% { transform:scale(.73); opacity:.33 } 80% { transform:scale(1.03); opacity:.94 } }
+@media (prefers-reduced-motion: reduce) {
+  .character-shadow > img { animation: none !important; transform: none; opacity: 1; will-change: auto; }
+}
 .onboarding-final .ob-decoration { position: absolute; pointer-events: none; }
 .onboarding-final .ob-square-cyan {
   left: calc(50% + 54px); top: 10px; width: 33px; height: 33px; border-radius: 4px;
