@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {execFileSync} from 'node:child_process';
+const file='public/vitame/analysis.js';
+const source=fs.readFileSync(file,'utf8');
+const previous=execFileSync('git',['show',`HEAD:${file}`],{encoding:'utf8'});
+const calculations=s=>s.slice(s.indexOf('function periodStart('),s.indexOf('function periodChart(')).replaceAll('\r\n','\n');
+assert.equal(calculations(source),calculations(previous),'calendar and score calculation functions unchanged');
+const dateKey=(d=new Date('2026-10-13T12:00:00'))=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const ctx=vm.createContext({dateKey});
+vm.runInContext("const chartPeriods=[['day','1일'],['week','1주'],['month','1개월'],['half','6개월'],['year','1년']];let chartPeriod='week',chartAnchor=dateKey(),chartSelection=null;"+source.slice(source.indexOf('function periodStart('),source.indexOf('analysis=function(){',source.indexOf('function periodStart('))),ctx);
+const run=s=>vm.runInContext(s,ctx);
+for(const period of ['week','month','half','year']){
+  run(`chartPeriod='${period}';chartSelection=null;`);
+  const html=run('periodChart()');
+  assert.equal((html.match(/data-period-bar=/g)||[]).length,7);
+  assert.equal((html.match(/ disabled/g)||[]).length,3);
+  run('chartSelection=periodOffset(chartAnchor,-1)');
+  const selected=run('periodChart()');
+  assert.equal((selected.match(/class="month-bar current/g)||[]).length,1);
+  assert.match(selected,/period-tooltip/);
+  assert.ok(selected.includes(`${run('periodScore(chartSelection)')}<span>점</span>`));
+  assert.doesNotMatch(selected,/연속 복용|\+6%/);
+}
+run("chartPeriod='month'");assert.equal(run("periodOffset('2026-12-01',1)"),'2027-01-01');
+assert.equal(run("periodScore('2027-01-01')"),null);
+assert.notEqual(run('analysisScoreMessage(59)'),run('analysisScoreMessage(80)'));
+assert.match(source,/chartPeriods\.filter\(\(\[id\]\)=>id!=='day'\)/);
+console.log('Analysis chart: unchanged calculations, four periods, future dates, selection, tooltip data and score messages passed.');

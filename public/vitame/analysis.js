@@ -93,7 +93,7 @@ const renderBeforeWellness=render;
 render=function(){renderBeforeWellness();if(['analysis','nutrients','guide'].includes(route())){document.querySelector('.top h2').textContent='분석';document.title=(route()==='guide'?'AI 가이드':'종합 분석')+' · VITAME';}};
 // Period navigation uses calendar boundaries, not fixed millisecond months.
 const chartPeriods=[['day','1일'],['week','1주'],['month','1개월'],['half','6개월'],['year','1년']];
-let chartPeriod='day',chartAnchor=dateKey(),chartSelection=null,guideCharacter=0,guideVisit=0;
+let chartPeriod='week',chartAnchor=dateKey(),chartSelection=null,guideCharacter=0,guideVisit=0;
 function periodStart(key,kind=chartPeriod){
   const d=new Date(key+'T12:00:00');
   if(kind==='week')d.setDate(d.getDate()-d.getDay());
@@ -122,14 +122,23 @@ function periodScore(key){
 }
 function periodChart(){
   const anchor=periodStart(chartAnchor),keys=Array.from({length:7},(_,i)=>periodOffset(anchor,i-3));
-  return `<div class="period-chart" aria-label="${chartPeriods.find(p=>p[0]===chartPeriod)[1]} 단위 예시 그래프"><div class="chart-scale" aria-hidden="true"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><div class="month-bars">${keys.map((key,i)=>{
-    const score=periodScore(key),picked=key===chartSelection;
-    return `<div class="period-column ${i<2?'edge-left':i>4?'edge-right':''}"><button class="month-bar ${key===anchor?'current':''} ${picked?'picked':''}" data-period-bar="${key}" aria-pressed="${picked}" aria-label="${periodLabel(key)} ${score===null?'기록 없음':score+'점'}" ${score===null?'disabled':''}><span class="month-bar-track"><i style="--bar-height:${score??4}%"></i></span><span class="month-bar-label">${periodLabel(key,true)}</span></button>${picked?`<div class="period-tooltip" role="status" style="bottom:calc(30px + ${score*1.5}px)"><small>${periodLabel(key)}</small><b>${score}점</b><span>선택한 기간의 예시 점수</span></div>`:''}</div>`;
-  }).join('')}</div></div>`;
+  return `<div class="period-chart" data-period-kind="${chartPeriod}" aria-label="${chartPeriods.find(p=>p[0]===chartPeriod)[1]} 단위 예시 그래프"><p class="period-hint">좌우로 넘겨 기간을 이동하고, 막대를 눌러 확인해보세요.</p><div class="period-plot"><div class="chart-scale" aria-hidden="true"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><span class="period-reference-line" aria-hidden="true"><img src="assets/care/analysis-reference-line.svg" alt=""></span><div class="month-bars">${keys.map((key,i)=>{
+    const score=periodScore(key),picked=key===chartSelection,highlight=key===(chartSelection||anchor);
+    const d=new Date(key+'T12:00:00'),label=chartPeriod==='half'?`${d.getFullYear()}<br>${d.getMonth()===0?'상반기':'하반기'}`:periodLabel(key,true).replace(' 주','');
+    return `<div class="period-column ${i<2?'edge-left':i>4?'edge-right':''}"><button class="month-bar ${highlight?'current':''} ${picked?'picked':''}" data-period-bar="${key}" aria-pressed="${picked}" aria-label="${periodLabel(key)} ${score===null?'기록 없음':score+'점'}" ${score===null?'disabled':''}><span class="month-bar-track"><i style="--bar-height:${score??4}%"></i></span><span class="month-bar-label">${label}</span></button>${picked?`<div class="period-tooltip" role="status" style="bottom:calc(28px + ${score*1.5}px + 8px)"><small>${periodLabel(key)}</small><b>${score}<span>점</span></b></div>`:''}</div>`;
+  }).join('')}</div></div></div>`;
+}
+function analysisScoreDate(key){
+  if(['half','year','month'].includes(chartPeriod))return periodLabel(key);
+  const d=new Date(key+'T12:00:00');return `${d.getMonth()+1}월 ${d.getDate()}일`;
+}
+function analysisScoreMessage(score){
+  if(score===null)return '아직 기록이 없어요.<br>복용 기록을 시작해보세요.';
+  return score>=80?'꾸준히 관리하고 있어요.<br>지금의 복용 습관을 유지해보세요.':score>=60?'균형을 찾아가는 중이에요.<br>복용을 유지해보세요.':'작은 습관부터 시작해봐요.<br>복용 기록을 차근차근 이어가세요.';
 }
 analysis=function(){
   const anchor=periodStart(chartAnchor),score=periodScore(anchor);
-  return `${analysisTabs()}<div class="analysis-periods" aria-label="분석 기간">${chartPeriods.map(([id,label])=>`<button data-chart-period="${id}" aria-pressed="${chartPeriod===id}">${label}</button>`).join('')}</div><div class="analysis-overview"><div class="period-navigation"><button data-period-step="-1" aria-label="이전 기간">${icon('back')}</button><span>${periodLabel(anchor)}</span><button data-period-step="1" aria-label="다음 기간" ${anchor>=periodStart(dateKey())?'disabled':''}>${icon('arrow')}</button></div><p class="analysis-score-label">선택한 기간 건강 관리 점수 <button data-period-info aria-label="건강 관리 점수 안내">${icon('info')}</button></p><h1 class="analysis-month-score">${score}점</h1><p class="analysis-month-description">나의 복용 루틴을 돌아보세요.<br>화면 체험을 위한 <b>예시 점수</b>예요.</p>${periodChart()}<p class="period-hint">좌우로 넘겨 기간을 이동하고, 막대를 눌러 확인해보세요.</p></div><div class="nutrition-panels">${analysisGroups.map(nutritionCard).join('')}</div><section class="analysis-guide-cta"><h3>이제 관리 방법을 알아볼까요?</h3><p>나에게 맞는 관리 가이드를 살펴보세요.</p>${button('AI 가이드 보러가기','guide')}</section>${note()}`;
+return `${analysisTabs()}<div class="analysis-periods" aria-label="분석 기간">${chartPeriods.filter(([id])=>id!=='day').map(([id,label])=>`<button data-chart-period="${id}" aria-pressed="${chartPeriod===id}">${label}</button>`).join('')}</div><div class="analysis-overview"><p class="analysis-score-label">${analysisScoreDate(anchor)}</p><h1 class="analysis-month-score">${score}점</h1><p class="analysis-month-description">${analysisScoreMessage(score)}</p>${periodChart()}</div><div class="nutrition-panels">${analysisGroups.map(nutritionCard).join('')}</div><section class="analysis-guide-cta"><h3>이제 관리 방법을 알아볼까요?</h3><p>나에게 맞는 관리 가이드를 살펴보세요.</p>${button('AI 가이드 보러가기','guide')}</section>${note()}`;
 };
 nutrientPage=analysis;
 function moveChart(step){

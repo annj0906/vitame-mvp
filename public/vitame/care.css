@@ -58,17 +58,39 @@ body[data-screen="archive"] .care-archive-row small{margin-left:auto;color:var(-
 body[data-screen="analysis"] .wellness-tabs{margin:0 auto 24px;padding:4px;background:var(--vitame-color-accent-yellow-main);border-radius:999px}
 body[data-screen="analysis"] .wellness-tabs button{color:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-medium-14);min-height:44px;padding:12px 14px}
 body[data-screen="analysis"] .wellness-tabs .selected{color:var(--vitame-color-neutral-black);font-weight:700}
-body[data-screen="analysis"] .analysis-periods{margin:0 24px 28px;padding:8px;background:var(--vitame-color-neutral-gray20);border-radius:999px;display:flex}
+body[data-screen="analysis"] .analysis-periods{margin:0 24px 24px;padding:8px;height:52px;background:var(--vitame-color-neutral-gray20);border-radius:999px;display:flex}
 body[data-screen="analysis"] .analysis-periods button{flex:1;min-width:0;padding:8px 0;border-radius:999px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60)}
-body[data-screen="analysis"] .analysis-periods button[aria-pressed="true"]{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);font-weight:700}
+body[data-screen="analysis"] .analysis-periods button[aria-pressed="true"]{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);font-weight:700;box-shadow:0 4px 2px #0000000d}
 body[data-screen="analysis"] .analysis-overview{margin:0 24px 40px;padding:0}
 body[data-screen="analysis"] .period-navigation{margin:0 0 4px;justify-content:space-between;font:var(--vitame-type-pretendard-subtitle-semibold-18)}
-body[data-screen="analysis"] .analysis-score-label{font:var(--vitame-type-pretendard-caption-regular-12);color:var(--vitame-color-neutral-gray60)}
-body[data-screen="analysis"] .analysis-month-score{font:var(--vitame-type-nanumsquareround-display-extrabold-44);letter-spacing:-.025em;margin:0 0 16px}
-body[data-screen="analysis"] .analysis-month-score small{font:var(--vitame-type-pretendard-body2-regular-14);margin-left:4px;color:var(--vitame-color-neutral-black)}
+body[data-screen="analysis"] .analysis-score-label{font:var(--vitame-type-pretendard-subtitle-semibold-18);color:var(--vitame-color-neutral-black);margin:0 0 4px;min-height:28px}
+body[data-screen="analysis"] .analysis-month-score{font:var(--vitame-type-nanumsquareround-display-extrabold-44);letter-spacing:-.025em;margin:0 0 8px}
+body[data-screen="analysis"] .analysis-month-score small{font:var(--vitame-type-nanumsquareround-subtitle-regular-18);margin-left:4px;color:var(--vitame-color-neutral-black)}
 body[data-screen="analysis"] .analysis-month-description{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-black)}
 body[data-screen="analysis"] .analysis-month-description b{color:inherit}
-body[data-screen="analysis"] .period-chart{margin-top:32px}
+body[data-screen="analysis"] .period-chart{margin-top:24px;padding:0}
+body[data-screen="analysis"] .analysis-month-description{margin:0}
+body[data-screen="analysis"] .period-hint{font:var(--vitame-type-pretendard-caption-regular-12);color:var(--vitame-color-neutral-gray60);margin:0 0 44px;text-align:center;word-break:keep-all}
+body[data-screen="analysis"] .period-plot{position:relative;padding-right:34px}
+body[data-screen="analysis"] .chart-scale{left:auto;right:0;top:-10px;height:170px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray40);text-align:right}
+body[data-screen="analysis"] .month-bars{gap:4px;height:auto}
+body[data-screen="analysis"] .period-column .month-bar{height:auto;gap:8px;background:transparent;border:0;box-shadow:none;border-radius:0}
+body[data-screen="analysis"] .period-column .month-bar:focus{outline:none}
+body[data-screen="analysis"] .period-column .month-bar:focus-visible .month-bar-label{text-decoration:underline;text-underline-offset:3px}
+body[data-screen="analysis"] .month-bar-track{height:150px;border:0}
+body[data-screen="analysis"] .period-column .month-bar-label{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60);line-height:20px;white-space:normal}
+body[data-screen="analysis"] .month-bar.current .month-bar-label{font-weight:700;color:var(--vitame-color-neutral-black)}
+body[data-screen="analysis"] .month-bar:disabled{opacity:1}
+body[data-screen="analysis"] .month-bar:disabled .month-bar-label{color:var(--vitame-color-neutral-gray40)}
+body[data-screen="analysis"] .month-bar.picked i{box-shadow:none}
+body[data-screen="analysis"] .period-tooltip{width:max-content;max-width:116px;padding:8px;border:0;border-radius:16px;box-shadow:0 2px 5px #0000000d;gap:2px}
+body[data-screen="analysis"] .period-tooltip small{font:var(--vitame-type-pretendard-caption-regular-12);color:var(--vitame-color-neutral-gray50);white-space:normal}
+body[data-screen="analysis"] .period-tooltip b{font:var(--vitame-type-pretendard-body1-semibold-16);color:var(--vitame-color-semantic-caution)}
+body[data-screen="analysis"] .period-tooltip b span{font-size:12px;margin-left:2px}
+body[data-screen="analysis"] .period-reference-line{position:absolute;left:0;right:26px;top:37.5px;height:1px;overflow:hidden;pointer-events:none}
+body[data-screen="analysis"] .period-reference-line img{display:block;max-width:none}
+body[data-screen="analysis"] [data-period-kind="half"] .month-bar-label{font-size:10px;line-height:14px}
+body[data-screen="analysis"] [data-period-kind="year"] .month-bar-label{font-size:11px}
 body[data-screen="analysis"] .month-bar-track{border-radius:999px 999px 0 0;overflow:hidden}
 body[data-screen="analysis"] .month-bar-track i{background:var(--vitame-color-neutral-gray20);border-radius:999px 999px 0 0}
 body[data-screen="analysis"] .month-bar.current .month-bar-track i{background:var(--vitame-color-accent-yellow-main)}
