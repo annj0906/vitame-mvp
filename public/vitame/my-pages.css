@@ -1,0 +1,40 @@
+/* Only MY and interest settings; existing page and character styles stay untouched. */
+body:is([data-screen="my"],[data-screen="interest-settings"]) .app{background:var(--vitame-color-neutral-background,#fcfcfc);color:var(--vitame-color-neutral-black)}
+.my-page-header{height:64px;display:flex;align-items:center;justify-content:center;position:relative;padding:0 20px}
+.my-page-header h1{font:var(--vitame-type-pretendard-subtitle-semibold-18);letter-spacing:-.02em}
+.my-page-header>button{position:absolute;left:12px;display:grid;place-items:center;width:44px;height:44px}
+.my-page-header>button img{max-width:24px;max-height:24px}
+.my-page-content{padding:24px 20px 130px;display:flex;flex-direction:column;gap:40px}
+.my-identity{display:flex;align-items:center;gap:22px;min-width:0}
+.my-identity h2{font:700 20px/1.4 Pretendard,sans-serif;letter-spacing:-.02em;overflow-wrap:anywhere}
+.my-avatar{width:80px;height:80px;flex:none;border-radius:50%;background:var(--vitame-color-neutral-gray20);position:relative;display:grid;place-items:center}
+.my-avatar .initial-character-box{position:absolute;left:20px;top:20px;transform:scale(.333333);transform-origin:top left}
+.my-avatar .initial-character-box *{animation:none!important}
+.my-avatar .ob-good-charBtn{width:156.21px;height:158.82px;left:-19.81px;top:-23.44px}
+.my-avatar>span:last-child{position:absolute;right:0;bottom:3px;width:20px;height:20px;display:grid;place-items:center;border-radius:50%;background:var(--vitame-color-accent-purple-main)}
+.my-avatar>span:last-child>img{max-width:14px;max-height:14px;filter:brightness(0) invert(1)}
+.my-edit-profile{margin-left:auto;white-space:nowrap;min-height:0;border:1px solid var(--vitame-color-neutral-gray20);background:white;border-radius:30px;padding:8px;font:var(--vitame-type-pretendard-body1-regular-16)}
+.my-summary{display:flex;border-radius:99px;background:white;box-shadow:0 2px 5px #0000000d;padding:24px 20px;min-height:98px}
+.my-summary>button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray70)}
+.my-summary>button+button{border-left:1px solid var(--vitame-color-neutral-gray20)}
+.my-summary b{font:700 20px/1.4 Pretendard,sans-serif;color:var(--vitame-color-neutral-black)}
+.my-menu-group{display:flex;flex-direction:column;gap:24px}
+.my-menu-group h2{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray70);letter-spacing:-.02em}
+.my-menu-group>button{display:flex;justify-content:space-between;align-items:center;min-height:22px;padding:0;text-align:left;font:var(--vitame-type-pretendard-body1-medium-16)}
+.my-menu-group>button>img{transform:rotate(-90deg);max-width:18px;max-height:18px}
+.my-logout{align-self:flex-start;padding:0;min-height:22px;text-decoration:underline;color:var(--vitame-color-neutral-gray60);font:var(--vitame-type-pretendard-body1-semibold-16)}
+.my-interest-content{padding:40px 20px 80px}
+.my-interest-content h2{font:800 24px/1.4 NanumSquareRound,sans-serif;letter-spacing:-.025em}
+.my-interest-content>p{margin:24px 0 40px;font:400 16px/1.4 NanumSquareRound,sans-serif;color:var(--vitame-color-neutral-gray70);letter-spacing:-.025em}
+.my-health-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.my-health-card{min-height:78px;border-radius:16px;padding:20px 16px;display:flex;align-items:center;gap:8px;text-align:left;background:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-gray60);font:var(--vitame-type-pretendard-body2-semibold-14)}
+.my-health-card[aria-pressed="true"]{background:white;color:var(--vitame-color-neutral-black);box-shadow:0 2px 5px #0000000d}
+.my-health-symbol{flex:none;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#e5e5e7}
+.my-health-symbol>span{width:18px;height:18px;background:var(--vitame-color-neutral-gray60);mask:var(--glyph) center/contain no-repeat;-webkit-mask:var(--glyph) center/contain no-repeat}
+.my-health-card[aria-pressed="true"] .my-health-symbol{background:var(--category-light)}
+.my-health-card[aria-pressed="true"] .my-health-symbol>span{background:var(--category)}
+.my-health-label{flex:1;min-width:0;word-break:keep-all;letter-spacing:-.02em}
+.my-health-check{flex:none;width:20px;height:20px;display:grid;place-items:center;border-radius:50%;background:var(--vitame-color-neutral-gray40)}
+.my-health-card[aria-pressed="true"] .my-health-check{background:var(--vitame-color-neutral-black)}
+.my-save-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media(max-width:380px){.my-health-card{padding:18px 10px;gap:6px}.my-identity{gap:14px}.my-edit-profile{font-size:14px}}
