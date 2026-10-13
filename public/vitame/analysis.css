@@ -323,7 +323,14 @@ body[data-screen="guide"] .ai-detail-card .ai-product-tags{height:22px;width:aut
 body[data-screen="guide"] .ai-detail-card .ai-product-missing{font:var(--vitame-type-pretendard-caption-regular-12);color:var(--vitame-color-neutral-gray60)}
 body[data-screen="guide"] .ai-detail-card .ai-tip-symbol{width:auto;height:auto;max-width:20px;max-height:20px;flex:none;margin-top:1px}
 body[data-screen="guide"] .ai-detail-card .ai-guide-tip small{color:var(--vitame-color-neutral-gray70)}
-body[data-screen="guide"] .ai-detail-card .ai-guide-copy p{margin:0;line-height:1.4}
+body[data-screen="guide"] .ai-detail-card .ai-guide-copy p{margin:0;line-height:1.4;color:var(--vitame-color-neutral-gray70)}
+body[data-screen="guide"] .ai-detail-card .ai-guide-tip p{color:var(--vitame-color-neutral-black)}
+body[data-screen="guide"] .ai-detail-card .ai-product-tags{display:flex;gap:6px}
+body[data-screen="guide"] .ai-detail-card .ai-product-tags .ai-health-icon{width:22px;height:22px}
+body[data-screen="guide"] .ai-detail-card .ai-product-tags img{width:auto;height:auto;max-width:18px;max-height:18px}
+body[data-screen="guide"] .ai-detail-card .ai-product-grid{touch-action:pan-y;cursor:grab}
+body[data-screen="guide"] .ai-detail-card .ai-product-grid.is-dragging{scroll-snap-type:none;cursor:grabbing;user-select:none}
+body[data-screen="guide"] .ai-detail-card .ai-tip-symbol{width:20px;height:20px;object-fit:contain}
 body[data-screen="guide"] .ai-detail-card .ai-guide-inner{padding-bottom:5px}
 body[data-screen="guide"] .ai-analysis-disclaimer{font:var(--vitame-type-pretendard-caption-regular-12);margin-bottom:6px}
 @media(prefers-reduced-motion:reduce){body[data-screen="guide"] .ai-character-item>.character-shadow>img{animation:none!important}body[data-screen="guide"] .ai-detail-surface{transition:none}}

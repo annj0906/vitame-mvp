@@ -248,7 +248,7 @@ function guideProductCard(p){
   const hasPrice=Number.isFinite(p.price)&&p.price>=0;
   const discount=Number.isFinite(p.discount)&&p.discount>0&&p.discount<100?p.discount:null;
   const action=p.designOnly?`data-guide-catalog="${esc(p.id)}"`:`data-action="product" data-id="${esc(p.id)}"`;
-  return `<button class="ai-product" ${action}><span class="ai-product-art">${p.image?`<img class="ai-product-photo" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">`:'<span class="ai-product-missing">제품 이미지 준비 중</span>'}<img class="ai-product-heart" src="assets/guide/product-heart.svg" alt=""></span><span class="ai-product-info"><span class="ai-product-brand">${esc(p.brand||'VITAME')}</span><span class="ai-product-name">${esc(p.name)}</span><span class="ai-product-price">${hasPrice?`${discount?`<b>${discount}%</b>`:''}<strong>${money(p.price)}</strong>`:'<small>가격 정보 없음</small>'}</span>${p.tags?`<img class="ai-product-tags" src="assets/guide/product-${p.tags}.png" alt="눈 건강${p.tags==='eye-immune'?', 면역':p.tags==='eye-circulation'?', 심혈관':''}">`:''}</span></button>`;
+  return `<button class="ai-product" ${action}><span class="ai-product-art">${p.image?`<img class="ai-product-photo" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" draggable="false">`:'<span class="ai-product-missing">제품 이미지 준비 중</span>'}<img class="ai-product-heart" src="assets/guide/product-heart.svg" alt=""></span><span class="ai-product-info"><span class="ai-product-brand">${esc(p.brand||'VITAME')}</span><span class="ai-product-name">${esc(p.name)}</span><span class="ai-product-price">${hasPrice?`${discount?`<b>${discount}%</b>`:''}<strong>${money(p.price)}</strong>`:'<small>가격 정보 없음</small>'}</span>${p.tags?`<span class="ai-product-tags" aria-label="관련 건강 영역">${['eyes',...(p.tags==='eye-immune'?['immune']:p.tags==='eye-circulation'?['circulation']:[])].map(id=>finalGuideIcon(wellnessGuides.find(g=>g.id===id))).join('')}</span>`:''}</span></button>`;
 }
 function guideProducts(g){
   let related=products.filter(p=>g.names.includes(p.nutrient));
@@ -260,9 +260,9 @@ function guideProducts(g){
 }
 // One collapsible detail shell for all categories; category copy/data stay separate.
 function detailedGuideCard(g,content){
-  const current=state.demo?g.names.map(name=>nutrients.find(n=>n[0]===name)).filter(Boolean):[];
+  const current=state.demo?(g.id==='eyes'?[['비타민 A',52,'부족'],['오메가-3',68,'부족']]:g.names.map(name=>nutrients.find(n=>n[0]===name)).filter(Boolean)):[];
   const status=current.length?`<small class="ai-analysis-disclaimer">예시 데이터 · 개인 분석 결과가 아니에요</small>${current.map(n=>`<div class="ai-guide-nutrient" data-status="${esc(n[2])}"><button data-action="nutrient" data-name="${esc(n[0])}">${esc(n[0])}</button><span class="ai-guide-track" role="meter" aria-label="${esc(n[0])} 예시 섭취 비율" aria-valuemin="0" aria-valuemax="${Math.max(100,n[1])}" aria-valuenow="${n[1]}"><i style="width:${Math.max(0,Math.min(n[1],100))}%"></i></span><span>${n[1]}%</span><b>${esc(n[2])}</b></div>`).join('')}`:'<p>아직 확인할 수 있는 개인 분석 데이터가 없어요.</p>';
-  return `<section class="ai-guide-card ai-detail-card" id="guide-${g.id}"><div class="ai-detail-surface"><h2><button class="ai-guide-toggle" data-ai-guide-toggle="${g.id}" aria-expanded="false" aria-controls="ai-guide-body-${g.id}">${finalGuideIcon(g,true)}<span>${esc(g.title)} 가이드</span>${wellnessIcon('chevron')}</button></h2><p class="ai-guide-description">${esc(g.description)}</p></div><div class="ai-guide-reveal" id="ai-guide-body-${g.id}" inert aria-hidden="true"><div class="ai-guide-inner"><div class="ai-detail-content"><div class="ai-guide-status">${status}</div><div class="ai-guide-copy">${content.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="ai-guide-tips">${content.tips.map(([,title,copy],i)=>`<div class="ai-guide-tip"><img class="ai-tip-symbol" src="assets/guide/tip-${['food','check','routine'][i]}.png" alt=""><div><small>${esc(title)}</small><p>${esc(copy)}</p></div></div>`).join('')}</div></div>${guideProducts(g)}</div></div></section>`;
+  return `<section class="ai-guide-card ai-detail-card" id="guide-${g.id}"><div class="ai-detail-surface"><h2><button class="ai-guide-toggle" data-ai-guide-toggle="${g.id}" aria-expanded="false" aria-controls="ai-guide-body-${g.id}">${finalGuideIcon(g,true)}<span>${esc(g.title)} 가이드</span>${wellnessIcon('chevron')}</button></h2><p class="ai-guide-description">${esc(g.description)}</p></div><div class="ai-guide-reveal" id="ai-guide-body-${g.id}" inert aria-hidden="true"><div class="ai-guide-inner"><div class="ai-detail-content"><div class="ai-guide-status">${status}</div><div class="ai-guide-copy">${content.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="ai-guide-tips">${content.tips.map(([,title,copy],i)=>`<div class="ai-guide-tip"><img class="ai-tip-symbol" src="assets/onboarding/${['very-bad','bad','good'][i]}/Body.png" alt=""><div><small>${esc(title)}</small><p>${esc(copy)}</p></div></div>`).join('')}</div></div>${guideProducts(g)}</div></div></section>`;
 }
 function finalGuideCard(g){
   return detailedGuideCard(g,g.id==='eyes'?eyeGuideContent:{
@@ -274,6 +274,42 @@ document.addEventListener('click',e=>{
   const preview=e.target.closest('[data-guide-catalog]');
   if(route()==='guide'&&preview)toast('제품 상세 정보가 아직 연결되지 않았어요.');
 });
+// Drag only the lower product rail; leave vertical page scrolling and taps intact.
+let guideProductDrag=null,guideProductSuppressUntil=0;
+document.addEventListener('pointerdown',e=>{
+  const rail=e.target.closest('.ai-detail-card .ai-product-grid');
+  if(route()!=='guide'||!rail||e.button!==0)return;
+  guideProductDrag={rail,id:e.pointerId,x:e.clientX,y:e.clientY,left:rail.scrollLeft,moved:false};
+});
+document.addEventListener('pointermove',e=>{
+  const d=guideProductDrag;if(!d||d.id!==e.pointerId)return;
+  const dx=e.clientX-d.x,dy=e.clientY-d.y;
+  if(!d.moved){
+    if(Math.abs(dy)>8&&Math.abs(dy)>Math.abs(dx)){guideProductDrag=null;return;}
+    if(Math.abs(dx)<8)return;
+    d.moved=true;d.rail.classList.add('is-dragging');d.rail.setPointerCapture(e.pointerId);
+  }
+  e.preventDefault();d.rail.scrollLeft=d.left-dx;
+},{passive:false});
+function finishGuideProductDrag(e){
+  const d=guideProductDrag;if(!d||d.id!==e.pointerId)return;
+  guideProductDrag=null;
+  if(d.rail.hasPointerCapture(e.pointerId))d.rail.releasePointerCapture(e.pointerId);
+  d.rail.classList.remove('is-dragging');
+  if(d.moved){
+    guideProductSuppressUntil=performance.now()+350;
+    const cards=[...d.rail.querySelectorAll('.ai-product')];
+    const step=cards.length>1?cards[1].offsetLeft-cards[0].offsetLeft:150;
+    const target=Math.max(0,Math.min(d.rail.scrollWidth-d.rail.clientWidth,Math.round(d.rail.scrollLeft/step)*step));
+    d.rail.scrollTo({left:target,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  }
+}
+document.addEventListener('pointerup',finishGuideProductDrag);
+document.addEventListener('pointercancel',finishGuideProductDrag);
+document.addEventListener('click',e=>{
+  if(e.target.closest('.ai-detail-card .ai-product-grid')&&performance.now()<guideProductSuppressUntil){e.preventDefault();e.stopImmediatePropagation();}
+},true);
+document.addEventListener('dragstart',e=>{if(e.target.closest('.ai-detail-card .ai-product-grid'))e.preventDefault();});
 let finalGuideScrollTimer;
 // Only the guide uses this carousel. Character DOM and original motion keyframes stay intact.
 const guideCarousel={offset:0,frame:0,drag:null,queue:0,suppressUntil:0,motionTimer:0,tapPending:false};

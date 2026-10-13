@@ -35,7 +35,7 @@ step();finish();assert.equal(run('guideCharacter'),2);assert.ok(items.every(i=>i
 run("playGuideMotion('tap');playGuideMotion('tap');clearGuideMotion()");
 assert.equal(timers.size,0);assert.ok(items.every(i=>i.classes.size===0&&i.listeners.size===0));
 for(const key of keys){run(`guideCharacter=${keys.indexOf(key)};playGuideMotion('success')`);assert.ok(items[keys.indexOf(key)].classes.has(`ob-${key}-success`));finish();}
-ctx.state={demo:false};ctx.nutrients=[];ctx.products=[];ctx.finalGuideIcon=()=>'';ctx.wellnessIcon=()=>'';ctx.money=String;ctx.bottle=()=>'';
+ctx.state={demo:false};ctx.nutrients=[];ctx.products=[];ctx.wellnessGuides=[];ctx.finalGuideIcon=()=>'';ctx.wellnessIcon=()=>'';ctx.money=String;ctx.bottle=()=>'';
 run(source.slice(source.indexOf('const eyeGuideContent='),source.indexOf('function finalGuideCard(')));
 const html=run("detailedGuideCard({id:'eyes',title:'눈 건강',names:['비타민 A'],description:'눈 안내'},eyeGuideContent)");
 assert.match(html,/aria-expanded="false"/);assert.match(html,/개인 분석 데이터가 없어요/);assert.doesNotMatch(html,/role="meter"/);assert.equal((html.match(/class="ai-guide-tip"/g)||[]).length,3);
@@ -54,4 +54,10 @@ ctx.products=[];
 assert.match(run("guideProducts({id:'energy',title:'에너지',names:[]})"),/관련 제품이 아직 없어요/);
 ctx.state.demo=true;ctx.nutrients=[['비타민 A',52,'부족']];
 assert.match(run("detailedGuideCard({id:'eyes',title:'눈 건강',names:['비타민 A'],description:'눈 안내'},eyeGuideContent)"),/aria-valuenow="52"/);
+const demoCard=run("detailedGuideCard({id:'eyes',title:'눈 건강',names:['비타민 A','오메가-3'],description:'눈 안내'},eyeGuideContent)");
+assert.match(demoCard,/aria-valuenow="68"/);
+assert.match(demoCard,/assets\/onboarding\/very-bad\/Body.png/);
+assert.doesNotMatch(demoCard,/assets\/guide\/tip-.*\.png/);
+ctx.state.demo=false;
+assert.doesNotMatch(run("detailedGuideCard({id:'eyes',title:'눈 건강',names:['비타민 A'],description:'눈 안내'},eyeGuideContent)"),/role="meter"/);
 console.log('AI guide: initial Idle, Tap, queued arrows, five Success states, continuous midpoint, cleanup and no-data card passed.');
