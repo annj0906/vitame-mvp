@@ -137,8 +137,36 @@ function analysisScoreMessage(score){
   if(score===null)return '아직 기록이 없어요.<br>복용 기록을 시작해보세요.';
   return score>=80?'꾸준히 관리하고 있어요.<br>지금의 복용 습관을 유지해보세요.':score>=60?'균형을 찾아가는 중이에요.<br>복용을 유지해보세요.':'작은 습관부터 시작해봐요.<br>복용 기록을 차근차근 이어가세요.';
 }
+let analysisScoreFrame=0,analysisDisplayedKey='';
+function updateAnalysisScore(entering=false){
+  const key=chartSelection||periodStart(chartAnchor),score=periodScore(key);
+  const heading=document.querySelector('.analysis-month-score');
+  if(!heading)return;
+  cancelAnimationFrame(analysisScoreFrame);
+  document.querySelector('.analysis-score-label').textContent=analysisScoreDate(key);
+  document.querySelector('.analysis-month-description').innerHTML=analysisScoreMessage(score);
+  heading.innerHTML=`<span>${score??'—'}</span><small>점</small>`;
+  heading.setAttribute('aria-label',score===null?'기록 없음':`${score}점`);
+  const number=heading.querySelector('span');
+  number.setAttribute('aria-hidden','true');
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduced&&score!==null&&(entering||analysisDisplayedKey!==`${chartPeriod}:${key}`)){
+    const start=performance.now();number.textContent='0';
+    const tick=now=>{
+      if(!number.isConnected)return;
+      const progress=Math.min(1,(now-start)/650);
+      number.textContent=String(Math.round(score*(1-Math.pow(1-progress,3))));
+      if(progress<1)analysisScoreFrame=requestAnimationFrame(tick);
+    };
+    analysisScoreFrame=requestAnimationFrame(tick);
+  }
+  analysisDisplayedKey=`${chartPeriod}:${key}`;
+  if(entering&&!reduced)document.querySelectorAll('.period-chart .month-bar-track i').forEach(bar=>{
+    bar.animate([{transform:'scaleY(0)',transformOrigin:'bottom'},{transform:'scaleY(1)',transformOrigin:'bottom'}],{duration:650,easing:'cubic-bezier(.22,1,.36,1)'});
+  });
+}
 analysis=function(){
-  const anchor=periodStart(chartAnchor),score=periodScore(anchor);
+  const anchor=chartSelection||periodStart(chartAnchor),score=periodScore(anchor);
 return `${analysisTabs()}<div class="analysis-periods" aria-label="분석 기간">${chartPeriods.filter(([id])=>id!=='day').map(([id,label])=>`<button data-chart-period="${id}" aria-pressed="${chartPeriod===id}">${label}</button>`).join('')}</div><div class="analysis-overview"><p class="analysis-score-label">${analysisScoreDate(anchor)}</p><h1 class="analysis-month-score">${score}점</h1><p class="analysis-month-description">${analysisScoreMessage(score)}</p>${periodChart()}</div><div class="nutrition-panels">${analysisGroups.map(nutritionCard).join('')}</div><section class="analysis-guide-cta"><h3>이제 관리 방법을 알아볼까요?</h3><p>나에게 맞는 관리 가이드를 살펴보세요.</p>${button('AI 가이드 보러가기','guide')}</section>${note()}`;
 };
 nutrientPage=analysis;
@@ -384,7 +412,7 @@ document.addEventListener('click',e=>{
   const period=e.target.closest('[data-chart-period]'),step=e.target.closest('[data-period-step]'),bar=e.target.closest('[data-period-bar]'),add=e.target.closest('[data-guide-add]'),character=e.target.closest('[data-guide-character]');
   if(period){chartPeriod=period.dataset.chartPeriod;chartAnchor=dateKey();chartSelection=null;render();}
   if(step&&!step.disabled)moveChart(Number(step.dataset.periodStep));
-  if(bar&&!bar.disabled){chartSelection=bar.dataset.periodBar;document.querySelector('.period-chart').outerHTML=periodChart();document.querySelector(`[data-period-bar="${chartSelection}"]`)?.focus({preventScroll:true});}
+  if(bar&&!bar.disabled){chartSelection=bar.dataset.periodBar;document.querySelector('.period-chart').outerHTML=periodChart();updateAnalysisScore();document.querySelector(`[data-period-bar="${chartSelection}"]`)?.focus({preventScroll:true});}
   if(add)addGuide(add.dataset.guideAdd);
   if(character){guideCharacter=(guideCharacter+1)%5;character.innerHTML=wellnessArt(guideCharacter);if(!matchMedia('(prefers-reduced-motion: reduce)').matches)character.firstElementChild.animate([{transform:'scale(.55)',opacity:.4},{transform:'scale(1.12)',opacity:1},{transform:'scale(1)',opacity:1}],{duration:330,easing:'ease-out'});}
   if(e.target.closest('[data-period-info]'))modal('건강 관리 점수 안내','기간별 점수와 영양소 상태는 화면 체험용 예시입니다. 실제 복용 기록으로 계산한 결과나 의료 평가가 아닙니다.');
