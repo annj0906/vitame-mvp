@@ -237,20 +237,43 @@ const eyeGuideContent={
   ],
   tips:[['very-bad','채워보기','비타민 A는 식사에서 먼저 챙겨봐요'],['bad','잠깐 확인','오메가-3가 포함된 제품의 성분과 함량을 확인해요'],['normal','오늘의 루틴','오후에 화면을 오래 본 날엔 눈 쉬는 시간을 챙겨봐요']]
 };
-// Opt-in reusable detail shell. Other health guides retain their existing content.
+// Guide-only presentation catalog: Figma values explicitly requested by the user.
+// Never mutate the shop catalog or treat these prices as a live sales feed.
+const eyeGuideProducts=[
+  {id:'eye-berry',name:'아이 베리 루테인 구미 (30개)',brand:'VITAME',price:19800,discount:18,image:'assets/guide/products/eye-berry.webp',tags:'eye-immune'},
+  {id:'eye-balance',name:'아이 밸런스 루테인 · 지아잔틴 (30일분)',brand:'VITAME',price:24900,discount:22,image:'assets/registration/eye-balance.webp',tags:'eye'},
+  {id:'eye-care',name:'아이 케어 비타민A · 오메가3 (30일분)',brand:'VITAME',price:21000,discount:25,image:'assets/registration/eye-care.webp',tags:'eye-circulation'}
+];
+function guideProductCard(p){
+  const hasPrice=Number.isFinite(p.price)&&p.price>=0;
+  const discount=Number.isFinite(p.discount)&&p.discount>0&&p.discount<100?p.discount:null;
+  const action=p.designOnly?`data-guide-catalog="${esc(p.id)}"`:`data-action="product" data-id="${esc(p.id)}"`;
+  return `<button class="ai-product" ${action}><span class="ai-product-art">${p.image?`<img class="ai-product-photo" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">`:'<span class="ai-product-missing">제품 이미지 준비 중</span>'}<img class="ai-product-heart" src="assets/guide/product-heart.svg" alt=""></span><span class="ai-product-info"><span class="ai-product-brand">${esc(p.brand||'VITAME')}</span><span class="ai-product-name">${esc(p.name)}</span><span class="ai-product-price">${hasPrice?`${discount?`<b>${discount}%</b>`:''}<strong>${money(p.price)}</strong>`:'<small>가격 정보 없음</small>'}</span>${p.tags?`<img class="ai-product-tags" src="assets/guide/product-${p.tags}.png" alt="눈 건강${p.tags==='eye-immune'?', 면역':p.tags==='eye-circulation'?', 심혈관':''}">`:''}</span></button>`;
+}
+function guideProducts(g){
+  let related=products.filter(p=>g.names.includes(p.nutrient));
+  if(g.id==='eyes')related=eyeGuideProducts.map(design=>{
+    const live=products.find(p=>p.id===design.id||p.name===design.name);
+    return live?{...design,...live,price:live.price,discount:live.discount,designOnly:false}:{...design,designOnly:true};
+  });
+  return `<section class="ai-guide-products" aria-label="${esc(g.title)} 추천 제품"><div class="ai-product-heading"><div><h3>${esc(g.title)} 추천 제품</h3><p>${g.id==='eyes'&&state.demo?'현재 부족한 영양소를 바탕으로 추천했어요.':'관련 성분의 제품을 살펴보세요.'}</p></div><button data-go="shop">전체보기 ${icon('arrow')}</button></div><div class="ai-product-grid" tabindex="0" aria-label="추천 제품 좌우 스크롤">${related.map(guideProductCard).join('')||'<p class="ai-products-empty">관련 제품이 아직 없어요.</p>'}</div></section>`;
+}
+// One collapsible detail shell for all categories; category copy/data stay separate.
 function detailedGuideCard(g,content){
   const current=state.demo?g.names.map(name=>nutrients.find(n=>n[0]===name)).filter(Boolean):[];
-  const related=products.filter(p=>g.names.includes(p.nutrient));
-const status=current.length?`<small class="ai-analysis-disclaimer">예시 데이터 · 개인 분석 결과가 아니에요</small>${current.map(n=>`<div class="ai-guide-nutrient" data-status="${esc(n[2])}"><button data-action="nutrient" data-name="${esc(n[0])}">${esc(n[0])}</button><span class="ai-guide-track" role="meter" aria-label="${esc(n[0])} 예시 섭취 비율" aria-valuemin="0" aria-valuemax="${Math.max(100,n[1])}" aria-valuenow="${n[1]}"><i style="width:${Math.max(0,Math.min(n[1],100))}%"></i></span><span>${n[1]}%</span><b>${esc(n[2])}</b></div>`).join('')}`:'<p>아직 확인할 수 있는 개인 분석 데이터가 없어요.</p>';
-  return `<section class="ai-guide-card ai-detail-card" id="guide-${g.id}"><div class="ai-detail-surface"><h2><button class="ai-guide-toggle" data-ai-guide-toggle="${g.id}" aria-expanded="false" aria-controls="ai-guide-body-${g.id}">${finalGuideIcon(g,true)}<span>${esc(g.title)} 가이드</span>${wellnessIcon('chevron')}</button></h2><p class="ai-guide-description">${esc(g.description)}</p></div><div class="ai-guide-reveal" id="ai-guide-body-${g.id}" inert aria-hidden="true"><div class="ai-guide-inner"><div class="ai-detail-content"><div class="ai-guide-status">${status}</div><div class="ai-guide-copy">${content.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="ai-guide-tips">${content.tips.map(([key,title,copy])=>`<div class="ai-guide-tip"><div class="ai-tip-character" aria-hidden="true">${initialCharacter(key)}</div><div><small>${esc(title)}</small><p>${esc(copy)}</p></div></div>`).join('')}</div></div><section class="ai-guide-products"><div class="ai-product-heading"><div><h3>${esc(g.title)} 추천 제품</h3><p>눈 건강 관련 성분의 제품을 살펴보세요.</p></div><button data-go="shop">전체보기 ${icon('arrow')}</button></div><div class="ai-product-grid">${related.map(p=>`<button class="ai-product" data-action="product" data-id="${p.id}"><span class="ai-product-art">${bottle(p)}</span><span>VITAME</span><span>${esc(p.name)}</span><strong>${money(p.price)}</strong></button>`).join('')||'<p>관련 제품이 아직 없어요.</p>'}</div></section></div></div></section>`;
+  const status=current.length?`<small class="ai-analysis-disclaimer">예시 데이터 · 개인 분석 결과가 아니에요</small>${current.map(n=>`<div class="ai-guide-nutrient" data-status="${esc(n[2])}"><button data-action="nutrient" data-name="${esc(n[0])}">${esc(n[0])}</button><span class="ai-guide-track" role="meter" aria-label="${esc(n[0])} 예시 섭취 비율" aria-valuemin="0" aria-valuemax="${Math.max(100,n[1])}" aria-valuenow="${n[1]}"><i style="width:${Math.max(0,Math.min(n[1],100))}%"></i></span><span>${n[1]}%</span><b>${esc(n[2])}</b></div>`).join('')}`:'<p>아직 확인할 수 있는 개인 분석 데이터가 없어요.</p>';
+  return `<section class="ai-guide-card ai-detail-card" id="guide-${g.id}"><div class="ai-detail-surface"><h2><button class="ai-guide-toggle" data-ai-guide-toggle="${g.id}" aria-expanded="false" aria-controls="ai-guide-body-${g.id}">${finalGuideIcon(g,true)}<span>${esc(g.title)} 가이드</span>${wellnessIcon('chevron')}</button></h2><p class="ai-guide-description">${esc(g.description)}</p></div><div class="ai-guide-reveal" id="ai-guide-body-${g.id}" inert aria-hidden="true"><div class="ai-guide-inner"><div class="ai-detail-content"><div class="ai-guide-status">${status}</div><div class="ai-guide-copy">${content.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="ai-guide-tips">${content.tips.map(([,title,copy],i)=>`<div class="ai-guide-tip"><img class="ai-tip-symbol" src="assets/guide/tip-${['food','check','routine'][i]}.png" alt=""><div><small>${esc(title)}</small><p>${esc(copy)}</p></div></div>`).join('')}</div></div>${guideProducts(g)}</div></div></section>`;
 }
 function finalGuideCard(g){
-  if(g.id==='eyes')return detailedGuideCard(g,eyeGuideContent);
-  // nutrients is explicitly an illustrative dataset, not personal AI analysis.
-  const current=state.demo?g.names.map(name=>nutrients.find(n=>n[0]===name)).filter(Boolean):[];
-  const related=products.filter(p=>g.names.includes(p.nutrient));
-  return `<section class="ai-guide-card" id="guide-${g.id}"><h2><button class="ai-guide-toggle" data-ai-guide-toggle="${g.id}" aria-expanded="false" aria-controls="ai-guide-body-${g.id}">${finalGuideIcon(g)}<span>${esc(g.title)} 가이드</span>${wellnessIcon('chevron')}</button></h2><p class="ai-guide-description">${esc(g.description)}</p><div class="ai-guide-reveal" id="ai-guide-body-${g.id}" inert aria-hidden="true"><div class="ai-guide-inner"><div class="ai-guide-details"><div class="ai-guide-status">${current.length?`<small>예시 분석 · 개인 분석 결과가 아니에요</small>${current.map(n=>`<div class="ai-guide-nutrient" data-status="${n[2]}"><button data-action="nutrient" data-name="${esc(n[0])}">${esc(n[0])}</button><span class="ai-guide-track" role="meter" aria-label="${esc(n[0])} 예시 섭취 비율" aria-valuemin="0" aria-valuemax="${Math.max(100,n[1])}" aria-valuenow="${n[1]}"><i style="width:${Math.max(0,Math.min(n[1],100))}%"></i></span><span>${n[1]}%</span><b>${n[2]}</b></div>`).join('')}`:'<p>아직 확인할 수 있는 개인 분석 데이터가 없어요.</p>'}</div><p class="ai-guide-copy">${esc(g.food)}<br><br>${esc(g.habit)}</p><div class="ai-guide-tips">${[['very-good','채워보기',g.food],['bad','함께 확인','등록한 제품의 성분과 표시된 섭취량을 확인해보세요.'],['normal','오늘의 루틴',g.habit]].map(([key,title,copy])=>`<div class="ai-guide-tip"><div class="ai-tip-character" aria-hidden="true">${initialCharacter(key)}</div><div><small>${title}</small><p>${esc(copy)}</p></div></div>`).join('')}</div><section class="ai-guide-products"><div class="ai-product-heading"><div><h3>${esc(g.title)} 추천 제품</h3><p>관련 성분의 등록 제품을 확인해보세요.</p></div><button data-go="shop">전체보기 ${icon('arrow')}</button></div><div class="ai-product-grid">${related.length?related.map(p=>`<button class="ai-product" data-action="product" data-id="${p.id}"><span class="ai-product-art">${bottle(p)}</span><span>VITAME</span><span>${esc(p.name)}</span><strong>${money(p.price)}</strong></button>`).join(''):'<p>관련 제품이 아직 없어요.</p>'}</div></section></div></div></div></section>`;
+  return detailedGuideCard(g,g.id==='eyes'?eyeGuideContent:{
+    paragraphs:[g.food,g.habit],
+    tips:[['very-good','채워보기',g.food],['bad','함께 확인','등록한 제품의 성분과 표시된 섭취량을 확인해보세요.'],['normal','오늘의 루틴',g.habit]]
+  });
 }
+document.addEventListener('click',e=>{
+  const preview=e.target.closest('[data-guide-catalog]');
+  if(route()==='guide'&&preview)toast('제품 상세 정보가 아직 연결되지 않았어요.');
+});
 let finalGuideScrollTimer;
 // Only the guide uses this carousel. Character DOM and original motion keyframes stay intact.
 const guideCarousel={offset:0,frame:0,drag:null,queue:0,suppressUntil:0,motionTimer:0,tapPending:false};

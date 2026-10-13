@@ -40,4 +40,18 @@ run(source.slice(source.indexOf('const eyeGuideContent='),source.indexOf('functi
 const html=run("detailedGuideCard({id:'eyes',title:'눈 건강',names:['비타민 A'],description:'눈 안내'},eyeGuideContent)");
 assert.match(html,/aria-expanded="false"/);assert.match(html,/개인 분석 데이터가 없어요/);assert.doesNotMatch(html,/role="meter"/);assert.equal((html.match(/class="ai-guide-tip"/g)||[]).length,3);
 assert.match(html,/ai-guide-products/);
+assert.equal((html.match(/class="ai-product"/g)||[]).length,3);
+assert.match(html,/18%/);assert.match(html,/19800/);assert.match(html,/24900/);assert.match(html,/21000/);
+assert.match(html,/assets\/guide\/products\/eye-berry.webp/);
+assert.doesNotMatch(html,/ai-tip-character/,'detail tips use the Figma shapes, not animated characters');
+ctx.products=[{id:'eye-berry',name:'연동된 제품',price:12345,nutrient:'비타민 A'}];
+const liveHtml=run("guideProducts({id:'eyes',title:'눈 건강',names:['비타민 A']})");
+assert.match(liveHtml,/data-action="product" data-id="eye-berry"/);
+assert.match(liveHtml,/12345/);assert.doesNotMatch(liveHtml,/18%/,'missing live discount must not inherit mock pricing');
+const missingHtml=run("guideProductCard({id:'missing',name:'정보 없는 제품'})");
+assert.match(missingHtml,/가격 정보 없음/);assert.match(missingHtml,/제품 이미지 준비 중/);
+ctx.products=[];
+assert.match(run("guideProducts({id:'energy',title:'에너지',names:[]})"),/관련 제품이 아직 없어요/);
+ctx.state.demo=true;ctx.nutrients=[['비타민 A',52,'부족']];
+assert.match(run("detailedGuideCard({id:'eyes',title:'눈 건강',names:['비타민 A'],description:'눈 안내'},eyeGuideContent)"),/aria-valuenow="52"/);
 console.log('AI guide: initial Idle, Tap, queued arrows, five Success states, continuous midpoint, cleanup and no-data card passed.');
