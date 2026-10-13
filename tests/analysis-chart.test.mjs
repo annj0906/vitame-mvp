@@ -21,10 +21,12 @@ for(const period of ['week','month','half','year']){
   assert.equal((selected.match(/class="month-bar current/g)||[]).length,1);
   assert.match(selected,/period-tooltip/);
   assert.ok(selected.includes(`${run('periodScore(chartSelection)')}<span>점</span>`));
+  assert.ok(selected.includes(`--reference-top:${150*(1-run('periodScore(chartSelection)')/100)}px`));
   assert.doesNotMatch(selected,/연속 복용|\+6%/);
 }
 run("chartPeriod='month'");assert.equal(run("periodOffset('2026-12-01',1)"),'2027-01-01');
 assert.equal(run("periodScore('2027-01-01')"),null);
 assert.notEqual(run('analysisScoreMessage(59)'),run('analysisScoreMessage(80)'));
 assert.match(source,/chartPeriods\.filter\(\(\[id\]\)=>id!=='day'\)/);
+assert.ok(source.includes("selector:'.period-chart .month-bars'"),'only bars enter the swipe wrapper');
 console.log('Analysis chart: unchanged calculations, four periods, future dates, selection, tooltip data and score messages passed.');
