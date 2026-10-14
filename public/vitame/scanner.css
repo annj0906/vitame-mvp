@@ -25,7 +25,6 @@
 .scan-final .live-scanner video{object-fit:cover}
 .scan-final .live-scanner>img{object-fit:contain}
 .scan-final .live-scanner>img[data-supplied-label]{object-fit:cover;background:var(--vitame-color-neutral-background)}
-.scan-final-actions img[src="assets/care/edit-action.svg"]{opacity:.5}
 .scan-final-guides{position:absolute;inset:23px;z-index:2;pointer-events:none}
 .scan-final .scan-corner{position:absolute}
 .scan-final .top-left{left:0;top:0;transform:scaleY(-1)}

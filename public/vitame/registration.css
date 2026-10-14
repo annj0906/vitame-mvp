@@ -29,6 +29,8 @@ body[data-screen="registration"] .app,.registration-screen{background:var(--vita
 .registration-fields>.registration-primary{margin-top:16px}
 .registration-search{display:flex;background:var(--vitame-color-neutral-gray20);border-radius:999px;align-items:center;height:52px;margin-bottom:24px}
 .registration-search input{background:none!important;border-radius:999px!important;font:var(--vitame-type-pretendard-body1-regular-16)!important}
+.registration-search input:focus-visible{outline:none;box-shadow:none}
+.registration-search input::-webkit-search-cancel-button,.registration-search input::-webkit-search-decoration,.registration-search input::-webkit-search-results-button,.registration-search input::-webkit-search-results-decoration{-webkit-appearance:none;display:none}
 .registration-search button{flex:0 0 44px;padding:0}
 .registration-recents{margin-top:40px}
 .registration-recents h2{font:var(--vitame-type-pretendard-body2-regular-14);margin-bottom:16px}
@@ -93,6 +95,9 @@ body[data-screen="registration"] .app,.registration-screen{background:var(--vita
 .registration-notifications input:checked:before{transform:translateX(21px)}
 dialog.registration-sheet{position:fixed;inset:auto 0 0;margin:0 auto;width:100%;max-width:430px;max-height:85dvh;overflow:auto;padding:40px 20px max(40px,env(safe-area-inset-bottom));border-radius:24px 24px 0 0;color:var(--vitame-color-neutral-black);background:var(--vitame-color-neutral-white);box-shadow:0 -2px 20px #0000000d}
 dialog.registration-sheet::backdrop{background:transparent;backdrop-filter:blur(5px)}
+dialog.registration-sheet[open]{animation:registration-sheet-enter .3s cubic-bezier(.22,1,.36,1) both}
+@keyframes registration-sheet-enter{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){dialog.registration-sheet[open]{animation:none}}
 .registration-handle{position:absolute;top:8px;left:calc(50% - 24px);height:4px;width:48px;border-radius:2px;background:var(--vitame-color-neutral-gray30)}
 .registration-sheet>.registration-product{margin-bottom:24px}
 .registration-sheet-actions{display:flex;gap:8px;margin-top:40px}
