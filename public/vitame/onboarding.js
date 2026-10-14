@@ -41,16 +41,25 @@ onboarding = function() {
 };
 
 // Reuse the demos' restart-on-tap / animationend cleanup, without test controls.
+document.addEventListener('animationstart', event => {
+  if(event.animationName!=='ob-character-reveal'||!event.target.matches('.ob-character-slot')||route()!=='onboarding')return;
+  const character=event.target.querySelector('[data-onboarding-character]');
+  if(!character||character.dataset.successPlayed||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const key=['good','bad','very-bad'].find(key=>character.classList.contains('ob-'+key+'-charBtn'));
+  character.dataset.successPlayed='true';
+  character.classList.add('ob-'+key+'-success');
+});
 document.addEventListener('click', event => {
   const character = event.target.closest('[data-onboarding-character]');
   if (!character || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const prefix = 'ob-' + ['good', 'bad', 'very-bad'][introPage] + '-';
-  character.classList.remove(prefix + 'tap');
+  character.classList.remove(prefix + 'tap',prefix + 'success');
   void character.querySelector('[data-character-action]').offsetWidth;
   character.classList.add(prefix + 'tap');
 });
 document.addEventListener('animationend', event => {
   if (!event.target.matches('[data-character-action]')) return;
   const character = event.target.closest('[data-onboarding-character]');
-  for (const name of [...character.classList]) if (name.endsWith('-tap')) character.classList.remove(name);
+  if(!character)return;
+  for (const name of [...character.classList]) if (name.endsWith('-tap')||name.endsWith('-success')) character.classList.remove(name);
 });
