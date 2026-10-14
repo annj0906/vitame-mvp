@@ -45,6 +45,11 @@ render=function(){
   const app=document.querySelector('#app');
   clearOnboardingTransition();
   const outgoing=app.querySelector('.onboarding-final')||app.firstElementChild;
+  const outgoingRect=outgoing?.getBoundingClientRect();
+  const oldProgress=outgoing?.querySelector('.initial-progress span');
+  const oldProgressTransform=oldProgress?getComputedStyle(oldProgress).transform:null;
+  const bodyTop=outgoing?.querySelector('.initial-progress')?.getBoundingClientRect().bottom-outgoingRect?.top;
+  const bodyBottom=outgoing?.querySelector('.initial-actions')?.getBoundingClientRect().top-outgoingRect?.top;
   if(next==='onboarding'&&retainedIntroLogo?.isConnected){
     const template=document.createElement('template');template.innerHTML=onboarding();
     app.querySelector('.onboarding-final')?.replaceWith(template.content.firstElementChild);
@@ -64,6 +69,20 @@ render=function(){
   incoming.classList.add('onboarding-flow-enter');app.classList.add('onboarding-transition');
   app.append(outgoing);onboardingFlowOutgoing=outgoing;
   const options={duration:320,easing:'cubic-bezier(.22,.75,.2,1)'};
+  if(outgoing.matches('.initial-setup-final')&&incoming.matches('.initial-setup-final')){
+    // Only the middle content moves; both chrome regions stay on the incoming page.
+    outgoing.classList.add('onboarding-body-exit');
+    outgoing.style.clipPath=`inset(${Number.isFinite(bodyTop)?bodyTop:64}px 0 ${Math.max(0,outgoingRect.height-bodyBottom)}px 0)`;
+    const exit=outgoing.animate([{transform:'translateX(0)'},{transform:`translateX(${-direction*100}%)`}],options);
+    const body=[...incoming.children].filter(node=>!node.matches('.initial-header,.initial-progress,.initial-actions'));
+    const entrances=body.map(node=>node.animate([{transform:`translateX(${direction*100}%)`},{transform:'translateX(0)'}],options));
+    const progress=incoming.querySelector('.initial-progress span');
+    const marker=progress&&oldProgressTransform?progress.animate([{transform:oldProgressTransform},{transform:getComputedStyle(progress).transform}],options):null;
+    onboardingFlowAnimations=[exit,...entrances,...(marker?[marker]:[])];
+    const current=exit;
+    Promise.all(onboardingFlowAnimations.map(animation=>animation.finished)).then(()=>{if(onboardingFlowAnimations.includes(current))clearOnboardingTransition();}).catch(()=>{});
+    return;
+  }
   const exit=outgoing.animate([{transform:'translateX(0)'},{transform:`translateX(${-direction*100}%)`}],options);
   const enter=incoming.animate([{transform:`translateX(${direction*100}%)`},{transform:'translateX(0)'}],options);
   onboardingFlowAnimations=[exit,enter];

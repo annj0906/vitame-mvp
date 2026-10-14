@@ -20,7 +20,8 @@
   font: var(--vitame-type-nanumsquareround-body-regular-16);
   letter-spacing: var(--vitame-tracking-nanumsquareround-body-regular-16);
 }
-.initial-health-interests { min-height: max(868px,100dvh); }
+.initial-health-interests,.initial-setup-frequency { min-height: max(870px,100dvh); }
+.onboarding-body-exit>.initial-header,.onboarding-body-exit>.initial-progress,.onboarding-body-exit>.initial-actions{visibility:hidden}
 .initial-health-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin: 40px 0; }
 .initial-health-grid button {
   display: flex; align-items: center; gap: 8px; padding: 20px 16px; height: 78.4px; border-radius: 16px;
