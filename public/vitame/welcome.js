@@ -50,7 +50,8 @@ window.addEventListener('message',async e=>{
   if(e.origin!==location.origin||e.source!==frame?.contentWindow||e.data?.type!=='vitame-intro-complete'||logoHandoff)return;
   logoHandoff=true;
   const bounds=frame.getBoundingClientRect(),intro=frame.parentElement;
-  // Fade the intro in place. The onboarding has one static header logo.
+  const logo=frame.contentDocument.querySelector('#logoGroup');
+  // Keep the live intro logo while it shrinks into the onboarding header.
   Object.assign(intro.style,{position:'fixed',left:bounds.left+'px',top:bounds.top+'px',width:bounds.width+'px',height:bounds.height+'px',zIndex:'90',pointerEvents:'none'});
   introPage=0;history.replaceState(null,'',location.pathname+location.search+'#onboarding');
   document.body.dataset.screen='onboarding';document.title='온보딩 · VITAME';
@@ -58,15 +59,32 @@ window.addEventListener('message',async e=>{
   const reveal=document.querySelector('.onboarding-final');
   reveal.style.opacity='0';reveal.style.pointerEvents='none';
   reveal.classList.add('onboarding-intro-pending');
+  const target=reveal.querySelector('.final-brand img'),rect=target.getBoundingClientRect();
+  target.style.visibility='hidden';
+  intro.style.background='transparent';
+  frame.contentDocument.body.style.background='transparent';
+  frame.contentDocument.querySelector('.stage').style.background='transparent';
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const options={duration:reduced?0:650,easing:'ease-out',fill:'forwards'};
-  const exit=intro.animate([{opacity:1},{opacity:0}],options);
-  const enter=reveal.animate([{opacity:0},{opacity:1}],options);
-  try{await Promise.all([exit.finished,enter.finished]);}
+  const move=logo.animate([
+    {top:'50%',left:'50%',transform:getComputedStyle(logo).transform},
+    {top:(rect.top+rect.height/2-bounds.top)+'px',left:(rect.left+rect.width/2-bounds.left)+'px',transform:'translate(-50%, -50%) scale(.21)'}
+  ],{duration:reduced?0:850,easing:'cubic-bezier(.22,.7,.2,1)',fill:'forwards'});
+  try{await move.finished;}
   catch{return;}
   if(!reveal.isConnected||route()!=='onboarding')return;
+  const enter=reveal.animate([{opacity:0},{opacity:1}],{duration:reduced?0:650,easing:'ease-out',fill:'forwards'});
+  try{await enter.finished;}catch{return;}
+  if(!reveal.isConnected||route()!=='onboarding')return;
   reveal.style.opacity='';reveal.style.pointerEvents='';
-  enter.cancel();intro.remove();logoHandoff=false;
+  enter.cancel();
+  // Exchange the two logos with complementary opacity, rather than showing both at full strength.
+  target.style.visibility='';target.style.opacity='0';
+  const swap={duration:reduced?0:120,easing:'linear',fill:'forwards'};
+  const exit=intro.animate([{opacity:1},{opacity:0}],swap);
+  const show=target.animate([{opacity:0},{opacity:1}],swap);
+  try{await Promise.all([exit.finished,show.finished]);}catch{return;}
+  if(!reveal.isConnected||route()!=='onboarding')return;
+  target.style.opacity='';show.cancel();intro.remove();logoHandoff=false;
   reveal.classList.remove('onboarding-intro-pending');
   finishOnboardingIntro();
 });
