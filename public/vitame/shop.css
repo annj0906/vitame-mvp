@@ -31,3 +31,15 @@ body:is([data-screen="shop"],[data-screen="shop-eye-berry"]) #app{background:var
 .shop-notes .shop-rail{padding:0 20px;scroll-padding:20px}
 @media(max-width:380px){.shop-curation{padding:20px}.shop-curation h2{font-size:16px}.shop-curation p{font-size:14px}}
 .shop-curation-character .ob-good-charBtn{width:156.21px;height:158.82px;left:-19.81px;top:-23.44px}
+/* Match the Figma icon artwork's intrinsic proportions and category outlines. */
+.shop-header img{object-fit:contain}
+.shop-header [data-shop-favorites] img{width:24px;height:24px}
+.shop-header [data-go="cart"] img{width:19.165px;height:21.5px}
+.shop-category{--category-color:var(--vitame-color-accent-blue-main)}
+.shop-category-energy,.shop-category-bones,.shop-category-skin{--category-color:var(--vitame-color-accent-yellow-main)}
+.shop-category-sleep{--category-color:var(--vitame-color-accent-purple-main)}
+.shop-category-gut,.shop-category-circulation{--category-color:var(--vitame-color-accent-pink-main)}
+.shop-category-immune{--category-color:var(--vitame-color-accent-green-main)}
+.shop-category[aria-pressed="true"]{border:1.5px solid var(--category-color);background:var(--vitame-color-neutral-white)}
+.shop-results .shop-section-heading small{font:600 12px/1.4 var(--vitame-font-pretendard);margin-left:4px}
+.shop-results .ai-product-name{display:block;min-height:0;max-height:none;overflow:visible;white-space:normal;font-size:14px;line-height:1.4}
