@@ -58,7 +58,7 @@ render=function(){
     document.title='온보딩 · VITAME';
     if(!onboardingSlideCommitting&&(next===previous||!onboardingFlowRoutes.includes(previous)))activateOnboardingPanel(app.querySelector('.onboarding-panel'));
   }
-  if(next===previous||(previous==='health-interests'&&next==='setup-frequency')||(previous==='setup-frequency'&&next==='health-interests')||!outgoing||!onboardingFlowRoutes.includes(previous)||!onboardingFlowRoutes.includes(next)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  if(next===previous||!outgoing||!onboardingFlowRoutes.includes(previous)||!onboardingFlowRoutes.includes(next)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const incoming=app.firstElementChild,direction=onboardingFlowRoutes.indexOf(next)>onboardingFlowRoutes.indexOf(previous)?1:-1;
   outgoing.inert=true;outgoing.setAttribute('aria-hidden','true');outgoing.classList.add('onboarding-flow-exit');
   incoming.classList.add('onboarding-flow-enter');app.classList.add('onboarding-transition');

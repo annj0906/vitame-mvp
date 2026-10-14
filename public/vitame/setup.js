@@ -30,7 +30,7 @@ function initialCharacter(key, interactive = false) {
   return `<span class="initial-character-box" data-character-key="${key}">${interactive?'<button type="button" aria-label="캐릭터를 눌러 안내 바꾸기" data-initial-character':'<span aria-hidden="true"'} class="initial-character ${p}charBtn">${content}${interactive?'</button>':'</span>'}</span>`;
 }
 function initialHeader(back, step = 0) {
-  return `<header class="initial-header"><button data-go="${back}" aria-label="이전 단계"><img src="${setupAsset('back')}" alt=""></button></header>${step?`<div class="initial-progress" role="progressbar" aria-label="초기 설정 진행" aria-valuemin="0" aria-valuemax="2" aria-valuenow="${step}"><span style="width:${step*50}%"></span></div>`:''}`;
+  return `<header class="initial-header"><button data-go="${back}" aria-label="이전 단계"><img src="${setupAsset('back')}" alt=""></button></header>${step?`<div class="initial-progress" role="progressbar" aria-label="초기 설정 진행" aria-valuemin="0" aria-valuemax="2" aria-valuenow="${step}"><span style="transform:translateX(${(step-1)*100}%)"></span></div>`:''}`;
 }
 function initialFooter(next, complete = false) {
   return complete ? '<div class="initial-actions"><button data-initial-finish="home">홈으로 가기</button><button class="initial-primary" data-initial-finish="scan">영양제 스캔하기</button></div>'
