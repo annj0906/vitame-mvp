@@ -8,3 +8,7 @@ h1,h2,h3,b,p{word-break:keep-all;overflow-wrap:anywhere}
 .empty>.character{margin:0 auto 15px}
 .dose-mini button b{max-width:100%}
 button:disabled{opacity:.4;cursor:default}
+/* Suppress the extra selection halo without changing controls or selected states. */
+:is(button,a,input,select,textarea,[tabindex]):focus,
+:is(button,a,input,select,textarea,[tabindex]):focus-visible{outline:none!important;outline-offset:0!important}
+.initial-range:focus-within,.analysis-month-picker:focus-within{outline:none!important}
