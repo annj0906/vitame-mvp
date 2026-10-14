@@ -8,6 +8,7 @@ const initialHealthOptions = [
   ['소화 · 장 건강', '소화 · 장 건강', 'digestion', 'pink'], ['피부', '피부', 'skin', 'purple'],
   ['심혈관', '심혈관', 'heart', 'red'], ['근육 · 운동', '근육 · 운동', 'muscle', 'blue']
 ];
+const setupHealthColors={eye:'blue',energy:'yellow',sleep:'purple',brain:'blue',bone:'yellow',immunity:'green',digestion:'pink',skin:'yellow',heart:'pink',muscle:'blue'};
 const setupMessages = [
   '복용 중인 영양제가 있다면 지금 등록해볼까요?',
   '영양제를 등록하면 복용 관리가 더 간편해져요.',
@@ -29,7 +30,7 @@ function initialCharacter(key, interactive = false) {
   return `<span class="initial-character-box" data-character-key="${key}">${interactive?'<button type="button" aria-label="캐릭터를 눌러 안내 바꾸기" data-initial-character':'<span aria-hidden="true"'} class="initial-character ${p}charBtn">${content}${interactive?'</button>':'</span>'}</span>`;
 }
 function initialHeader(back, step = 0) {
-  return `<header class="initial-header"><button data-go="${back}" aria-label="이전 단계"><img src="${setupAsset('back')}" alt=""></button></header>${step?`<div class="initial-progress" role="progressbar" aria-label="초기 설정 진행" aria-valuemin="0" aria-valuemax="2" aria-valuenow="${step}"><span style="margin-left:${(step-1)*50}%"></span></div>`:''}`;
+  return `<header class="initial-header"><button data-go="${back}" aria-label="이전 단계"><img src="${setupAsset('back')}" alt=""></button></header>${step?`<div class="initial-progress" role="progressbar" aria-label="초기 설정 진행" aria-valuemin="0" aria-valuemax="2" aria-valuenow="${step}"><span style="width:${step*50}%"></span></div>`:''}`;
 }
 function initialFooter(next, complete = false) {
   return complete ? '<div class="initial-actions"><button data-initial-finish="home">홈으로 가기</button><button class="initial-primary" data-initial-finish="scan">영양제 스캔하기</button></div>'
@@ -46,7 +47,7 @@ render = function() {
   let content;
   if (r === 'health-interests') {
     interestDraft ||= [...state.interests];
-    content = `${initialHeader('onboarding',1)}<div class="initial-copy"><h1>현재 신경쓰이는<br>고민이 있으신가요?</h1><p>설정에서 변경 가능해요</p></div><div class="initial-health-grid">${initialHealthOptions.map(([label,value,asset,color])=>`<button data-setup-interest="${value}" aria-pressed="${interestDraft.includes(value)}" style="--health-tint:var(--vitame-color-accent-${color}-light)"><span class="initial-health-icon"><img src="${setupAsset(asset)}" alt=""></span><span class="initial-health-label">${label}</span><span class="initial-check"><img src="${setupAsset('check')}" alt=""></span></button>`).join('')}</div>${initialFooter('setup-frequency')}`;
+    content = `${initialHeader('onboarding',1)}<div class="initial-copy"><h1>현재 신경쓰이는<br>고민이 있으신가요?</h1><p>설정에서 변경 가능해요</p></div><div class="initial-health-grid">${initialHealthOptions.map(([label,value,asset,color])=>`<button data-setup-interest="${value}" aria-pressed="${interestDraft.includes(value)}" style="--health-tint:var(--vitame-color-accent-${setupHealthColors[asset]}-light);--health-color:var(--vitame-color-accent-${setupHealthColors[asset]}-main)"><span class="initial-health-icon" aria-hidden="true"><span style="--health-glyph:url('${setupAsset(asset)}')"></span></span><span class="initial-health-label">${label}</span><span class="initial-check"><img src="${setupAsset('check')}" alt=""></span></button>`).join('')}</div>${initialFooter('setup-frequency')}`;
   } else if (r === 'setup-frequency') {
     content = `${initialHeader('health-interests',2)}<div class="initial-copy"><h1>영양제를 얼마나<br>자주 챙겨 드시나요?</h1><p>꾹 누르고 움직여 보세요</p></div><div class="initial-frequency"><div class="initial-range"><div class="initial-stops" aria-hidden="true">${Array.from({length:5},()=>`<span><img src="${setupAsset('stop')}" alt=""></span>`).join('')}</div><div class="initial-frequency-character" style="left:${frequencyDraft*25}%">${initialCharacter(setupKeys[frequencyDraft])}</div><input id="initial-frequency" type="range" min="0" max="4" step="1" value="${frequencyDraft}" aria-label="영양제 복용 빈도" aria-valuetext="${frequencyLabels[frequencyDraft]}"></div><div class="initial-frequency-labels">${['거의<br>안먹어요','가끔<br>먹어요','절반 정도','자주<br>먹어요','매일<br>먹어요'].map((label,i)=>`<button data-initial-frequency="${i}" aria-pressed="${i===frequencyDraft}">${label}</button>`).join('')}</div></div>${initialFooter('setup-complete')}`;
   } else {

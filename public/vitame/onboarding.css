@@ -24,7 +24,9 @@ body .onboarding-final .onboarding-window {
   flex: 1; min-height: 355px; margin: 0; overflow: visible;
   display: flex; align-items: center;
 }
-body .onboarding-final .onboarding-panel { transform: translateY(-3px); }
+body .onboarding-final .onboarding-window { width:calc(100% + 48px); margin-left:-24px; margin-right:-24px; }
+/* Reserve the upper decorations inside each sliding page without moving the artwork. */
+body .onboarding-final .onboarding-panel { padding:56px 24px 0; transform:translateY(-31px); }
 body .onboarding-final .onboarding-art { height: 201px; min-height: 201px; display: block; }
 body .onboarding-final h1 {
   margin: 0;
@@ -131,6 +133,13 @@ body .onboarding-final .login-link .text-btn {
   .character-shadow > img { animation: none !important; transform: none; opacity: 1; will-change: auto; }
 }
 .onboarding-final .ob-decoration { position: absolute; pointer-events: none; }
+.onboarding-final .ob-decoration{animation:ob-decoration-pop .42s cubic-bezier(.2,.8,.2,1.3) both;animation-delay:1s}
+.onboarding-final .ob-decoration:nth-child(2){animation-delay:2s}
+.onboarding-final .ob-decoration:nth-child(3){animation-delay:3s}
+@keyframes ob-decoration-pop{from{opacity:0;scale:.2}to{opacity:1;scale:1}}
+#app.onboarding-transition{position:relative;overflow:hidden;isolation:isolate}
+.onboarding-flow-enter{position:relative;will-change:transform}
+.onboarding-flow-exit{position:absolute!important;top:0;left:0;width:100%;pointer-events:none;will-change:transform}
 .onboarding-final .ob-square-cyan {
   left: calc(50% + 54px); top: 10px; width: 33px; height: 33px; border-radius: 4px;
   background: var(--vitame-color-accent-cyan-main); transform: rotate(-22.4deg);
@@ -158,4 +167,5 @@ body .onboarding-final .login-link .text-btn {
 }
 @media (prefers-reduced-motion: reduce) {
   .onboarding-final .ob-character, .onboarding-final .ob-character * { animation: none !important; }
+  .onboarding-final .ob-decoration{animation:none;opacity:1;scale:1}
 }
