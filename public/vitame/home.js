@@ -28,6 +28,7 @@ home = function() {
   const banner = template.content.querySelector('.home-scan-banner');
   if (banner) template.content.prepend(banner);
   template.content.querySelector('.footer-note')?.remove();
+  template.content.querySelector('.home-dose .empty')?.remove();
   return template.innerHTML;
 };
 

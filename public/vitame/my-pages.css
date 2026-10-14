@@ -40,3 +40,8 @@ body:is([data-screen="my"],[data-screen="interest-settings"]) .app{background:va
 .my-health-card[aria-pressed="true"] .my-health-check{background:var(--vitame-color-neutral-black)}
 .my-save-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 @media(max-width:380px){.my-health-card{padding:18px 10px;gap:6px}.my-identity{gap:14px}.my-edit-profile{font-size:14px}}
+/* Shared informational dialogs use a neutral overlay, not the legacy green tint. */
+body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet){color:var(--vitame-color-neutral-black)}
+body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet)::backdrop{background:rgba(0,0,0,.24)}
+body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet) p{color:var(--vitame-color-neutral-gray60)}
+body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet) button:focus-visible{outline:none}

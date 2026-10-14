@@ -237,6 +237,8 @@ body[data-screen="guide"] .wellness-tabs button.selected{color:var(--vitame-colo
 .ai-guide-card h2{font:var(--vitame-type-pretendard-subtitle-semibold-18)}
 .ai-guide-toggle{display:grid;grid-template-columns:1fr 20px;gap:9px;width:100%;padding:0;text-align:left;font:inherit}
 .ai-guide-toggle .ai-health-icon{width:36px;height:36px;grid-column:1/-1}
+body[data-screen="guide"] .ai-guide-toggle .ai-health-icon{display:none}
+body[data-screen="guide"] .ai-guide-toggle{min-height:25px}
 .ai-guide-toggle>.icon{width:18px;height:18px;align-self:center;transition:transform .28s}
 .ai-guide-toggle[aria-expanded="true"]>.icon{transform:rotate(180deg)}
 .ai-guide-description{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60);padding-top:6px}
@@ -297,8 +299,8 @@ body[data-screen="guide"] .ai-detail-card .ai-guide-description{font:var(--vitam
 body[data-screen="guide"] .ai-detail-content{background:var(--vitame-color-neutral-white);padding:24px 24px 40px;border-radius:0 0 20px 20px;box-shadow:0 4px 5px #0000000d}
 body[data-screen="guide"] .ai-detail-card .ai-guide-status{max-width:270px}
 body[data-screen="guide"] .ai-detail-card .ai-guide-nutrient{grid-template-columns:80px minmax(36px,104px) 30px 28px;gap:6px}
-body[data-screen="guide"] .ai-detail-card .ai-guide-nutrient>button{border:1px solid var(--vitame-color-neutral-gray20);border-radius:15px;padding:4px 8px;white-space:nowrap;text-align:center}
-body[data-screen="guide"] .ai-detail-card .ai-guide-nutrient>span:not(.ai-guide-track){font-size:10px;text-align:right}
+body[data-screen="guide"] .ai-detail-card .ai-guide-nutrient>.ai-guide-nutrient-name{border:1px solid var(--vitame-color-neutral-gray20);border-radius:15px;padding:4px 8px;white-space:nowrap;text-align:center;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-black)}
+body[data-screen="guide"] .ai-detail-card .ai-guide-nutrient>span:not(.ai-guide-track):not(.ai-guide-nutrient-name){font-size:10px;text-align:right}
 body[data-screen="guide"] .ai-detail-card .ai-guide-copy{padding-top:25px;display:grid;gap:20px;word-break:keep-all;overflow-wrap:anywhere}
 body[data-screen="guide"] .ai-detail-card .ai-guide-tips{margin-top:40px;gap:32px}
 body[data-screen="guide"] .ai-detail-card .ai-guide-tip p{font:var(--vitame-type-nanumsquareround-body-bold-16);word-break:keep-all;overflow-wrap:anywhere}
