@@ -103,11 +103,30 @@ function bindShoppingVideo(){
   if(reduced.addEventListener)reduced.addEventListener('change',sync);else reduced.addListener(sync);
   stopShoppingVideo=()=>{disposed=true;observer.disconnect();video.pause();video.removeEventListener('playing',playing);video.removeEventListener('error',fallback);document.removeEventListener('visibilitychange',sync);if(reduced.removeEventListener)reduced.removeEventListener('change',sync);else reduced.removeListener(sync);stopShoppingVideo=()=>{};};
 }
+function bindShoppingAutoplay(){
+  const rail=document.querySelector('.shop-hero [data-shop-rail]');
+  if(!rail||!('IntersectionObserver' in window))return;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  let timer,visible=false,interacting=false,disposed=false;
+  const schedule=()=>{clearTimeout(timer);if(!disposed&&visible&&!document.hidden&&!reduced.matches&&!interacting)timer=setTimeout(()=>{const step=rail.children[1].offsetLeft-rail.children[0].offsetLeft;const next=(Math.round(rail.scrollLeft/step)+1)%rail.children.length;rail.scrollTo({left:next*step,behavior:'smooth'});schedule();},5000);};
+  const start=()=>{interacting=true;clearTimeout(timer);};
+  const finish=()=>{if(interacting){interacting=false;schedule();}};
+  const observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting&&entries[0].intersectionRatio>=.65;schedule();},{threshold:[0,.65]});
+  observer.observe(rail);
+  rail.addEventListener('scroll',schedule,{passive:true});
+  rail.parentElement.addEventListener('pointerdown',start,{passive:true});
+  document.addEventListener('pointerup',finish);document.addEventListener('pointercancel',finish);
+  rail.addEventListener('keydown',schedule);document.addEventListener('visibilitychange',schedule);
+  if(reduced.addEventListener)reduced.addEventListener('change',schedule);else reduced.addListener(schedule);
+  // Share the existing route teardown, including utility pages that bypass this renderer.
+  const stopVideo=stopShoppingVideo;
+  stopShoppingVideo=()=>{disposed=true;clearTimeout(timer);observer.disconnect();rail.removeEventListener('scroll',schedule);rail.parentElement.removeEventListener('pointerdown',start);document.removeEventListener('pointerup',finish);document.removeEventListener('pointercancel',finish);rail.removeEventListener('keydown',schedule);document.removeEventListener('visibilitychange',schedule);if(reduced.removeEventListener)reduced.removeEventListener('change',schedule);else reduced.removeListener(schedule);stopVideo();};
+}
 const beforeShopping=render;
 render=function(){
   stopShoppingVideo();clearInterval(shoppingTimer);const r=route();if(!['shop','shop-eye-berry'].includes(r)){beforeShopping();return;}
   clearTimeout(introTimer);document.body.dataset.screen=r;document.title=(r==='shop'?'쇼핑':'아이 베리 루테인 구미')+' · VITAME';$('#app').innerHTML=r==='shop'?shoppingScreen():shoppingDetail();bindShoppingRails();
-  if(r==='shop'){bindShoppingVideo();updateShoppingTimer();shoppingTimer=setInterval(updateShoppingTimer,1000);}
+  if(r==='shop'){bindShoppingVideo();bindShoppingAutoplay();updateShoppingTimer();shoppingTimer=setInterval(updateShoppingTimer,1000);}
 };
 document.addEventListener('submit',e=>{if(!e.target.matches('.shop-search'))return;e.preventDefault();shoppingQuery=e.target.querySelector('input').value;shoppingCategory='';shoppingFavorites=false;updateShoppingResults(true);});
 document.addEventListener('input',e=>{if(!e.target.matches('.shop-search input'))return;shoppingQuery=e.target.value;shoppingCategory='';shoppingFavorites=false;updateShoppingResults();});
