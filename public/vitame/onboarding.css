@@ -137,6 +137,8 @@ body .onboarding-final .login-link .text-btn {
 .onboarding-final .ob-decoration:nth-child(2){animation-delay:.4s}
 .onboarding-final .ob-decoration:nth-child(3){animation-delay:.6s}
 @keyframes ob-decoration-pop{from{opacity:0;scale:.2}to{opacity:1;scale:1}}
+.onboarding-final :is(.ob-character-slot,.ob-shadow){opacity:0;animation:ob-character-reveal 1ms step-end .2s both}
+@keyframes ob-character-reveal{from{opacity:0}to{opacity:1}}
 #app.onboarding-transition{position:relative;overflow:hidden;isolation:isolate}
 .onboarding-flow-enter{position:relative;will-change:transform}
 .onboarding-flow-exit{position:absolute!important;top:0;left:0;width:100%;pointer-events:none;will-change:transform}
@@ -168,4 +170,5 @@ body .onboarding-final .login-link .text-btn {
 @media (prefers-reduced-motion: reduce) {
   .onboarding-final .ob-character, .onboarding-final .ob-character * { animation: none !important; }
   .onboarding-final .ob-decoration{animation:none;opacity:1;scale:1}
+  .onboarding-final :is(.ob-character-slot,.ob-shadow){animation:none;opacity:1}
 }
