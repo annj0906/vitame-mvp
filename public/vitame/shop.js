@@ -15,7 +15,7 @@ let shoppingCategory='',shoppingQuery='',shoppingFavorites=false,shoppingTimer;
 const shoppingAsset=name=>`<img src="assets/shop/${name}.svg" alt="" draggable="false">`;
 const shoppingLiked=id=>Array.isArray(state.shopLikes)&&state.shopLikes.includes(id);
 function shoppingHeart(p){return `<button type="button" class="shop-heart" data-shop-like="${p.id}" aria-label="${esc(p.name)} 찜하기" aria-pressed="${shoppingLiked(p.id)}">${shoppingAsset(shoppingLiked(p.id)?'heart-active':'heart')}</button>`;}
-function shoppingHealth(id){const g=wellnessGuides.find(g=>g.id===id);let html=finalGuideIcon(g);if(['brain','bones','skin','circulation','muscles'].includes(id))html=html.replace(/src="[^"]+"/,`src="assets/shop/${id}.svg"`);return `<span class="shop-health shop-health-${id}" title="${esc(g.title)}">${html}</span>`;}
+function shoppingHealth(id,category=false){category=category===true;const g=wellnessGuides.find(g=>g.id===id);let html=finalGuideIcon(g);if(category){const asset=['brain','bones','skin','circulation','muscles'].includes(id)?id:'category-'+id;html=html.replace(/<img src="[^"]+" alt="">/,`<span class="shop-category-glyph"><img src="assets/shop/${asset}.svg" alt=""></span>`);}else if(['brain','bones','skin','circulation','muscles'].includes(id))html=html.replace(/src="[^"]+"/,`src="assets/shop/${id}.svg"`);return `<span class="shop-health shop-health-${id}${category?' shop-category-symbol':''}" title="${esc(g.title)}">${html}</span>`;}
 function shoppingCard(p,deal=false){
   // Adapt the existing guide product component without changing its other callers.
   const template=document.createElement('template');template.innerHTML=guideProductCard({...p,tags:null,designOnly:true});
@@ -46,7 +46,7 @@ function shoppingScreen(){
   const categories=['eyes','energy','sleep','brain','gut','bones','immune','skin','circulation','muscles'];
   const curations=[['very-bad','eyes','요즘 눈이 쉽게 피로한가요?','화면을 오래 보는 날을 위한 눈 건강 제품 모음'],['good','sleep','푹 쉬어도 개운하지 않다면?','편안한 하루의 끝을 위한 수면 제품 모음'],['very-good','energy','오후만 되면 금방 지치시나요?','활력을 채워주는 에너지 제품 모음']];
   return `<div class="shopping-page">${shoppingHeader()}<main><form class="shop-search" role="search"><input type="search" aria-label="쇼핑 상품 검색" placeholder="나를 위한 영양제 찾기" value="${esc(shoppingQuery)}"><button aria-label="검색">${shoppingAsset('search')}</button></form>${shoppingPhotoCarousel('hero',shoppingBanners)}
-    ${shoppingRail('건강 카테고리',categories.map(id=>`<button class="shop-category shop-category-${id}" data-shop-filter="${id}" aria-pressed="${shoppingCategory===id}">${shoppingHealth(id)}<span>${id==='eyes'?'눈':esc(wellnessGuides.find(g=>g.id===id).title)}</span></button>`).join(''),'shop-categories')}
+    ${shoppingRail('건강 카테고리',categories.map(id=>`<button class="shop-category shop-category-${id}" data-shop-filter="${id}" aria-pressed="${shoppingCategory===id}">${shoppingHealth(id,true)}<span>${id==='eyes'?'눈':esc(wellnessGuides.find(g=>g.id===id).title)}</span></button>`).join(''),'shop-categories')}
     <section id="shop-results" class="shop-results" ${shoppingCategory||shoppingQuery||shoppingFavorites?'':'hidden'}>${shoppingResults()}</section>
     <section class="shop-section">${shoppingHeading(`${state.name} 님을 위한 추천 제품`,'현재 부족한 영양소를 바탕으로 추천했어요.','eyes')}${shoppingRail('추천 제품',shoppingProducts.slice(0,3).map(p=>shoppingCard(p)).join(''))}</section>
     <section class="shop-section">${shoppingHeading('요즘 많이 찾는 영양제','지금 가장 많은 관심을 받고 있어요.')}${shoppingRail('인기 영양제',shoppingProducts.slice(3,6).map(p=>shoppingCard(p)).join(''))}</section>

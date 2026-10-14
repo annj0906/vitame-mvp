@@ -43,3 +43,9 @@ body:is([data-screen="shop"],[data-screen="shop-eye-berry"]) #app{background:var
 .shop-category[aria-pressed="true"]{border:1.5px solid var(--category-color);background:var(--vitame-color-neutral-white)}
 .shop-results .shop-section-heading small{font:600 12px/1.4 var(--vitame-font-pretendard);margin-left:4px}
 .shop-results .ai-product-name{display:block;min-height:0;max-height:none;overflow:visible;white-space:normal;font-size:14px;line-height:1.4}
+/* Figma Category: 28px circle, 18px icon frame; SVG groups retain intrinsic bounds. */
+.shopping-page .shop-category-symbol .ai-health-icon{width:28px;height:28px;padding:5px}
+.shopping-page .shop-category-glyph{width:18px;height:18px;display:grid;place-items:center}
+.shopping-page .shop-category-glyph img{width:auto;height:auto;max-width:18px;max-height:18px;object-fit:contain}
+.shopping-page .shop-category-symbol.shop-health-skin .ai-health-icon{background:var(--vitame-color-accent-yellow-light)}
+.shopping-page .shop-category-symbol.shop-health-circulation .ai-health-icon{background:var(--vitame-color-accent-pink-light)}
