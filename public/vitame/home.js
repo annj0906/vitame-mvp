@@ -43,9 +43,21 @@ render = function() {
   const toggle = document.querySelector('[data-home-view]');
   if (toggle) {
     // Both design icons operate the existing single layout toggle.
-    toggle.innerHTML = homeAsset('grid') + homeAsset('list');
-    toggle.classList.toggle('home-list-selected', homeDoseList);
+    toggle.outerHTML = `<div class="home-view-toggle"><button data-home-view="grid" aria-label="카드형으로 보기" aria-pressed="${!homeDoseList}">${homeAsset('grid')}</button><button data-home-view="list" aria-label="목록형으로 보기" aria-pressed="${homeDoseList}">${homeAsset('list')}</button></div>`;
   }
+};
+
+const renderBeforeHomeCounts=render;
+let homeCountsEntered=false;
+render=function(){
+  renderBeforeHomeCounts();
+  if(route()!=='home'){homeCountsEntered=false;return;}
+  if(homeCountsEntered||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  homeCountsEntered=true;
+  const numbers=[...document.querySelectorAll('.score-stat-count b')].map(el=>({el,value:Number(el.textContent)}));
+  const start=performance.now();
+  function tick(now){const t=Math.min(1,(now-start)/700),ease=1-Math.pow(1-t,3);numbers.forEach(({el,value})=>{if(el.isConnected)el.textContent=Math.round(value*ease)});if(t<1&&numbers.some(n=>n.el.isConnected))requestAnimationFrame(tick);}
+  requestAnimationFrame(tick);
 };
 
 render();

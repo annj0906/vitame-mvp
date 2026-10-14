@@ -3,11 +3,12 @@ body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) #
 body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) .top{position:relative;height:64px;padding:0 20px;background:transparent}
 body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) .top h2{position:absolute;left:50%;transform:translateX(-50%);font:var(--vitame-type-pretendard-subtitle-semibold-18);letter-spacing:-.02em;white-space:nowrap}
 body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) .top-actions{margin-left:auto;gap:18px;align-items:center}
+body[data-screen="dose"] .app>.top .top-actions{gap:18px}
 body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) .top .icon-btn{width:24px;padding:0;display:grid;place-items:center}
 body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) .content{padding:0 20px 120px}
 body[data-screen="dose"] .dose-period-toolbar{height:52px;margin:0;position:relative}
 body[data-screen="dose"] .dose-period-toolbar .segment{position:absolute;left:50%;transform:translateX(-50%);margin:0;padding:4px;background:var(--vitame-color-accent-orange-main);border-radius:999px;width:166px}
-body[data-screen="dose"] .segment button{flex:1;padding:12px 8px;min-height:44px;white-space:nowrap;color:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-medium-14)}
+body[data-screen="dose"] .segment button{flex:1;min-width:0;padding:12px 8px;min-height:44px;white-space:nowrap;color:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-medium-14)}
 body[data-screen="dose"] .segment .selected{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);font-weight:700;box-shadow:0 4px 2px #0000000d}
 body[data-screen="dose"] .calendar-today{position:absolute;right:0;top:8px;border-radius:999px;min-height:36px;padding:8px 11px;border-color:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-black);font:var(--vitame-type-pretendard-body2-regular-14)}
 body[data-screen="dose"] .dose-calendar{margin:24px 0 40px}
@@ -43,6 +44,13 @@ body[data-screen="dose"] .taken .check{background:var(--vitame-color-neutral-bla
 body[data-screen="dose"] .care-swipe-hint{position:absolute;right:88px;top:31px;color:var(--vitame-color-neutral-gray50);font:400 10px/1.4 var(--vitame-font-pretendard);pointer-events:none}
 body[data-screen="dose"] .dose-row:has(.care-swipe-hint) b{max-width:88px}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-item-edit,body:is([data-screen="dose"],[data-screen="archive"]) .dose-delete{width:64px;background:var(--vitame-color-neutral-white);border:0;z-index:0;min-height:80px}
+body:is([data-screen="dose"],[data-screen="archive"]) .dose-swipe-row{border:0;outline:0;box-shadow:0 2px 10px #0000000d}
+body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front{z-index:1}
+body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front:focus-within{outline:none}
+body[data-screen="dose"] .dose-item-edit img{filter:invert(60%) sepia(96%) saturate(1525%) hue-rotate(337deg) brightness(103%) contrast(101%)}
+body[data-screen="guide"] .wellness-tabs{display:flex;width:167px;padding:4px;margin:0 auto 24px;border-radius:999px;background:var(--vitame-color-accent-green-main)}
+body[data-screen="guide"] .wellness-tabs button{flex:1;min-width:0;padding:12px 0;min-height:44px;white-space:nowrap;font:var(--vitame-type-pretendard-body2-medium-14);color:var(--vitame-color-neutral-white)}
+body[data-screen="guide"] .wellness-tabs .selected{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);font-weight:700;box-shadow:0 4px 2px #0000000d}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-item-edit:focus-visible,body:is([data-screen="dose"],[data-screen="archive"]) .dose-delete:focus-visible{z-index:3}
 body[data-screen="dose"] .dose-add-action{margin-top:8px;justify-content:flex-start}
 body[data-screen="dose"] .dose-add-action button{background:var(--vitame-color-neutral-white);box-shadow:0 2px 5px #0000000d;border:0;border-radius:13px;padding:11px 13px;color:var(--vitame-color-neutral-black);font:var(--vitame-type-pretendard-body2-bold-14)}

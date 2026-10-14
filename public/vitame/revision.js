@@ -146,7 +146,7 @@ home=function(){
   const toggle=`<button class="icon-btn home-view-toggle" data-home-view aria-label="${homeDoseList?'카드형으로 보기':'목록형으로 보기'}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${homeDoseList?'<path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/>':'<path d="M4 5h16M4 12h16M4 19h16"/>'}</svg></button>`;
   return html.replace('<section class="home-dose">',`<section class="home-dose ${homeDoseList?'list-mode':''}">`).replace('</div><div class="dose-mini">',toggle+'</div><div class="dose-mini">');
 };
-document.addEventListener('click',e=>{if(e.target.closest('[data-home-view]')){homeDoseList=!homeDoseList;render();}});
+document.addEventListener('click',e=>{const toggle=e.target.closest('[data-home-view]');if(toggle){homeDoseList=toggle.dataset.homeView?toggle.dataset.homeView==='list':!homeDoseList;render();}});
 const doseBeforeEditing=dose;
 const trashIcon='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>';
 const archiveIcon='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v5H3ZM5 8v13h14V8M9 12h6"/></svg>';
@@ -203,7 +203,7 @@ document.addEventListener('pointerdown',e=>{
   if(!grip&&(!row||(doseEditing&&!row.dataset.archivedId)||e.target.closest('.dose-delete,.dose-item-edit')))return;
   doseBlockUntil=0;
   const el=grip||row;
-  doseGesture={el,row,grip,id:e.pointerId,x:e.clientX,y:e.clientY,active:false,open:row?.classList.contains('revealed')};
+  doseGesture={el,row,grip,id:e.pointerId,x:e.clientX,y:e.clientY,active:false,offset:Number(row?.dataset.swipeOffset)||0};
   if(grip){
     e.preventDefault();el.setPointerCapture(e.pointerId);
     const rect=row.getBoundingClientRect();
@@ -230,7 +230,7 @@ document.addEventListener('pointermove',e=>{
     if(Math.abs(dx)<12||Math.abs(dx)<=Math.abs(dy))return;
     g.active=true;g.el.setPointerCapture(e.pointerId);
   }
-  if(g.row)g.row.querySelector('.dose-row-front').style.transform=`translateX(${Math.max(-96,Math.min(96,dx))}px)`;
+  if(g.row)g.row.querySelector('.dose-row-front').style.transform=`translateX(${Math.max(-64,Math.min(64,g.offset+dx))}px)`;
 });
 function endDoseGesture(e){
   const g=doseGesture;if(!g||g.id!==e.pointerId)return;doseGesture=null;
@@ -245,17 +245,12 @@ function endDoseGesture(e){
     }
   }
   else{
-    g.row.querySelector('.dose-row-front').style.transform='';
-    if(g.row.dataset.archivedId){
-      if(e.type!=='pointercancel'&&dx<-60)deleteArchivedNow(g.row.dataset.archivedId);
-      else if(e.type!=='pointercancel'&&dx>60)restoreArchivedNow(g.row.dataset.archivedId);
-    }
-    else if(e.type!=='pointercancel'&&dx<-60)archiveDoseNow(g.row.dataset.rowId);
-    else {
-      if(e.type!=='pointercancel'&&dx>60){
-        editingSupplementId=g.row.dataset.rowId;go('supplement-settings');
-      }
-    }
+    const offset=e.type==='pointercancel'?g.offset:Math.abs(g.offset+dx)>32?Math.sign(g.offset+dx)*64:0;
+    g.row.dataset.swipeOffset=offset;
+    g.row.classList.toggle('revealed',offset!==0);
+    g.row.querySelector('.dose-row-front').style.transform=`translateX(${offset}px)`;
+    g.row.querySelector('.dose-item-edit').tabIndex=offset>0?0:-1;
+    g.row.querySelector('.dose-delete').tabIndex=offset<0?0:-1;
   }
 }
 document.addEventListener('pointerup',endDoseGesture);
@@ -370,23 +365,16 @@ document.addEventListener('click',e=>{
 });
 const renderBeforeCount=render;
 let previousDoseKey='';
+let previousDoseRate=0;
 render=function(){
   renderBeforeCount();
   if(route()!=='dose')return;
   const key=selectedDate+':'+completed()+':'+state.supplements.length;
-  const animate=key!==previousDoseKey;previousDoseKey=key;
-  if(!animate||matchMedia('(prefers-reduced-motion: reduce)').matches){
-    document.querySelector('.dose-progress-track>span')?.style.setProperty('animation','none');return;
-  }
-  const nodes=[...document.querySelectorAll('[data-count-to]')],start=performance.now();
-  nodes.forEach(n=>n.textContent='0');
-  function tick(now){
-    if(!nodes.every(n=>n.isConnected))return;
-    const t=Math.min(1,(now-start)/700),ease=1-Math.pow(1-t,3);
-    nodes.forEach(n=>n.textContent=Math.round(Number(n.dataset.countTo)*ease));
-    if(t<1)requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
+  const sameDate=previousDoseKey.split(':')[0]===selectedDate;
+  const from=sameDate?previousDoseRate:percent()/100,to=percent()/100;
+  previousDoseKey=key;previousDoseRate=to;
+  const fill=document.querySelector('.dose-progress-track>span');
+  if(fill){fill.style.animation='none';if(from!==to&&!matchMedia('(prefers-reduced-motion: reduce)').matches)fill.animate([{transform:`scaleX(${from})`},{transform:`scaleX(${to})`}],{duration:450,easing:'cubic-bezier(.22,1,.36,1)'});}
 };
 let doseUndoTimer;
 const renderBeforeMotion=render;
