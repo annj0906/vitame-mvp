@@ -44,13 +44,21 @@ render=function(){
   const next=route(),previous=onboardingFlowPrevious;
   const app=document.querySelector('#app');
   clearOnboardingTransition();
-  const outgoing=app.firstElementChild;
-  renderBeforeOnboardingFlow();onboardingFlowPrevious=next;
+  const outgoing=app.querySelector('.onboarding-final')||app.firstElementChild;
+  if(next==='onboarding'&&retainedIntroLogo?.isConnected){
+    const template=document.createElement('template');template.innerHTML=onboarding();
+    app.querySelector('.onboarding-final')?.replaceWith(template.content.firstElementChild);
+    document.body.dataset.screen='onboarding';
+  }else{
+    if(next!=='onboarding'){retainedIntroLogo=null;app.classList.remove('onboarding-logo-host');}
+    renderBeforeOnboardingFlow();
+  }
+  onboardingFlowPrevious=next;
   if(next==='onboarding'){
     document.title='온보딩 · VITAME';
     if(!onboardingSlideCommitting&&(next===previous||!onboardingFlowRoutes.includes(previous)))activateOnboardingPanel(app.querySelector('.onboarding-panel'));
   }
-  if(next===previous||!outgoing||!onboardingFlowRoutes.includes(previous)||!onboardingFlowRoutes.includes(next)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  if(next===previous||(previous==='health-interests'&&next==='setup-frequency')||(previous==='setup-frequency'&&next==='health-interests')||!outgoing||!onboardingFlowRoutes.includes(previous)||!onboardingFlowRoutes.includes(next)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const incoming=app.firstElementChild,direction=onboardingFlowRoutes.indexOf(next)>onboardingFlowRoutes.indexOf(previous)?1:-1;
   outgoing.inert=true;outgoing.setAttribute('aria-hidden','true');outgoing.classList.add('onboarding-flow-exit');
   incoming.classList.add('onboarding-flow-enter');app.classList.add('onboarding-transition');

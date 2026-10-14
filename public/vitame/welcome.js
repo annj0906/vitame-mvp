@@ -37,10 +37,10 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-login-help]'))toast('체험 버전에서는 계정 가입·찾기를 제공하지 않아요.');
   if(e.target.closest('[data-social-demo]')){go('home');toast('실제 인증 없이 체험용 홈으로 이동했어요.');}
 });
-let logoHandoff=false;
+let logoHandoff=false,retainedIntroLogo=null;
 function skipIntroAnimation(){
   if(!document.querySelector('.intro-screen'))return;
-  logoHandoff=false;introPage=0;clearTimeout(introTimer);
+  logoHandoff=false;retainedIntroLogo=null;introPage=0;clearTimeout(introTimer);
   history.replaceState(null,'',location.pathname+location.search+'#onboarding');render();
 }
 document.addEventListener('pointerdown',()=>{if(logoHandoff||route()==='intro')skipIntroAnimation();},true);
@@ -51,6 +51,7 @@ window.addEventListener('message',async e=>{
   logoHandoff=true;
   const bounds=frame.getBoundingClientRect(),intro=frame.parentElement;
   const logo=frame.contentDocument.querySelector('#logoGroup');
+  retainedIntroLogo=intro;
   // Keep the live intro logo while it shrinks into the onboarding header.
   Object.assign(intro.style,{position:'fixed',left:bounds.left+'px',top:bounds.top+'px',width:bounds.width+'px',height:bounds.height+'px',zIndex:'90',pointerEvents:'none'});
   introPage=0;history.replaceState(null,'',location.pathname+location.search+'#onboarding');
@@ -59,7 +60,7 @@ window.addEventListener('message',async e=>{
   const reveal=document.querySelector('.onboarding-final');
   reveal.style.opacity='0';reveal.style.pointerEvents='none';
   reveal.classList.add('onboarding-intro-pending');
-  const target=reveal.querySelector('.final-brand img'),rect=target.getBoundingClientRect();
+  const target=reveal.querySelector('.final-brand'),rect=target.getBoundingClientRect();
   target.style.visibility='hidden';
   intro.style.background='transparent';
   frame.contentDocument.body.style.background='transparent';
@@ -77,14 +78,15 @@ window.addEventListener('message',async e=>{
   if(!reveal.isConnected||route()!=='onboarding')return;
   reveal.style.opacity='';reveal.style.pointerEvents='';
   enter.cancel();
-  // Exchange the two logos with complementary opacity, rather than showing both at full strength.
-  target.style.visibility='';target.style.opacity='0';
-  const swap={duration:reduced?0:120,easing:'linear',fill:'forwards'};
-  const exit=intro.animate([{opacity:1},{opacity:0}],swap);
-  const show=target.animate([{opacity:0},{opacity:1}],swap);
-  try{await Promise.all([exit.finished,show.finished]);}catch{return;}
-  if(!reveal.isConnected||route()!=='onboarding')return;
-  target.style.opacity='';show.cancel();intro.remove();logoHandoff=false;
+  // Retain the original iframe and drawn logo: no second logo, replacement or reload.
+  const app=document.querySelector('#app');
+  app.classList.add('onboarding-logo-host');
+  Object.assign(intro.style,{position:'absolute',left:'0',top:'0',width:'100%',height:'100%'});
+  Object.assign(logo.style,{left:'50%',top:(rect.top+rect.height/2-app.getBoundingClientRect().top)+'px',transform:'translate(-50%, -50%) scale(.21)'});
+  move.cancel();
+  intro.classList.replace('intro-screen','onboarding-live-logo');intro.setAttribute('aria-hidden','true');
+  target.style.visibility='';
+  logoHandoff=false;
   reveal.classList.remove('onboarding-intro-pending');
   finishOnboardingIntro();
 });
