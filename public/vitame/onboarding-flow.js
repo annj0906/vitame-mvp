@@ -2,6 +2,7 @@
 
 // Keep the preview's running character/decorations when it becomes the current slide.
 const onboardingPreviewNodes=new Map();
+let onboardingSlideCommitting=false;
 const previewBeforeOnboardingFlow=onboardingPreview;
 onboardingPreview=function(index){
   const node=previewBeforeOnboardingFlow(index);
@@ -10,13 +11,14 @@ onboardingPreview=function(index){
 };
 function commitOnboardingSlide(index){
   const preview=onboardingPreviewNodes.get(index);
-  introPage=index;render();
+  introPage=index;onboardingSlideCommitting=true;
+  try{render();}finally{onboardingSlideCommitting=false;}
   if(!preview)return;
   preview.removeAttribute('style');preview.removeAttribute('aria-hidden');
   preview.inert=false;preview.classList.remove('continuous-slide-preview');
   delete preview.dataset.slideSide;
   document.querySelector('.onboarding-panel')?.replaceWith(preview);
-  startOnboardingSuccess(preview.querySelector('[data-onboarding-character]'));
+  activateOnboardingPanel(preview);
 }
 onboardingSlideAdapter.commit=direction=>commitOnboardingSlide(introPage+direction);
 changeOnboarding=function(index){
@@ -35,7 +37,7 @@ function clearOnboardingTransition(){
   const app=document.querySelector('#app');
   app.classList.remove('onboarding-transition');
   app.querySelector('.onboarding-flow-enter')?.classList.remove('onboarding-flow-enter');
-  if(route()==='onboarding')startOnboardingSuccess(app.querySelector('[data-onboarding-character]'));
+  if(route()==='onboarding')activateOnboardingPanel(app.querySelector('.onboarding-panel'));
 }
 const renderBeforeOnboardingFlow=render;
 render=function(){
@@ -44,7 +46,10 @@ render=function(){
   clearOnboardingTransition();
   const outgoing=app.firstElementChild;
   renderBeforeOnboardingFlow();onboardingFlowPrevious=next;
-  if(next==='onboarding')document.title='온보딩 · VITAME';
+  if(next==='onboarding'){
+    document.title='온보딩 · VITAME';
+    if(!onboardingSlideCommitting&&(next===previous||!onboardingFlowRoutes.includes(previous)))activateOnboardingPanel(app.querySelector('.onboarding-panel'));
+  }
   if(next===previous||!outgoing||!onboardingFlowRoutes.includes(previous)||!onboardingFlowRoutes.includes(next)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const incoming=app.firstElementChild,direction=onboardingFlowRoutes.indexOf(next)>onboardingFlowRoutes.indexOf(previous)?1:-1;
   outgoing.inert=true;outgoing.setAttribute('aria-hidden','true');outgoing.classList.add('onboarding-flow-exit');
@@ -56,3 +61,8 @@ render=function(){
   onboardingFlowAnimations=[exit,enter];
   enter.finished.then(()=>{if(onboardingFlowAnimations.includes(enter))clearOnboardingTransition();}).catch(()=>{});
 };
+
+function finishOnboardingIntro(){
+  onboardingFlowPrevious='onboarding';
+  activateOnboardingPanel(document.querySelector('.onboarding-panel'));
+}

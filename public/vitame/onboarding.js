@@ -1,7 +1,7 @@
 'use strict';
 
 // Warm all three characters during the intro, so switching slides never waits for a new image request.
-const onboardingCharacterPreloads=['good','bad','very-bad'].flatMap(key=>[
+const onboardingCharacterPreloads=(typeof Image==='undefined'?[]:['good','bad','very-bad']).flatMap(key=>[
   ...['Body','Eye_L','Eye_R','Mouth'].map(part=>`assets/onboarding/${key}/${part}.png`),
   `assets/character-shadows/${key}.webp`
 ]).map(src=>{
@@ -42,15 +42,16 @@ onboarding = function() {
 
 // Reuse the demos' restart-on-tap / animationend cleanup, without test controls.
 function startOnboardingSuccess(character){
-  if(!character||!character.isConnected||route()!=='onboarding'||character.closest('.continuous-slide-preview,.onboarding-flow-enter,.onboarding-flow-exit')||character.dataset.successPlayed||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  if(!character||!character.isConnected||route()!=='onboarding'||character.closest('.continuous-slide-preview,.onboarding-flow-enter,.onboarding-flow-exit,.onboarding-intro-pending')||character.dataset.successPlayed||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const key=['good','bad','very-bad'].find(key=>character.classList.contains('ob-'+key+'-charBtn'));
   character.dataset.successPlayed='true';
   character.classList.add('ob-'+key+'-success');
 }
-document.addEventListener('animationstart', event => {
-  if(event.animationName!=='ob-character-reveal'||!event.target.matches('.ob-character-slot'))return;
-  startOnboardingSuccess(event.target.querySelector('[data-onboarding-character]'));
-});
+function activateOnboardingPanel(panel){
+  if(!panel||!panel.isConnected||route()!=='onboarding'||logoHandoff||panel.closest('.continuous-slide-preview,.onboarding-flow-enter,.onboarding-flow-exit,.onboarding-intro-pending'))return;
+  panel.classList.add('ob-ready');
+  startOnboardingSuccess(panel.querySelector('[data-onboarding-character]'));
+}
 document.addEventListener('click', event => {
   const character = event.target.closest('[data-onboarding-character]');
   if (!character || matchMedia('(prefers-reduced-motion: reduce)').matches) return;

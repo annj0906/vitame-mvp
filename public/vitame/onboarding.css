@@ -133,12 +133,15 @@ body .onboarding-final .login-link .text-btn {
   .character-shadow > img { animation: none !important; transform: none; opacity: 1; will-change: auto; }
 }
 .onboarding-final .ob-decoration { position: absolute; pointer-events: none; }
-.onboarding-final .ob-decoration{opacity:0;animation:ob-decoration-pop .42s cubic-bezier(.2,.8,.2,1.3) both;animation-delay:.2s}
-.onboarding-final .ob-decoration:nth-child(2){animation-delay:.4s}
-.onboarding-final .ob-decoration:nth-child(3){animation-delay:.6s}
+.onboarding-final .ob-decoration{opacity:0;animation:none}
+.onboarding-final .ob-ready .ob-decoration{animation:ob-decoration-pop .28s cubic-bezier(.2,.8,.2,1) both;animation-delay:.2s}
+.onboarding-final .ob-ready .ob-decoration:nth-child(2){animation-delay:.4s}
+.onboarding-final .ob-ready .ob-decoration:nth-child(3){animation-delay:.6s}
 @keyframes ob-decoration-pop{from{opacity:0;scale:.2}to{opacity:1;scale:1}}
 .onboarding-final .ob-character-slot{animation:ob-character-reveal 1ms both}
 @keyframes ob-character-reveal{from{opacity:1}to{opacity:1}}
+.onboarding-final .onboarding-panel:not(.ob-ready) .ob-character *,
+.onboarding-final .onboarding-panel:not(.ob-ready) .ob-shadow>img,
 .onboarding-final .continuous-slide-preview [class$="idleMotion"],
 .onboarding-final .ob-character:is(.ob-good-success,.ob-bad-success,.ob-very-bad-success)>[class$="idleMotion"]{animation-play-state:paused}
 #app.onboarding-transition{position:relative;overflow:hidden;isolation:isolate}
@@ -171,6 +174,6 @@ body .onboarding-final .login-link .text-btn {
 }
 @media (prefers-reduced-motion: reduce) {
   .onboarding-final .ob-character, .onboarding-final .ob-character * { animation: none !important; }
-  .onboarding-final .ob-decoration{animation:none;opacity:1;scale:1}
+  .onboarding-final .ob-ready .ob-decoration{animation:none;opacity:1;scale:1}
   .onboarding-final :is(.ob-character-slot,.ob-shadow){animation:none;opacity:1}
 }
