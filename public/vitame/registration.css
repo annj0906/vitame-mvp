@@ -108,7 +108,16 @@ dialog.registration-sheet[open]{animation:registration-sheet-enter .3s cubic-bez
 .registration-wheel-column::-webkit-scrollbar{display:none}
 .registration-wheel-column button{height:44px;display:block;width:100%;scroll-snap-align:center;color:var(--vitame-color-neutral-gray60);font:var(--vitame-type-pretendard-subtitle-semibold-18)}
 .registration-wheel-column button[aria-selected="true"]{color:var(--vitame-color-neutral-black)}
-.registration-icons{display:flex;justify-content:space-around;margin:24px 0}
-.registration-icons button{width:60px;display:grid;place-items:center;border-radius:16px}
+.registration-icons{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin:24px 0}
+.registration-icons button{width:100%;padding:0;display:grid;place-items:center;border-radius:12px}
+.pill.p0{--pill-color:var(--vitame-color-accent-yellow-main)}
+.pill.p1{--pill-color:var(--vitame-color-accent-green-main)}
+.pill.p2{--pill-color:var(--vitame-color-accent-purple-main)}
+.pill.p3{--pill-color:var(--vitame-color-accent-blue-main)}
+.pill.p4{--pill-color:var(--vitame-color-accent-pink-main)}
+.pill.p5{--pill-color:var(--vitame-color-accent-red-main)}
+.pill.p6{--pill-color:#43c9ec}
+.registration-icons .pill,.registration-name .pill{display:block;width:24px;height:10px;margin:0;transform:none;border-radius:999px;box-shadow:none;background:var(--pill-color)}
+body[data-screen="home"] .home-dose .taken .pill,body[data-screen="dose"] .taken .pill,body[data-screen="archive"] .pill{background:var(--pill-color)}
 .registration-icons [aria-pressed="true"]{background:var(--vitame-color-neutral-gray20)}
 @media(max-width:380px){.registration-days{gap:6px}.registration-days button{height:40px}.registration-ingredients>div{grid-template-columns:minmax(0,1fr) 58px 88px 24px}.registration-notifications p{font-size:14px}}
