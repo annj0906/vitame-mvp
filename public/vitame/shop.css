@@ -1,4 +1,7 @@
 /* Final shopping frame only; shared typography, artwork and card component retained. */
+.shop-hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;opacity:0;pointer-events:none}
+.shop-hero-video.is-playing{opacity:1}
+@media(prefers-reduced-motion:reduce){.shop-hero-video.is-playing{opacity:0}}
 body:is([data-screen="shop"],[data-screen="shop-eye-berry"]) #app{background:var(--vitame-color-neutral-background);color:var(--vitame-color-neutral-black);max-width:430px}
 .shopping-page{font:var(--vitame-type-pretendard-body1-regular-16);letter-spacing:-.02em;padding-bottom:130px;overflow:hidden}
 .shopping-page h1,.shopping-page h2,.shopping-page p{margin:0}.shopping-page button{color:inherit}.shopping-page a{color:inherit;text-decoration:none}

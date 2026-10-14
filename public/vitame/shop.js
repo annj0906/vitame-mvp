@@ -32,7 +32,7 @@ function shoppingCard(p,deal=false){
 }
 function shoppingHeading(title,subtitle='',more='all'){return `<div class="shop-section-heading"><div><h2>${esc(title)}</h2>${subtitle?`<p>${esc(subtitle)}</p>`:''}</div>${more?`<button data-shop-filter="${more}">전체보기 <span aria-hidden="true">›</span></button>`:''}</div>`;}
 function shoppingRail(label,content,cls=''){return `<div class="shop-rail ${cls}" tabindex="0" aria-label="${label}" data-shop-rail>${content}</div>`;}
-function shoppingPhotoCarousel(type,slides){return `<div class="shop-photo-carousel shop-${type}">${shoppingRail(type==='hero'?'메인 광고 배너':'비타미 건강 노트',slides.map(([title,subtitle],i)=>`<article class="shop-photo-slide"><img src="assets/shop/${type}-${i+1}.webp" alt="" draggable="false" ${type==='note'?'loading="lazy"':''}><div><h2>${esc(title).replace(/\n/g,'<br>')}</h2><p>${esc(subtitle)}</p></div></article>`).join(''),'shop-pages')}<div class="shop-dots" aria-label="${type==='hero'?'배너':'건강 노트'} 선택">${slides.map((_,i)=>`<button data-shop-slide="${i}" aria-label="${i+1}번 슬라이드" aria-pressed="${i===0}"></button>`).join('')}</div></div>`;}
+function shoppingPhotoCarousel(type,slides){return `<div class="shop-photo-carousel shop-${type}">${shoppingRail(type==='hero'?'메인 광고 배너':'비타미 건강 노트',slides.map(([title,subtitle],i)=>`<article class="shop-photo-slide"><img src="assets/shop/${type}-${i+1}.webp" alt="" draggable="false" ${type==='note'?'loading="lazy"':''}>${type==='hero'&&i===0?'<video class="shop-hero-video" data-src="assets/shop/hero-1.mp4" poster="assets/shop/hero-1.webp" autoplay muted loop playsinline preload="none" aria-hidden="true" disablepictureinpicture></video>':''}<div><h2>${esc(title).replace(/\n/g,'<br>')}</h2><p>${esc(subtitle)}</p></div></article>`).join(''),'shop-pages')}<div class="shop-dots" aria-label="${type==='hero'?'배너':'건강 노트'} 선택">${slides.map((_,i)=>`<button data-shop-slide="${i}" aria-label="${i+1}번 슬라이드" aria-pressed="${i===0}"></button>`).join('')}</div></div>`;}
 function shoppingResults(){
   const active=shoppingCategory||shoppingQuery||shoppingFavorites;
   if(!active)return '';
@@ -79,11 +79,35 @@ function bindShoppingRails(){
     rail.addEventListener('keydown',e=>{if(e.target!==rail||!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();rail.scrollBy({left:(e.key==='ArrowRight'?1:-1)*(rail.children[1]?.offsetLeft-rail.children[0]?.offsetLeft||rail.clientWidth),behavior:'smooth'});});
   });
 }
+let stopShoppingVideo=()=>{};
+function bindShoppingVideo(){
+  const video=document.querySelector('.shop-hero-video');
+  if(!video||!('IntersectionObserver' in window))return;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  let visible=false,blocked=false,disposed=false,pending=false;
+  video.muted=true;video.defaultMuted=true;
+  const wanted=()=>visible&&!document.hidden&&!reduced.matches&&!blocked&&!disposed;
+  const fallback=()=>{blocked=true;video.pause();video.classList.remove('is-playing');};
+  const sync=()=>{
+    if(!wanted()){video.pause();if(reduced.matches)video.classList.remove('is-playing');return;}
+    if(pending)return;
+    if(!video.hasAttribute('src'))video.src=video.dataset.src;
+    pending=true;
+    Promise.resolve(video.play()).then(()=>{pending=false;if(!wanted())video.pause();}).catch(()=>{pending=false;if(wanted())fallback();});
+  };
+  const playing=()=>{if(wanted())video.classList.add('is-playing');else video.pause();};
+  const observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting&&entries[0].intersectionRatio>=.65;sync();},{threshold:[0,.65]});
+  observer.observe(video.parentElement);
+  video.addEventListener('playing',playing);video.addEventListener('error',fallback);
+  document.addEventListener('visibilitychange',sync);
+  if(reduced.addEventListener)reduced.addEventListener('change',sync);else reduced.addListener(sync);
+  stopShoppingVideo=()=>{disposed=true;observer.disconnect();video.pause();video.removeEventListener('playing',playing);video.removeEventListener('error',fallback);document.removeEventListener('visibilitychange',sync);if(reduced.removeEventListener)reduced.removeEventListener('change',sync);else reduced.removeListener(sync);stopShoppingVideo=()=>{};};
+}
 const beforeShopping=render;
 render=function(){
-  clearInterval(shoppingTimer);const r=route();if(!['shop','shop-eye-berry'].includes(r)){beforeShopping();return;}
+  stopShoppingVideo();clearInterval(shoppingTimer);const r=route();if(!['shop','shop-eye-berry'].includes(r)){beforeShopping();return;}
   clearTimeout(introTimer);document.body.dataset.screen=r;document.title=(r==='shop'?'쇼핑':'아이 베리 루테인 구미')+' · VITAME';$('#app').innerHTML=r==='shop'?shoppingScreen():shoppingDetail();bindShoppingRails();
-  if(r==='shop'){updateShoppingTimer();shoppingTimer=setInterval(updateShoppingTimer,1000);}
+  if(r==='shop'){bindShoppingVideo();updateShoppingTimer();shoppingTimer=setInterval(updateShoppingTimer,1000);}
 };
 document.addEventListener('submit',e=>{if(!e.target.matches('.shop-search'))return;e.preventDefault();shoppingQuery=e.target.querySelector('input').value;shoppingCategory='';shoppingFavorites=false;updateShoppingResults(true);});
 document.addEventListener('input',e=>{if(!e.target.matches('.shop-search input'))return;shoppingQuery=e.target.value;shoppingCategory='';shoppingFavorites=false;updateShoppingResults();});
