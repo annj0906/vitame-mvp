@@ -78,7 +78,21 @@ document.addEventListener('click',event=>{
   if(toggle){
     const key=toggle.dataset.nutritionToggle,expanded=!nutritionExpanded[key];nutritionExpanded[key]=expanded;
     toggle.setAttribute('aria-expanded',String(expanded));
-    const panel=toggle.closest('.nutrition-panel');panel.querySelector('.nutrition-panel-body').hidden=!expanded;panel.querySelector('.nutrition-panel-chips').hidden=expanded;
+    const panel=toggle.closest('.nutrition-panel'),body=panel.querySelector('.nutrition-panel-body'),chips=panel.querySelector('.nutrition-panel-chips');
+    const startHeight=panel.getBoundingClientRect().height;
+    panel.getAnimations().forEach(a=>a.cancel());
+    body.hidden=!expanded;chips.hidden=expanded;
+    const motionId=String(Number(body.dataset.motionId||0)+1);body.dataset.motionId=motionId;
+    const endHeight=panel.getBoundingClientRect().height;
+    if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+      panel.animate([{height:startHeight+'px'},{height:endHeight+'px'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'});
+      if(expanded)body.querySelectorAll('.care-nutrient').forEach(row=>{
+        const bar=row.querySelector('.nutrient-track i'),rate=row.querySelector('.nutrient-rate'),value=Number(row.querySelector('.nutrient-track').getAttribute('aria-valuenow')),start=performance.now();
+        bar.animate([{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{duration:600,easing:'cubic-bezier(.22,1,.36,1)'});
+        function tick(now){if(body.hidden||!row.isConnected||body.dataset.motionId!==motionId)return;const t=Math.min(1,(now-start)/600);rate.textContent=Math.round(value*(1-Math.pow(1-t,3)))+'%';if(t<1)requestAnimationFrame(tick);}
+        requestAnimationFrame(tick);
+      });
+    }
   }
   const jump=event.target.closest('[data-guide-jump]'),top=event.target.closest('[data-guide-top]');
   if(jump||top){
@@ -94,7 +108,8 @@ render=function(){renderBeforeWellness();if(['analysis','nutrients','guide'].inc
 // Period navigation uses calendar boundaries, not fixed millisecond months.
 const chartPeriods=[['day','1일'],['week','1주'],['month','1개월'],['half','6개월'],['year','1년']];
 let chartPeriod='week',chartAnchor=dateKey(),chartSelection=null,guideCharacter=0,guideVisit=0;
-function periodStart(key,kind=chartPeriod){
+function chartUnit(){return {week:'day',month:'week',half:'month',year:'year',day:'day'}[chartPeriod];}
+function periodStart(key,kind=chartUnit()){
   const d=new Date(key+'T12:00:00');
   if(kind==='week')d.setDate(d.getDate()-d.getDay());
   if(['month','half','year'].includes(kind))d.setDate(1);
@@ -102,7 +117,7 @@ function periodStart(key,kind=chartPeriod){
   if(kind==='year')d.setMonth(0);
   return dateKey(d);
 }
-function periodOffset(key,n,kind=chartPeriod){
+function periodOffset(key,n,kind=chartUnit()){
   const d=new Date(periodStart(key,kind)+'T12:00:00');
   if(kind==='day'||kind==='week')d.setDate(d.getDate()+n*(kind==='week'?7:1));
   else d.setMonth(d.getMonth()+n*({month:1,half:6,year:12}[kind]));
@@ -111,9 +126,9 @@ function periodOffset(key,n,kind=chartPeriod){
 function periodLabel(key,short=false){
   const d=new Date(key+'T12:00:00'),m=d.getMonth()+1,day=d.getDate(),year=d.getFullYear();
   if(chartPeriod==='year')return `${year}년`;
-  if(chartPeriod==='half')return `${year} ${m===1?'상반기':'하반기'}`;
-  if(chartPeriod==='month')return short?`${m}월`:`${year}년 ${m}월`;
-  return `${short?'':year+'년 '}${m}/${day}${chartPeriod==='week'?' 주':''}`;
+  if(chartPeriod==='half')return short?`${m}월`:`${year}년 ${m}월`;
+  if(chartPeriod==='week')return short?['일','월','화','수','목','금','토'][d.getDay()]:`${year}년 ${m}/${day}`;
+  return `${short?'':year+'년 '}${m}/${day}${chartPeriod==='month'?' 주':''}`;
 }
 function periodScore(key){
   if(key>periodStart(dateKey()))return null;
@@ -125,12 +140,12 @@ function periodChart(){
   const referenceScore=periodScore(chartSelection||anchor);
 return `<div class="period-chart" data-period-kind="${chartPeriod}" aria-label="${chartPeriods.find(p=>p[0]===chartPeriod)[1]} 단위 예시 그래프"><p class="period-hint">좌우로 넘겨 기간을 이동하고, 막대를 눌러 확인해보세요.</p><div class="period-plot"><div class="chart-scale" aria-hidden="true"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><span class="period-reference-line" style="--reference-top:${150*(1-(referenceScore??0)/100)}px" aria-hidden="true"><img src="assets/care/analysis-reference-line.svg" alt=""></span><div class="month-bars">${keys.map((key,i)=>{
     const score=periodScore(key),picked=key===chartSelection,highlight=key===(chartSelection||anchor);
-    const d=new Date(key+'T12:00:00'),label=chartPeriod==='half'?`${d.getFullYear()}<br>${d.getMonth()===0?'상반기':'하반기'}`:periodLabel(key,true).replace(' 주','');
+    const d=new Date(key+'T12:00:00'),label=periodLabel(key,true).replace(' 주','');
     return `<div class="period-column ${i<2?'edge-left':i>4?'edge-right':''}"><button class="month-bar ${highlight?'current':''} ${picked?'picked':''}" data-period-bar="${key}" aria-pressed="${picked}" aria-label="${periodLabel(key)} ${score===null?'기록 없음':score+'점'}" ${score===null?'disabled':''}><span class="month-bar-track"><i style="--bar-height:${score??4}%"></i></span><span class="month-bar-label">${label}</span></button>${picked?`<div class="period-tooltip" role="status" style="bottom:calc(28px + ${score*1.5}px + 8px)"><small>${periodLabel(key)}</small><b>${score}<span>점</span></b></div>`:''}</div>`;
   }).join('')}</div></div></div>`;
 }
 function analysisScoreDate(key){
-  if(['half','year','month'].includes(chartPeriod))return periodLabel(key);
+  if(['half','year'].includes(chartPeriod))return periodLabel(key);
   const d=new Date(key+'T12:00:00');return `${d.getMonth()+1}월 ${d.getDate()}일`;
 }
 function analysisScoreMessage(score){

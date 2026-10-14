@@ -115,7 +115,10 @@ body[data-screen="analysis"] .care-nutrition-title{flex:1;min-width:0}
 body[data-screen="analysis"] .care-nutrition-title b{display:block;font:var(--vitame-type-pretendard-body1-semibold-16)}
 body[data-screen="analysis"] .care-nutrition-title small{display:block;margin-top:2px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60)}
 body[data-screen="analysis"] .care-nutrition-count{font:var(--vitame-type-pretendard-body1-semibold-16);white-space:nowrap}
-body[data-screen="analysis"] .nutrition-panel-toggle>img{margin-top:3px;flex-shrink:0}
+body[data-screen="analysis"] .nutrition-panel-toggle>img{margin-top:3px;flex-shrink:0;transition:transform .32s cubic-bezier(.22,1,.36,1)}
+body[data-screen="analysis"] .nutrition-panel{overflow:hidden}
+body[data-screen="analysis"] .care-nutrient .nutrient-track i{transform-origin:left}
+@media(prefers-reduced-motion:reduce){body[data-screen="analysis"] .nutrition-panel-toggle>img{transition:none}}
 body[data-screen="analysis"] .nutrition-panel-toggle[aria-expanded="true"]>img{transform:rotate(180deg)}
 body[data-screen="analysis"] .nutrition-panel-body{padding:16px 0 0 48px;display:flex;flex-direction:column;gap:4px}
 body[data-screen="analysis"] .care-nutrient{display:grid;grid-template-columns:minmax(64px,1fr) minmax(40px,104px) 29px 30px;align-items:center;gap:4px;color:var(--vitame-color-neutral-gray60)}

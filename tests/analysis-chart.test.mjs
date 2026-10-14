@@ -6,10 +6,11 @@ const file='public/vitame/analysis.js';
 const source=fs.readFileSync(file,'utf8');
 const previous=execFileSync('git',['show',`HEAD:${file}`],{encoding:'utf8'});
 const calculations=s=>s.slice(s.indexOf('function periodStart('),s.indexOf('function periodChart(')).replaceAll('\r\n','\n');
-assert.equal(calculations(source),calculations(previous),'calendar and score calculation functions unchanged');
+const scoreCalculation=s=>s.slice(s.indexOf('function periodScore('),s.indexOf('function periodChart(')).replaceAll('\r\n','\n');
+assert.equal(scoreCalculation(source),scoreCalculation(previous),'score calculation unchanged');
 const dateKey=(d=new Date('2026-10-13T12:00:00'))=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const ctx=vm.createContext({dateKey});
-vm.runInContext("const chartPeriods=[['day','1일'],['week','1주'],['month','1개월'],['half','6개월'],['year','1년']];let chartPeriod='week',chartAnchor=dateKey(),chartSelection=null;"+source.slice(source.indexOf('function periodStart('),source.indexOf('analysis=function(){',source.indexOf('function periodStart('))),ctx);
+vm.runInContext("const chartPeriods=[['day','1일'],['week','1주'],['month','1개월'],['half','6개월'],['year','1년']];let chartPeriod='week',chartAnchor=dateKey(),chartSelection=null;"+source.slice(source.indexOf('function chartUnit('),source.indexOf('analysis=function(){',source.indexOf('function periodStart('))),ctx);
 const run=s=>vm.runInContext(s,ctx);
 for(const period of ['week','month','half','year']){
   run(`chartPeriod='${period}';chartSelection=null;`);
@@ -24,7 +25,10 @@ for(const period of ['week','month','half','year']){
   assert.ok(selected.includes(`--reference-top:${150*(1-run('periodScore(chartSelection)')/100)}px`));
   assert.doesNotMatch(selected,/연속 복용|\+6%/);
 }
-run("chartPeriod='month'");assert.equal(run("periodOffset('2026-12-01',1)"),'2027-01-01');
+run("chartPeriod='week'");assert.equal(run("periodOffset('2026-10-13',1)"),'2026-10-14');
+assert.equal(run("periodLabel('2026-10-14',true)"),'수');
+run("chartPeriod='month'");assert.equal(run("periodOffset('2026-12-01',1)"),'2026-12-06');
+run("chartPeriod='half'");assert.equal(run("periodOffset('2026-12-01',1)"),'2027-01-01');
 assert.equal(run("periodScore('2027-01-01')"),null);
 assert.notEqual(run('analysisScoreMessage(59)'),run('analysisScoreMessage(80)'));
 assert.match(source,/chartPeriods\.filter\(\(\[id\]\)=>id!=='day'\)/);
@@ -43,7 +47,7 @@ Object.assign(ctx,{
     querySelectorAll:()=>[{animate(){barAnimations++;}}]
   }
 });
-run("chartPeriod='month';chartSelection='2026-06-01';updateAnalysisScore(true)");
+run("chartPeriod='half';chartSelection='2026-06-01';updateAnalysisScore(true)");
 assert.equal(label.textContent,'2026년 6월');
 assert.equal(number.textContent,'0');
 queuedFrame(650);
