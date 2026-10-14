@@ -12,8 +12,8 @@ const setupHealthColors={eye:'blue',energy:'yellow',sleep:'purple',brain:'blue',
 const setupMessages = [
   '복용 중인 영양제가 있다면 지금 등록해볼까요?',
   '영양제를 등록하면 복용 관리가 더 간편해져요.',
-  '스캔 한 번이면 영양제 등록을 빠르게 시작할 수 있어요.',
-  '지금 등록하지 않아도 홈에서 언제든 추가할 수 있어요.'
+  '스캔 한 번이면 영양제 등록을\n빠르게 시작할 수 있어요.',
+  '지금 등록하지 않아도\n홈에서 언제든 추가할 수 있어요.'
 ];
 let setupMessageIndex = 0;
 const setupAsset = name => 'assets/setup/' + name + '.svg';
@@ -49,25 +49,50 @@ render = function() {
     interestDraft ||= [...state.interests];
     content = `${initialHeader('onboarding',1)}<div class="initial-copy"><h1>현재 신경쓰이는<br>고민이 있으신가요?</h1><p>설정에서 변경 가능해요</p></div><div class="initial-health-grid">${initialHealthOptions.map(([label,value,asset,color])=>`<button data-setup-interest="${value}" aria-pressed="${interestDraft.includes(value)}" style="--health-tint:var(--vitame-color-accent-${setupHealthColors[asset]}-light);--health-color:var(--vitame-color-accent-${setupHealthColors[asset]}-main)"><span class="initial-health-icon" aria-hidden="true"><span style="--health-glyph:url('${setupAsset(asset)}')"></span></span><span class="initial-health-label">${label}</span><span class="initial-check"><img src="${setupAsset('check')}" alt=""></span></button>`).join('')}</div>${initialFooter('setup-frequency')}`;
   } else if (r === 'setup-frequency') {
-    content = `${initialHeader('health-interests',2)}<div class="initial-copy"><h1>영양제를 얼마나<br>자주 챙겨 드시나요?</h1><p>꾹 누르고 움직여 보세요</p></div><div class="initial-frequency"><div class="initial-range"><div class="initial-stops" aria-hidden="true">${Array.from({length:5},()=>`<span><img src="${setupAsset('stop')}" alt=""></span>`).join('')}</div><div class="initial-frequency-character" style="left:${frequencyDraft*25}%">${initialCharacter(setupKeys[frequencyDraft])}</div><input id="initial-frequency" type="range" min="0" max="4" step="1" value="${frequencyDraft}" aria-label="영양제 복용 빈도" aria-valuetext="${frequencyLabels[frequencyDraft]}"></div><div class="initial-frequency-labels">${['거의<br>안먹어요','가끔<br>먹어요','절반 정도','자주<br>먹어요','매일<br>먹어요'].map((label,i)=>`<button data-initial-frequency="${i}" aria-pressed="${i===frequencyDraft}">${label}</button>`).join('')}</div></div>${initialFooter('setup-complete')}`;
+    content = `${initialHeader('health-interests',2)}<div class="initial-copy"><h1>영양제를 얼마나<br>자주 챙겨 드시나요?</h1><p>꾹 누르고 움직여 보세요</p></div><div class="initial-frequency"><div class="initial-range"><div class="initial-stops" aria-hidden="true">${Array.from({length:5},()=>`<span><img src="${setupAsset('stop')}" alt=""></span>`).join('')}</div><div class="initial-frequency-character" style="left:calc(6px + ${frequencyDraft*25}% - ${frequencyDraft*3}px)">${initialCharacter(setupKeys[frequencyDraft])}</div><input id="initial-frequency" type="range" min="0" max="4" step="0.01" value="${frequencyDraft}" aria-label="영양제 복용 빈도" aria-valuetext="${frequencyLabels[frequencyDraft]}"></div><div class="initial-frequency-labels">${['거의<br>안먹어요','가끔<br>먹어요','절반 정도','자주<br>먹어요','매일<br>먹어요'].map((label,i)=>`<button data-initial-frequency="${i}" aria-pressed="${i===frequencyDraft}">${label}</button>`).join('')}</div></div>${initialFooter('setup-complete')}`;
   } else {
     content = `${initialHeader('setup-frequency')}<div class="initial-copy initial-complete-copy"><h1>준비가 끝났어요!</h1><p>${esc(state.name)} 님의 관심 건강과 복용<br>습관을 반영했어요.</p></div><div class="initial-completion-art"><div class="initial-bubble"><button data-initial-message aria-label="다른 등록 안내 보기"><span aria-live="polite">${setupMessages[setupMessageIndex]}</span><img src="${setupAsset('refresh')}" alt=""></button><img class="initial-bubble-tail" src="${setupAsset('bubble-tail')}" alt=""></div>${initialCharacter('good',true)}${characterShadow('good', 'initial-complete-shadow')}</div>${initialFooter('',true)}`;
   }
   $('#app').innerHTML = `<section class="initial-setup-final initial-${r}">${content}</section>`;
 };
 
-function setInitialFrequency(value) {
-  frequencyDraft = Math.max(0,Math.min(4,Math.round(Number(value))));
-  const input = document.querySelector('#initial-frequency');
-  input.value = frequencyDraft;
-  input.setAttribute('aria-valuetext',frequencyLabels[frequencyDraft]);
-  const mascot = document.querySelector('.initial-frequency-character');
-  mascot.style.left = frequencyDraft*25+'%';
-  // Replace atomically; fast drags never stack character layers.
-  if (mascot.firstElementChild.dataset.characterKey !== setupKeys[frequencyDraft]) mascot.innerHTML = initialCharacter(setupKeys[frequencyDraft]);
+function setInitialFrequency(value,snap=true) {
+  const raw=Math.max(0,Math.min(4,Number(value)));
+  frequencyDraft=Math.round(raw);
+  const input=document.querySelector('#initial-frequency');
+  const mascot=document.querySelector('.initial-frequency-character');
+  if(!input||!mascot)return;
+  const position=snap?frequencyDraft:raw;
+  input.value=position;input.setAttribute('aria-valuetext',frequencyLabels[frequencyDraft]);
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mascot.style.transition=snap&&!reduced?'left 180ms cubic-bezier(.22,.75,.2,1)':'none';
+  mascot.style.left=`calc(6px + ${position*25}% - ${position*3}px)`;
+  // Keep at most one fading previous character, including during rapid drags.
+  mascot.querySelectorAll('.initial-frequency-outgoing').forEach(node=>{node.getAnimations().forEach(a=>a.cancel());node.remove();});
+  const current=mascot.firstElementChild;
+  if(current.dataset.characterKey!==setupKeys[frequencyDraft]){
+    const opacity=getComputedStyle(current).opacity;
+    current.getAnimations().forEach(a=>a.cancel());
+    current.classList.add('initial-frequency-outgoing');
+    mascot.insertAdjacentHTML('afterbegin',initialCharacter(setupKeys[frequencyDraft]));
+    if(reduced)current.remove();
+    else{
+      mascot.firstElementChild.animate([{opacity:0},{opacity:1}],{duration:140,easing:'ease-out'});
+      const fade=current.animate([{opacity},{opacity:0}],{duration:140,easing:'ease-out'});
+      fade.finished.then(()=>current.remove()).catch(()=>current.remove());
+    }
+  }
   document.querySelectorAll('[data-initial-frequency]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.initialFrequency)===frequencyDraft)));
 }
-document.addEventListener('input',e=>{if(e.target.id==='initial-frequency')setInitialFrequency(e.target.value);});
+
+document.addEventListener('input',e=>{if(e.target.id==='initial-frequency')setInitialFrequency(e.target.value,false);});
+document.addEventListener('change',e=>{if(e.target.id==='initial-frequency')setInitialFrequency(e.target.value,true);});
+document.addEventListener('pointercancel',e=>{if(e.target.id==='initial-frequency')setInitialFrequency(e.target.value,true);});
+document.addEventListener('keydown',e=>{
+  if(e.target.id!=='initial-frequency')return;
+  const values={ArrowLeft:frequencyDraft-1,ArrowDown:frequencyDraft-1,ArrowRight:frequencyDraft+1,ArrowUp:frequencyDraft+1,Home:0,End:4};
+  if(Object.hasOwn(values,e.key)){e.preventDefault();setInitialFrequency(values[e.key],true);}
+});
 document.addEventListener('click',e=>{
   const frequency = e.target.closest('[data-initial-frequency]');
   if (frequency) setInitialFrequency(frequency.dataset.initialFrequency);
