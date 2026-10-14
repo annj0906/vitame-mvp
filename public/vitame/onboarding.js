@@ -41,13 +41,15 @@ onboarding = function() {
 };
 
 // Reuse the demos' restart-on-tap / animationend cleanup, without test controls.
-document.addEventListener('animationstart', event => {
-  if(event.animationName!=='ob-character-reveal'||!event.target.matches('.ob-character-slot')||route()!=='onboarding')return;
-  const character=event.target.querySelector('[data-onboarding-character]');
-  if(!character||character.dataset.successPlayed||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+function startOnboardingSuccess(character){
+  if(!character||!character.isConnected||route()!=='onboarding'||character.closest('.continuous-slide-preview,.onboarding-flow-enter,.onboarding-flow-exit')||character.dataset.successPlayed||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const key=['good','bad','very-bad'].find(key=>character.classList.contains('ob-'+key+'-charBtn'));
   character.dataset.successPlayed='true';
   character.classList.add('ob-'+key+'-success');
+}
+document.addEventListener('animationstart', event => {
+  if(event.animationName!=='ob-character-reveal'||!event.target.matches('.ob-character-slot'))return;
+  startOnboardingSuccess(event.target.querySelector('[data-onboarding-character]'));
 });
 document.addEventListener('click', event => {
   const character = event.target.closest('[data-onboarding-character]');

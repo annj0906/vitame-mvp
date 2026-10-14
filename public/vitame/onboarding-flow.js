@@ -16,6 +16,7 @@ function commitOnboardingSlide(index){
   preview.inert=false;preview.classList.remove('continuous-slide-preview');
   delete preview.dataset.slideSide;
   document.querySelector('.onboarding-panel')?.replaceWith(preview);
+  startOnboardingSuccess(preview.querySelector('[data-onboarding-character]'));
 }
 onboardingSlideAdapter.commit=direction=>commitOnboardingSlide(introPage+direction);
 changeOnboarding=function(index){
@@ -34,6 +35,7 @@ function clearOnboardingTransition(){
   const app=document.querySelector('#app');
   app.classList.remove('onboarding-transition');
   app.querySelector('.onboarding-flow-enter')?.classList.remove('onboarding-flow-enter');
+  if(route()==='onboarding')startOnboardingSuccess(app.querySelector('[data-onboarding-character]'));
 }
 const renderBeforeOnboardingFlow=render;
 render=function(){

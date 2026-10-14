@@ -139,6 +139,8 @@ body .onboarding-final .login-link .text-btn {
 @keyframes ob-decoration-pop{from{opacity:0;scale:.2}to{opacity:1;scale:1}}
 .onboarding-final .ob-character-slot{animation:ob-character-reveal 1ms both}
 @keyframes ob-character-reveal{from{opacity:1}to{opacity:1}}
+.onboarding-final .continuous-slide-preview [class$="idleMotion"],
+.onboarding-final .ob-character:is(.ob-good-success,.ob-bad-success,.ob-very-bad-success)>[class$="idleMotion"]{animation-play-state:paused}
 #app.onboarding-transition{position:relative;overflow:hidden;isolation:isolate}
 .onboarding-flow-enter{position:relative;will-change:transform}
 .onboarding-flow-exit{position:absolute!important;top:0;left:0;width:100%;pointer-events:none;will-change:transform}
