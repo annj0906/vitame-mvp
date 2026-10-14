@@ -1,5 +1,15 @@
 'use strict';
 
+// Warm all three characters during the intro, so switching slides never waits for a new image request.
+const onboardingCharacterPreloads=['good','bad','very-bad'].flatMap(key=>[
+  ...['Body','Eye_L','Eye_R','Mouth'].map(part=>`assets/onboarding/${key}/${part}.png`),
+  `assets/character-shadows/${key}.webp`
+]).map(src=>{
+  const image=new Image();image.fetchPriority='high';image.src=src;
+  image.decode?.().catch(()=>{});
+  return image;
+});
+
 // Original transparent WebP exports, matched by the supplied Korean state names.
 function characterShadow(key, className) {
   const sizes = { 'very-bad': [2848, 624], bad: [2848, 628], normal: [2892, 624], good: [2848, 624], 'very-good': [2892, 624] };
