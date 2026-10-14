@@ -245,12 +245,13 @@ function endDoseGesture(e){
     }
   }
   else{
-    const offset=e.type==='pointercancel'?g.offset:Math.abs(g.offset+dx)>32?Math.sign(g.offset+dx)*64:0;
-    g.row.dataset.swipeOffset=offset;
-    g.row.classList.toggle('revealed',offset!==0);
-    g.row.querySelector('.dose-row-front').style.transform=`translateX(${offset}px)`;
-    g.row.querySelector('.dose-item-edit').tabIndex=offset>0?0:-1;
-    g.row.querySelector('.dose-delete').tabIndex=offset<0?0:-1;
+    g.row.querySelector('.dose-row-front').style.transform='';
+    if(e.type==='pointercancel'||Math.abs(dx)<60)return;
+    if(g.row.dataset.archivedId){
+      if(dx<0)deleteArchivedNow(g.row.dataset.archivedId);
+      else restoreArchivedNow(g.row.dataset.archivedId);
+    }else if(dx<0)archiveDoseNow(g.row.dataset.rowId);
+    else editRegisteredSupplement(g.row.dataset.rowId);
   }
 }
 document.addEventListener('pointerup',endDoseGesture);
@@ -329,7 +330,7 @@ render=function(){
 };
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-edit-supplement]');if(!b)return;
-  editingSupplementId=b.dataset.editSupplement;go('supplement-settings');
+  editRegisteredSupplement(b.dataset.editSupplement);
 });
 document.addEventListener('submit',e=>{
   if(e.target.id!=='supplement-settings-form')return;e.preventDefault();

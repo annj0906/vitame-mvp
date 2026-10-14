@@ -35,6 +35,15 @@ function suppliedLabelRegistrationDraft(){
 const registrationAsset=name=>`<img src="assets/registration/${name}.svg" alt="">`;
 function newRegistrationDraft(){return {name:'',brand:'',dose:1,doseUnit:'정',ingredients:[],times:['08:00'],days:[0,1,2,3,4,5,6],notifications:false,colorIndex:0};}
 function ensureRegistrationDraft(){return registrationDraft ||=newRegistrationDraft();}
+function editRegisteredSupplement(id){
+  const item=state.supplements.find(s=>s.id===id);if(!item)return;
+  registrationDraft={...newRegistrationDraft(),...item,editingId:id,
+    ingredients:(item.ingredients||[]).map(n=>({...n})),
+    times:[...(item.times?.length?item.times:[item.time||'08:00'])],
+    days:[...(item.days?.length?item.days:[0,1,2,3,4,5,6])]};
+  registrationTab='manual';registrationSource='edit';registrationSelection=null;
+  go('supplement-register');
+}
 function validRegistrationDraft(d){return d.name.trim()&&Number.isFinite(d.dose)&&d.dose>0&&d.ingredients.every(n=>n.name.trim()&&Number.isFinite(n.amount)&&n.amount>0);}
 function registrationHeader(title,back){return `<header class="registration-header"><button type="button" data-registration="${back}" aria-label="뒤로"><img src="assets/scan/back.svg" alt=""></button><h1>${title}</h1></header>`;}
 function registrationProduct(p){const tags=p.id==='registration-daily-balance'?['immunity','energy']:p.id==='registration-night-balance'?['bone','sleep']:[];return `<span class="registration-product-art">${p.image?`<img src="${p.image}" alt="${esc(p.name)}">`:bottle(p.color)}</span><span class="registration-product-copy">${p.brand?`<b>${esc(p.brand)}</b>`:''}<span>${esc(p.name)}</span>${tags.length?`<span class="registration-tags">${tags.map(t=>`<span class="${t}" aria-label="${({immunity:'면역',energy:'에너지',bone:'뼈 건강',sleep:'수면'})[t]}">${registrationAsset(t)}</span>`).join('')}</span>`:p.tag?`<small>${esc(p.tag)}</small>`:''}</span>`;}
@@ -69,7 +78,7 @@ function registrationSettings(){
     <section><h2>복용 시간</h2><p>언제 챙겨드시나요?</p><div class="registration-times">${d.times.map((t,i)=>`<div><button type="button" data-registration="time" data-index="${i}">${registrationTimeLabel(t)}</button><button type="button" data-registration="remove-time" data-index="${i}" aria-label="${registrationTimeLabel(t)} 삭제">${registrationAsset('time-minus')}</button></div>`).join('')}</div><button type="button" class="registration-add" data-registration="add-time">+ 시간 추가</button></section>
     <section><h2>복용 요일</h2><div class="registration-days">${registrationDays.map((day,i)=>`<button type="button" data-registration="day" data-index="${i}" aria-pressed="${d.days.includes(i)}">${day}</button>`).join('')}</div></section>
     <section class="registration-notifications"><div><h2>복용 알림 받기</h2><p>설정한 시간에 알려드릴게요.</p></div><input type="checkbox" name="notifications" role="switch" aria-label="복용 알림 받기" ${d.notifications?'checked':''}></section>
-    <button class="registration-primary" type="submit">등록하기</button></form></section>`;
+    <button class="registration-primary" type="submit">${d.editingId?'저장하기':'등록하기'}</button></form></section>`;
 }
 function rememberRegistrationSearch(){const q=registrationQuery.trim();if(!q)return;state.registrationSearches=[q,...(state.registrationSearches||[]).filter(x=>x!==q)].slice(0,8);save();}
 function registrationDialog(html){const dialog=$('#dialog');dialog.classList.add('registration-sheet');dialog.innerHTML=`<div class="registration-handle"></div>${html}`;dialog.showModal();}
@@ -106,7 +115,7 @@ document.addEventListener('click',e=>{
   const wheel=e.target.closest('[data-wheel-value]');if(wheel){wheel.parentElement.scrollTo({top:Number(wheel.dataset.wheelValue)*44,behavior:'smooth'});return;}
   const b=e.target.closest('[data-registration]');if(!b)return;
   const a=b.dataset.registration,i=Number(b.dataset.index),d=ensureRegistrationDraft();
-  if(a==='start'){registrationTab='search';go('supplement-register');}
+  if(a==='start'){if(d.editingId)registrationDraft=null;registrationTab='search';go('supplement-register');}
   else if(a==='back-scan'){readRegistrationForm();go('scan');}
   else if(a==='back-entry'){go(registrationSource==='ocr'?'result':'supplement-register');}
   else if(a==='search'||a==='manual'){readRegistrationForm();registrationTab=a;if(a==='manual'&&registrationSource!=='ocr')registrationSource='manual';render();window.scrollTo(0,0);}
@@ -143,8 +152,12 @@ document.addEventListener('submit',e=>{
   if(e.target.id==='registration-settings'){
     e.preventDefault();const d=ensureRegistrationDraft();if(!e.target.reportValidity())return;if(!validRegistrationDraft(d)){toast('제품명과 성분 정보를 확인해주세요.');return;}if(!d.days.length){toast('복용 요일을 선택해주세요.');return;}
     // Keep legacy time/frequency fields for existing list, edit and analysis consumers.
-    state.supplements.push({...d,name:d.name.trim(),id:'s-'+Date.now(),time:d.times[0],frequency:d.days.length===7?'매일':d.days.map(i=>registrationDays[i]).join('·'),ingredientsStatus:d.ingredients.length?'registered':'unregistered',ingredients:d.ingredients.map(n=>({...n}))});
-    state.started=true;save();registrationDraft=null;draft=null;registrationOcrDraft=null;registrationSelection=null;scanText='';if(uploadURL){URL.revokeObjectURL(uploadURL);uploadURL='';}go('home');toast('영양제를 등록했어요.');
+    const editingId=d.editingId,index=editingId?state.supplements.findIndex(s=>s.id===editingId):-1;
+    if(editingId&&index<0){toast('수정할 영양제를 찾을 수 없어요.');return;}
+    const {editingId:discarded,...fields}=d;
+    const item={...fields,name:d.name.trim(),id:editingId||'s-'+Date.now(),time:d.times[0],frequency:d.days.length===7?'매일':d.days.map(i=>registrationDays[i]).join('·'),ingredientsStatus:d.ingredients.length?'registered':'unregistered',ingredients:d.ingredients.map(n=>({...n}))};
+    if(editingId)state.supplements[index]=item;else state.supplements.push(item);
+    state.started=true;save();registrationDraft=null;draft=null;registrationOcrDraft=null;registrationSelection=null;scanText='';if(uploadURL){URL.revokeObjectURL(uploadURL);uploadURL='';}go(editingId?'dose':'home');toast(editingId?'영양제 설정을 저장했어요.':'영양제를 등록했어요.');
   }
 });
 window.addEventListener('hashchange',closeRegistrationDialog);
