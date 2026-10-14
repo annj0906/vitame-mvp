@@ -267,9 +267,6 @@ body[data-screen="guide"] .wellness-tabs button.selected{color:var(--vitame-colo
 .ai-product{padding:0;display:flex;flex-direction:column;gap:6px;text-align:left;min-width:0;font:var(--vitame-type-pretendard-body2-regular-14)}
 .ai-product-art{width:100%;aspect-ratio:1;border-radius:16px;background:var(--vitame-color-neutral-gray20);display:grid;place-items:center;overflow:hidden}
 .ai-product-art .bottle{transform:scale(.62);margin:0}.ai-product strong{font:var(--vitame-type-pretendard-body1-semibold-16)}
-body[data-screen="guide"] .nav{left:50%;right:auto;bottom:25px;transform:translateX(-50%);width:calc(100% - 80px);max-width:348px;height:66px;padding:4px;border:0;border-radius:999px;background:var(--vitame-color-neutral-white);box-shadow:0 10px 10px #0000000d;display:flex;gap:0}
-body[data-screen="guide"] .nav button{flex:1;min-width:0;padding:6px 0 7px;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font:600 12px/1.4 var(--vitame-font-pretendard)}
-body[data-screen="guide"] .nav .active{background:var(--vitame-color-accent-green-main);color:var(--vitame-color-neutral-white)}
 @media(max-width:390px){.ai-interests{padding:0 8px}.ai-guide-card{padding:20px 16px}.ai-character-side{width:48px;height:48px}.ai-character-side .initial-character-box{transform:scale(.397)}.ai-guide-message{font-size:14px;padding:8px 10px}.ai-interest-heading p{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.ai-guide-reveal,.ai-guide-card:not(.is-open) .ai-guide-reveal,.ai-guide-toggle>.icon{transition:none}}
 /* Character messages, artwork and shadows form one page; arrows remain fixed. */

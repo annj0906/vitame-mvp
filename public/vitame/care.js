@@ -48,7 +48,7 @@ render=function(){
     cta.querySelector('button').insertAdjacentHTML('beforebegin',`<div class="care-guide-character">${initialCharacter('normal')}${characterShadow('normal', 'care-character-shadow')}</div>`);
     updateAnalysisScore(enteringAnalysis);
   }
-  document.querySelectorAll('.nav button').forEach(b=>{const key=b.dataset.go;b.innerHTML=`<span class="care-nav-icon">${careAsset('nav-'+key+(key===r?'-active':''))}</span><span>${({home:'홈',dose:'복용',analysis:'분석',shop:'쇼핑',my:'마이'})[key]}</span>`;});
+
 };
 // Tapping the non-interactive card area reuses the existing accordion handler.
 document.addEventListener('click',e=>{

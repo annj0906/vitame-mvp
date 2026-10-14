@@ -46,10 +46,6 @@ render = function() {
     toggle.innerHTML = homeAsset('grid') + homeAsset('list');
     toggle.classList.toggle('home-list-selected', homeDoseList);
   }
-  document.querySelectorAll('.nav button[data-go]').forEach(button => {
-    const destination = button.dataset.go;
-    button.innerHTML = `<span class="home-nav-icon">${homeAsset(destination)}</span><span>${({home:'홈',dose:'복용',analysis:'분석',shop:'쇼핑',my:'마이'})[destination]}</span>`;
-  });
 };
 
 render();

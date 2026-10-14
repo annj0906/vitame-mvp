@@ -40,7 +40,7 @@ function shoppingResults(){
   const title=shoppingFavorites?'찜한 상품':shoppingCategory?wellnessGuides.find(g=>g.id===shoppingCategory).title:'상품 검색';
   return `<div class="shop-section-heading"><h2>${title} <small>${found.length}</small></h2><button data-shop-reset>전체 상품</button></div><div class="shop-result-grid">${found.map(p=>shoppingCard(p)).join('')||'<p class="shop-empty">해당하는 상품이 없어요.</p>'}</div>`;
 }
-function shoppingNavigation(){const template=document.createElement('template');template.innerHTML=nav('shop');template.content.querySelectorAll('button').forEach(b=>{const key=b.dataset.go;b.innerHTML=`<span class="shop-nav-icon"><img src="assets/${key==='shop'?'shop/nav-shop-active':'care/nav-'+key}.svg" alt=""></span><span>${({home:'홈',dose:'복용',analysis:'분석',shop:'쇼핑',my:'마이'})[key]}</span>`;});return template.innerHTML;}
+function shoppingNavigation(){return nav('shop');}
 function shoppingHeader(detail=false){return `<header class="shop-header">${detail?'<button data-go="shop" aria-label="뒤로"><img src="assets/scan/back.svg" alt=""></button>':''}<h1>${detail?'제품 상세':'쇼핑'}</h1><div><button data-shop-favorites aria-label="찜한 상품" aria-pressed="${shoppingFavorites}">${shoppingAsset('header-heart')}</button><button data-go="cart" aria-label="장바구니">${shoppingAsset('bag')}</button></div></header>`;}
 function shoppingScreen(){
   const categories=['eyes','energy','sleep','brain','gut','bones','immune','skin','circulation','muscles'];

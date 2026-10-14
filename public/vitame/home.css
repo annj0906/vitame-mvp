@@ -65,10 +65,6 @@ body[data-screen="home"] .home-dose.list-mode .dose-mini{margin-right:0;padding-
 body[data-screen="home"] .home-dose.list-mode .dose-mini>button{height:80px;min-height:80px;flex-direction:row;gap:14px;padding:14px}
 body[data-screen="home"] .home-dose.list-mode .check{margin:0 0 0 auto;order:4}
 body[data-screen="home"] .home-dose.list-mode .pill{margin:0}
-body[data-screen="home"] .nav{position:fixed;left:50%;right:auto;bottom:25px;transform:translateX(-50%);width:calc(100% - 80px);max-width:348px;height:66px;padding:4px;border:0;border-radius:999px;background:var(--vitame-color-neutral-white);box-shadow:0 10px 10px #0000000d;display:flex;gap:0}
-body[data-screen="home"] .nav button{flex:1;min-width:0;padding:6px 0 7px;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:var(--vitame-color-neutral-gray60);font:var(--vitame-type-pretendard-caption-regular-12);font-weight:600;letter-spacing:-.025em}
-body[data-screen="home"] .nav button.active{background:var(--vitame-color-accent-blue-main);color:var(--vitame-color-neutral-white)}
-body[data-screen="home"] .home-nav-icon{height:28px;display:grid;place-items:center}
 @media(max-width:390px){
   body[data-screen="home"] .health-score-link{padding-left:16px;padding-right:16px}
   body[data-screen="home"] .score-body{gap:12px}
@@ -78,6 +74,5 @@ body[data-screen="home"] .home-nav-icon{height:28px;display:grid;place-items:cen
   body[data-screen="home"] .score-stats{gap:4px;margin-top:12px}
   body[data-screen="home"] .home-scan-banner{padding-left:16px;padding-right:16px}
   body[data-screen="home"] .home-dose .section-head{gap:8px}
-  body[data-screen="home"] .nav{width:calc(100% - 48px)}
 }
 @media(prefers-reduced-motion:reduce){body[data-screen="home"] .home-banner-character *{animation:none!important}}

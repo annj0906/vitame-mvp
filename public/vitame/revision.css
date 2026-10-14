@@ -125,8 +125,7 @@ body .frequency-track input:focus-visible{outline:2px solid #8f70cb;outline-offs
 button{color:#222}
 button.primary,button.add{background:#171717;color:#fff}
 button.secondary{background:#f4f4f4;border-color:#ddd;color:#222}
-button.text-btn,button.sample,.section-head button,.nav button{color:#666}
-.nav button.active{color:#111}
+button.text-btn,button.sample,.section-head button{color:#666}
 .scan-actions button,.quantity button,.interests button,.week button{background:#f2f2f2;color:#333}
 .interests button.selected,.week button.selected{background:#e5e5e5;border-color:#555;color:#111}
 .slide-dots .selected:after{background:#222}
@@ -157,7 +156,6 @@ body:not([data-screen="analysis"]):not([data-screen="guide"]):not([data-screen="
 .scan-frame{border-color:#bbb}
 .scanner>small,#toast{background:#333}
 .avatar{background:#eee}
-.nav{border-color:#eee}
 .app{box-shadow:0 0 80px #00000008}
 .dose-calendar{margin:0 0 28px}
 .dose-calendar .calendar-grid .calendar-day{min-height:54px}

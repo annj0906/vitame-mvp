@@ -1,0 +1,15 @@
+/* Shared bottom navigation: all screens use the same assets, spacing and geometry. */
+.nav{--nav-accent:var(--vitame-color-accent-blue-main);position:fixed;left:50%;right:auto;bottom:calc(25px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:calc(100% - 80px);max-width:348px;height:66px;padding:4px;border:0;border-radius:999px;background:var(--vitame-color-neutral-white);box-shadow:0 10px 10px #0000000d;display:flex;gap:0;z-index:10}
+.nav[data-active="dose"]{--nav-accent:var(--vitame-color-accent-orange-main)}
+.nav[data-active="analysis"]{--nav-accent:var(--vitame-color-accent-yellow-main)}
+.nav[data-active="guide"]{--nav-accent:var(--vitame-color-accent-green-main)}
+.nav[data-active="shop"]{--nav-accent:var(--vitame-color-accent-pink-main)}
+.nav[data-active="my"]{--nav-accent:var(--vitame-color-accent-purple-main)}
+.nav button{flex:1;min-width:0;min-height:48px;padding:6px 0 7px;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:var(--vitame-color-neutral-gray60);font:600 12px/1.4 var(--vitame-font-pretendard);letter-spacing:-.025em}
+.nav button.active{background:var(--nav-accent);color:var(--vitame-color-neutral-white)}
+.nav-icon{width:28px;height:28px;display:grid;place-items:center}
+.nav-icon img{display:block;max-width:24px;max-height:24px}
+.nav .active .nav-icon img{filter:brightness(0) invert(1)}
+/* Existing content has bottom space; add only safe-area clearance for inset devices. */
+.app:has(.nav){padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(max-width:380px){.nav{width:calc(100% - 48px)}}
