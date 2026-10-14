@@ -230,6 +230,8 @@ guide=function(){
 function finalGuideIcon(g, large=false){
   const option=initialHealthOptions.find(o=>o[1]===g.interest);
   const active={eyes:'eye',energy:'energy',sleep:'sleep',immune:'immunity',gut:'digestion'};
+  const colored={brain:'brain',bones:'bones',skin:'skin',circulation:'circulation',muscles:'muscles'};
+  if(route()==='guide'&&colored[g.id])return `<span class="ai-health-icon" style="--health-tint:var(--vitame-color-accent-${setupHealthColors[option[2]]}-light)"><img src="assets/shop/${colored[g.id]}.svg" alt=""></span>`;
   const asset=active[g.id]?`assets/guide/${active[g.id]}${large&&g.id==='eyes'?'-large':''}-active.svg`:setupAsset(option[2]);
   return `<span class="ai-health-icon${large?' ai-health-icon-large':''}" style="--health-tint:var(--vitame-color-accent-${option[3]}-light)"><img src="${asset}" alt=""></span>`;
 }
@@ -247,8 +249,8 @@ function finalGuideCharacters(){
 }
 const eyeGuideContent={
   paragraphs:[
-    '영양 관리는 평소 식사에서 쉽게 만날 수 있는 음식부터 돌아보세요. 당근이나 달걀, 시금치처럼 자주 먹는 식재료를 다양하게 챙겨보세요.',
-    '화면을 오래 보는 날에는 영양 관리와 함께 눈을 쉬게 해주는 습관도 중요해요. 중간중간 먼 곳을 바라보거나 잠깐 화면에서 시선을 떼어보세요. 완벽하게 관리하려고 하기보다 일상에서 실천할 수 있는 것부터 하나씩 바꿔보세요.'
+    '당근·달걀·시금치처럼 비타민 A를 포함한 식품을 다양하게 챙겨보세요.',
+    '화면을 오래 보는 날에는 잠시 먼 곳을 바라보며 눈을 쉬게 해주세요.'
   ],
   tips:[['very-bad','채워보기','비타민 A는 식사에서 먼저 챙겨봐요'],['bad','잠깐 확인','오메가-3가 포함된 제품의 성분과 함량을 확인해요'],['normal','오늘의 루틴','오후에 화면을 오래 본 날엔 눈 쉬는 시간을 챙겨봐요']]
 };
@@ -266,16 +268,17 @@ function guideProductCard(p){
   return `<button class="ai-product" ${action}><span class="ai-product-art">${p.image?`<img class="ai-product-photo" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" draggable="false">`:'<span class="ai-product-missing">제품 이미지 준비 중</span>'}<img class="ai-product-heart" src="assets/guide/product-heart.svg" alt=""></span><span class="ai-product-info"><span class="ai-product-brand">${esc(p.brand||'VITAME')}</span><span class="ai-product-name">${esc(p.name)}</span><span class="ai-product-price">${hasPrice?`${discount?`<b>${discount}%</b>`:''}<strong>${money(p.price)}</strong>`:'<small>가격 정보 없음</small>'}</span>${p.tags?`<span class="ai-product-tags" aria-label="관련 건강 영역">${['eyes',...(p.tags==='eye-immune'?['immune']:p.tags==='eye-circulation'?['circulation']:[])].map(id=>finalGuideIcon(wellnessGuides.find(g=>g.id===id))).join('')}</span>`:''}</span></button>`;
 }
 function guideProducts(g){
-  let related=products.filter(p=>g.names.includes(p.nutrient));
+  let related=products.filter(p=>g.names.includes(p.nutrient)&&p.image);
   if(g.id==='eyes')related=eyeGuideProducts.map(design=>{
     const live=products.find(p=>p.id===design.id||p.name===design.name);
     return live?{...design,...live,price:live.price,discount:live.discount,designOnly:false}:{...design,designOnly:true};
   });
-  return `<section class="ai-guide-products" aria-label="${esc(g.title)} 추천 제품"><div class="ai-product-heading"><div><h3>${esc(g.title)} 추천 제품</h3><p>${g.id==='eyes'&&state.demo?'현재 부족한 영양소를 바탕으로 추천했어요.':'관련 성분의 제품을 살펴보세요.'}</p></div><button data-go="shop">전체보기 ${icon('arrow')}</button></div><div class="ai-product-grid" tabindex="0" aria-label="추천 제품 좌우 스크롤">${related.map(guideProductCard).join('')||'<p class="ai-products-empty">관련 제품이 아직 없어요.</p>'}</div></section>`;
+  return `<section class="ai-guide-products" aria-label="${esc(g.title)} 추천 제품"><div class="ai-product-heading"><div><h3>${esc(g.title)} 추천 제품</h3><p>${g.id==='eyes'&&state.demo?'현재 부족한 영양소를 바탕으로 추천했어요.':'관련 성분의 제품을 살펴보세요.'}</p></div><button data-go="shop">전체보기 ${icon('arrow')}</button></div><div class="ai-product-grid" tabindex="0" aria-label="추천 제품 좌우 스크롤">${related.map(p=>{const html=guideProductCard({...p,designOnly:true});return p.id==='eye-berry'?html:html.replace(/data-guide-catalog="[^"]+"/,'type="button" aria-disabled="true"');}).join('')||'<p class="ai-products-empty">관련 제품이 아직 없어요.</p>'}</div></section>`;
 }
 // One collapsible detail shell for all categories; category copy/data stay separate.
 function detailedGuideCard(g,content){
-  const current=state.demo?(g.id==='eyes'?[['비타민 A',52,'부족'],['오메가-3',68,'부족']]:g.names.map(name=>nutrients.find(n=>n[0]===name)).filter(Boolean)):[];
+  // Reuse the same illustrative nutrient values shown in the analysis accordion.
+  const current=g.names.map(name=>nutrients.find(n=>n[0]===name)).filter(Boolean);
   const status=current.length?`<small class="ai-analysis-disclaimer">예시 데이터 · 개인 분석 결과가 아니에요</small>${current.map(n=>`<div class="ai-guide-nutrient" data-status="${esc(n[2])}"><button data-action="nutrient" data-name="${esc(n[0])}">${esc(n[0])}</button><span class="ai-guide-track" role="meter" aria-label="${esc(n[0])} 예시 섭취 비율" aria-valuemin="0" aria-valuemax="${Math.max(100,n[1])}" aria-valuenow="${n[1]}"><i style="width:${Math.max(0,Math.min(n[1],100))}%"></i></span><span>${n[1]}%</span><b>${esc(n[2])}</b></div>`).join('')}`:'<p>아직 확인할 수 있는 개인 분석 데이터가 없어요.</p>';
   return `<section class="ai-guide-card ai-detail-card" id="guide-${g.id}"><div class="ai-detail-surface"><h2><button class="ai-guide-toggle" data-ai-guide-toggle="${g.id}" aria-expanded="false" aria-controls="ai-guide-body-${g.id}">${finalGuideIcon(g,true)}<span>${esc(g.title)} 가이드</span>${wellnessIcon('chevron')}</button></h2><p class="ai-guide-description">${esc(g.description)}</p></div><div class="ai-guide-reveal" id="ai-guide-body-${g.id}" inert aria-hidden="true"><div class="ai-guide-inner"><div class="ai-detail-content"><div class="ai-guide-status">${status}</div><div class="ai-guide-copy">${content.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="ai-guide-tips">${content.tips.map(([,title,copy],i)=>`<div class="ai-guide-tip"><img class="ai-tip-symbol" src="assets/onboarding/${['very-bad','bad','good'][i]}/Body.png" alt=""><div><small>${esc(title)}</small><p>${esc(copy)}</p></div></div>`).join('')}</div></div>${guideProducts(g)}</div></div></section>`;
 }
@@ -287,7 +290,7 @@ function finalGuideCard(g){
 }
 document.addEventListener('click',e=>{
   const preview=e.target.closest('[data-guide-catalog]');
-  if(route()==='guide'&&preview)toast('제품 상세 정보가 아직 연결되지 않았어요.');
+  if(route()==='guide'&&preview&&preview.dataset.guideCatalog==='eye-berry')go('shop-eye-berry');
 });
 // Drag only the lower product rail; leave vertical page scrolling and taps intact.
 let guideProductDrag=null,guideProductSuppressUntil=0;

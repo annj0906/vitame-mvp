@@ -252,6 +252,8 @@ body[data-screen="guide"] .wellness-tabs button.selected{color:var(--vitame-colo
 .ai-guide-nutrient>button{font:var(--vitame-type-pretendard-body2-regular-14);text-align:left;padding:5px 4px;color:var(--vitame-color-neutral-black)}
 .ai-guide-nutrient>b{font-size:10px;font-weight:400;background:var(--status-light);color:var(--status);text-align:center;border-radius:99px}
 .ai-guide-track{height:4px;border-radius:9px;background:var(--vitame-color-neutral-gray20);overflow:hidden}.ai-guide-track i{display:block;height:100%;background:var(--status)}
+body[data-screen="guide"] .ai-products-empty{color:var(--vitame-color-neutral-gray60);font:var(--vitame-type-pretendard-body2-regular-14);margin:0}
+body[data-screen="guide"] .ai-product[aria-disabled="true"]{cursor:default}
 .ai-guide-copy{padding-top:24px;color:var(--vitame-color-neutral-gray70);font:var(--vitame-type-pretendard-body2-regular-14)}
 .ai-guide-tips{display:flex;flex-direction:column;gap:32px;margin-top:40px}
 .ai-guide-tip{display:flex;gap:18px;align-items:start}.ai-guide-tip>div:last-child{flex:1;min-width:0}
