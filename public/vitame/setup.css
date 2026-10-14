@@ -32,6 +32,9 @@
 .initial-health-icon { display: grid; place-items: center; width: 28px; height: 28px; flex: 0 0 28px; border-radius: 50%; background: var(--vitame-color-neutral-gray30); }
 .initial-health-icon img { display: block; }
 .initial-health-icon>span{display:block;width:18px;height:18px;background:var(--vitame-color-neutral-gray60);mask:var(--health-glyph) center/contain no-repeat;-webkit-mask:var(--health-glyph) center/contain no-repeat}
+/* Figma Category icons retain their own glyph bounds inside the 18px canvas. */
+[data-setup-interest="수면 · 스트레스"] .initial-health-icon>span{mask-size:12.7514px 12.7508px;-webkit-mask-size:12.7514px 12.7508px}
+[data-setup-interest="심혈관"] .initial-health-icon>span{mask-size:15.0071px 13.5087px;-webkit-mask-size:15.0071px 13.5087px;mask-position:center calc(50% + .745px);-webkit-mask-position:center calc(50% + .745px)}
 .initial-health-grid button[aria-pressed="true"] .initial-health-icon>span{background:var(--health-color)}
 .initial-health-grid button[aria-pressed="true"] .initial-health-icon { background: var(--health-tint); }
 .initial-health-grid button[aria-pressed="false"] .initial-health-icon img { filter: grayscale(1); }

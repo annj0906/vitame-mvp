@@ -31,6 +31,8 @@ body:is([data-screen="my"],[data-screen="interest-settings"]) .app{background:va
 .my-health-card[aria-pressed="true"]{background:white;color:var(--vitame-color-neutral-black);box-shadow:0 2px 5px #0000000d}
 .my-health-symbol{flex:none;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#e5e5e7}
 .my-health-symbol>span{width:18px;height:18px;background:var(--vitame-color-neutral-gray60);mask:var(--glyph) center/contain no-repeat;-webkit-mask:var(--glyph) center/contain no-repeat}
+[data-my-interest="수면 · 스트레스"] .my-health-symbol>span{mask-size:12.7514px 12.7508px;-webkit-mask-size:12.7514px 12.7508px}
+[data-my-interest="심혈관"] .my-health-symbol>span{mask-size:15.0071px 13.5087px;-webkit-mask-size:15.0071px 13.5087px;mask-position:center calc(50% + .745px);-webkit-mask-position:center calc(50% + .745px)}
 .my-health-card[aria-pressed="true"] .my-health-symbol{background:var(--category-light)}
 .my-health-card[aria-pressed="true"] .my-health-symbol>span{background:var(--category)}
 .my-health-label{flex:1;min-width:0;word-break:keep-all;letter-spacing:-.02em}
