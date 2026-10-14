@@ -3,12 +3,12 @@
 let cameraStream=null,scanWorker=null,scanJob=0,scanBusy=false,scanText='',scanError='',ocrLibrary=null;
 const scanRoutes=['scan','setup-register'];
 function stopLabelCamera(){cameraStream?.getTracks().forEach(t=>t.stop());cameraStream=null;}
-function cancelLabelScan(){scanJob++;scanBusy=false;stopLabelCamera();scanWorker?.terminate();scanWorker=null;}
+function cancelLabelScan(){scanJob++;scanBusy=false;stopLabelCamera();scanWorker?.terminate();scanWorker=null;document.querySelector('.live-scanner')?.classList.remove('is-scanning','is-capturing');}
 function scanStatus(message){const el=document.querySelector('[data-scan-status]');if(el)el.textContent=message;}
 function scanControls(){return `<div class="live-scanner"><video autoplay muted playsinline aria-label="영양제 라벨 카메라"></video><div class="live-scan-frame"></div><p data-scan-status role="status">카메라로 제품의 성분표를 비춰주세요.</p></div><div class="live-scan-buttons"><button class="secondary" data-label-photo>${icon('image')}<span>사진 선택</span></button><button class="secondary" data-action="manual">${icon('plus')}<span>직접 입력</span></button><button class="primary" data-label-scan>${icon('camera')}<span>스캔하기</span></button></div><div class="live-scan-links"><button class="text-btn" data-label-cancel hidden>스캔 취소</button></div><input type="file" id="label-photo" accept="image/*" hidden><p class="footer-note">카메라를 연결한 뒤 촬영하면 문자 인식을 시작해요.<br>사진은 서버로 전송하지 않습니다. 첫 인식에는 인터넷 연결이 필요해요.</p>`;}
 scan=function(){
   const asset=name=>`assets/scan/${name}.svg`;
-  return `<section class="scan-final"><header class="scan-final-header"><button data-go="home" aria-label="뒤로"><img src="${asset('back')}" alt=""></button><h1>영양제 등록</h1></header><main class="scan-final-content"><div class="live-scanner"><video autoplay muted playsinline aria-label="영양제 라벨 카메라"></video><div class="scan-final-guides" aria-hidden="true"><img class="scan-corner top-left" src="${asset('corner-left')}" alt=""><img class="scan-corner top-right" src="${asset('corner-right')}" alt=""><img class="scan-corner bottom-left" src="${asset('corner-left')}" alt=""><img class="scan-corner bottom-right" src="${asset('corner-right')}" alt=""><div class="scan-line"><img src="${asset('line')}" alt=""></div></div><p data-scan-status role="status">성분표를 프레임 안에 맞춰주세요</p><button class="scan-shutter" data-label-scan aria-label="카메라 연결 및 촬영"><img src="${asset('camera')}" alt=""><span class="scan-sr-only">촬영하기</span></button><button class="scan-cancel" data-label-cancel hidden>스캔 취소</button></div><div class="scan-final-actions"><button data-label-photo><img src="${asset('gallery')}" alt=""><span>갤러리</span></button><button data-registration="start"><img src="${asset('manual')}" alt=""><span>영양제 찾기</span></button></div><input type="file" id="label-photo" accept="image/*" hidden></main></section>`;
+  return `<section class="scan-final"><header class="scan-final-header"><button data-go="home" aria-label="뒤로"><img src="${asset('back')}" alt=""></button><h1>영양제 등록</h1></header><main class="scan-final-content"><div class="live-scanner">${cameraStream?'':'<img data-supplied-label src="assets/registration/daily-label.webp" alt="VITAME 데일리 멀티비타민 미네랄 성분표 예시">'}<video autoplay muted playsinline aria-label="영양제 라벨 카메라"></video><div class="scan-final-guides" aria-hidden="true"><img class="scan-corner top-left" src="${asset('corner-left')}" alt=""><img class="scan-corner top-right" src="${asset('corner-right')}" alt=""><img class="scan-corner bottom-left" src="${asset('corner-left')}" alt=""><img class="scan-corner bottom-right" src="${asset('corner-right')}" alt=""><div class="scan-line"><img src="${asset('line')}" alt=""></div></div><p data-scan-status role="status">성분표를 프레임 안에 맞춰주세요</p><button class="scan-shutter" data-label-scan aria-label="성분표 촬영하기"><img src="${asset('camera')}" alt=""><span class="scan-sr-only">촬영하기</span></button><button class="scan-cancel" data-label-cancel hidden>스캔 취소</button></div><div class="scan-final-actions"><button data-label-photo><img src="${asset('gallery')}" alt=""><span>갤러리</span></button><button data-registration="start"><img src="assets/care/edit-action.svg" alt=""><span>영양제 찾기</span></button></div><input type="file" id="label-photo" accept="image/*" hidden></main></section>`;
 };
 const renderBeforeScanner=render;
 render=function(){
@@ -69,7 +69,7 @@ function parseLabelText(text){
   return {name:'',dose:1,time:'08:00',frequency:'매일',ingredients:ingredients.length?ingredients:[{name:'',amount:'',unit:'mg'}]};
 }
 async function recognizeLabel(blob){
-  if(scanBusy)return;stopLabelCamera();scanBusy=true;scanText='';const token=++scanJob;
+  if(scanBusy)return;stopLabelCamera();scanBusy=true;scanText='';document.querySelector('.live-scanner')?.classList.add('is-scanning');const token=++scanJob;
   const button=document.querySelector('[data-label-scan]');button.disabled=true;
   document.querySelector('[data-label-cancel]').hidden=false;
   scanStatus('문자 인식 준비 중… 처음에는 잠시 걸릴 수 있어요.');
@@ -91,7 +91,22 @@ async function recognizeLabel(blob){
     if(!data.text.trim())throw new Error('읽을 수 있는 글자를 찾지 못했어요. 성분표를 가까이서 선명하게 촬영해주세요.');
     scanText=data.text;draft=parseLabelText(scanText);scanBusy=false;go('result');
   }catch(error){if(token===scanJob){scanStatus(error.message||'인식하지 못했어요. 다시 촬영하거나 직접 입력해주세요.');button.disabled=false;}}
-  finally{clearTimeout(timeout);if(worker)await worker.terminate().catch(()=>{});if(scanWorker===worker)scanWorker=null;if(token===scanJob)scanBusy=false;}
+  finally{clearTimeout(timeout);if(worker)await worker.terminate().catch(()=>{});if(scanWorker===worker)scanWorker=null;if(token===scanJob){scanBusy=false;document.querySelector('.live-scanner')?.classList.remove('is-scanning');}}
+}
+function scanSuppliedLabel(){
+  if(scanBusy)return;
+  const token=++scanJob;scanBusy=true;
+  const scanner=document.querySelector('.live-scanner'),button=document.querySelector('[data-label-scan]');
+  scanner.classList.add('is-scanning','is-capturing');button.disabled=true;
+  document.querySelector('[data-label-cancel]').hidden=false;
+  scanStatus('제공된 성분표를 확인하고 있어요…');
+  setTimeout(()=>scanner.classList.remove('is-capturing'),180);
+  setTimeout(()=>{
+    if(token!==scanJob||!scanRoutes.includes(route()))return;
+    scanBusy=false;scanText='';
+    registrationDraft=suppliedLabelRegistrationDraft();registrationTab='manual';registrationSource='provided';
+    go('supplement-register');
+  },3200);
 }
 async function captureLabel(){
   const video=document.querySelector('.live-scanner video');if(!video?.videoWidth){scanStatus('카메라 준비 후 다시 촬영해주세요.');return;}
@@ -99,7 +114,7 @@ async function captureLabel(){
   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.95));if(blob)recognizeLabel(blob);
 }
 document.addEventListener('click',e=>{
-  if(e.target.closest('[data-label-scan]')){if(cameraStream)captureLabel();else openLabelCamera();}
+  if(e.target.closest('[data-label-scan]')){if(cameraStream)captureLabel();else if(document.querySelector('[data-supplied-label]'))scanSuppliedLabel();else openLabelCamera();}
   if(e.target.closest('[data-label-photo]'))document.querySelector('#label-photo').click();
   if(e.target.closest('[data-label-cancel]')){cancelLabelScan();render();}
   if(e.target.closest('[data-action="manual"],[data-action="sample-scan"]')){cancelLabelScan();scanText='';}

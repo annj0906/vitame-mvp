@@ -24,6 +24,8 @@
 .scan-final .live-scanner{height:clamp(400px,calc(100dvh - 305px),627px);aspect-ratio:auto;margin:0;border-radius:16px;background:#d9d9d9}
 .scan-final .live-scanner video{object-fit:cover}
 .scan-final .live-scanner>img{object-fit:contain}
+.scan-final .live-scanner>img[data-supplied-label]{object-fit:cover;background:var(--vitame-color-neutral-background)}
+.scan-final-actions img[src="assets/care/edit-action.svg"]{opacity:.5}
 .scan-final-guides{position:absolute;inset:23px;z-index:2;pointer-events:none}
 .scan-final .scan-corner{position:absolute}
 .scan-final .top-left{left:0;top:0;transform:scaleY(-1)}
@@ -31,6 +33,11 @@
 .scan-final .bottom-left{left:0;bottom:0}
 .scan-final .bottom-right{right:0;bottom:0;transform:scaleX(-1)}
 .scan-final .scan-line{position:absolute;top:50%;left:1px;right:1px;height:2px;overflow:hidden;display:flex;justify-content:center;transform:translateY(-1px)}
+.scan-final .scan-line{display:none;height:1px}
+.scan-final .is-scanning .scan-line{display:flex;animation:vitame-label-sweep 1.6s ease-in-out infinite alternate}
+.scan-final .is-capturing::after{content:'';position:absolute;inset:0;z-index:4;background:white;pointer-events:none;animation:vitame-label-flash .18s ease-out both}
+@keyframes vitame-label-sweep{from{top:8%}to{top:92%}}
+@keyframes vitame-label-flash{from{opacity:.8}to{opacity:0}}
 .scan-final .scan-line img{max-width:none;flex-shrink:0}
 .scan-final .live-scanner [data-scan-status]{top:48px;bottom:auto;left:50%;right:auto;transform:translateX(-50%);width:max-content;max-width:calc(100% - 48px);margin:0;padding:8px;border-radius:999px;background:#1a1a1a66;color:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-semibold-14);letter-spacing:var(--vitame-tracking-pretendard-body2-semibold-14)}
 .scan-final .scan-shutter{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);width:64px;height:64px;padding:0;display:grid;place-items:center;border-radius:50%;background:var(--vitame-color-neutral-black);box-shadow:0 10px 5px #0000000d;z-index:3}
@@ -41,3 +48,4 @@
 .scan-final-actions button{height:104px;padding:20px 24px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-gray60);font:var(--vitame-type-pretendard-body1-semibold-16);letter-spacing:var(--vitame-tracking-pretendard-body1-semibold-16)}
 .scan-final img{display:block}
 .scan-final .scan-sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media(prefers-reduced-motion:reduce){.scan-final .is-scanning .scan-line{animation:none;top:50%}.scan-final .is-capturing::after{animation:none;display:none}}

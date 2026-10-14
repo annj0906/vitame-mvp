@@ -3,14 +3,35 @@
 let registrationTab='search',registrationQuery='',registrationSelection=null,registrationDraft=null;
 let registrationSource='search',registrationOcrDraft=null;
 const registrationDays=['일','월','화','수','목','금','토'];
-// Names/images come from the supplied WebP labels and Figma; no nutrition is inferred.
-const registrationProducts=[...products,...[
-  ['daily-balance','데일리 멀티비타민 미네랄 (30일분)'],
-  ['night-balance','나이트 밸런스 마그네슘 구미 (30일분)'],
-  ['eye-berry','아이 베리 루테인 구미'],['eye-balance','아이 밸런스 루테인·지아잔틴'],
-  ['eye-care','아이 케어 비타민 A·오메가3'],['daily-energy','데일리 에너지 비타민 B 콤플렉스'],
-  ['goodnight','굿나잇 마그네슘 스틱'],['gut-health','장 건강 프로바이오틱스']
-].map(([key,name])=>({id:'registration-'+key,name,brand:'VITAME',image:`assets/registration/${key}.webp`,ingredients:''}))];
+const registrationDailyNutrition=[
+  ['비타민 A',700,'μg RE',100],['비타민 B1',1.2,'mg',100],['비타민 B2',1.4,'mg',100],
+  ['나이아신',15,'mg NE',100],['판토텐산',5,'mg',100],['비타민 B6',1.5,'mg',100],
+  ['엽산',400,'μg DFE',100],['비타민 B12',2.4,'μg',100],['비타민 C',100,'mg',100],
+  ['비타민 D',10,'μg',100],['비타민 E',11,'mg α-TE',100],['비오틴',30,'μg',100],
+  ['비타민 K',70,'μg',100],['아연',8.5,'mg',100],['셀레늄',55,'μg',100],['철',12,'mg',100],['마그네슘',100,'mg',32]
+].map(([name,amount,unit,percent])=>({name,amount,unit,percent}));
+const registrationDailyLabel={
+  name:'VITAME 데일리 멀티비타민 미네랄',brand:'VITAME (비타미)',productType:'멀티비타민·미네랄',totalContent:'60 g',calories:240,
+  macros:[['나트륨','0 mg','0%'],['탄수화물','2 g','1%'],['당류','0 g','0%'],['지방','0 g','0%'],['트랜스지방','0 g','-'],['포화지방','0 g','0%'],['콜레스테롤','0 mg','0%'],['단백질','0 g','0%']],
+  notices:['1일 영양성분 기준치에 대한 비율(%)은 2,000 kcal 기준이므로 개인의 필요 열량에 따라 다를 수 있습니다.','본 제품은 공정거래위원회 고시 소비자분쟁해결기준에 의거, 교환 또는 보상받으실 수 있습니다.','부정·불량식품 신고는 국번없이 1399','반품 및 교환처: 구입처','소비자 상담실: 02-1877-7725']
+};
+const registrationProducts=[
+  {id:'registration-daily-balance',name:registrationDailyLabel.name,brand:'VITAME',brandName:registrationDailyLabel.brand,image:'assets/registration/daily-balance.webp',nutrition:registrationDailyNutrition,labelInfo:registrationDailyLabel},
+  {id:'registration-night-balance',name:'나이트 밸런스 마그네슘 구미 (30일분)',brand:'VITAME',image:'assets/registration/night-balance.webp',nutrition:[{name:'마그네슘',amount:100,unit:'mg'},{name:'비타민 B6',amount:1.5,unit:'mg'}],exampleNutrition:true}
+];
+const registrationUnits=['mg','μg','IU','g','μg RE','mg NE','μg DFE','mg α-TE'];
+function registrationRecents(){return state.registrationSearches??['VITAME','프롬 바이오','종근당건강'];}
+function registrationSearchAction(){return registrationQuery.trim()?'<button type="button" data-registration="clear-search" aria-label="검색어 지우기">×</button>':'<button type="button" data-registration="back-scan" aria-label="성분표 스캔"><img src="assets/scan/camera.svg" alt=""></button>';}
+function registrationLabelInfo(d){
+  if(d.exampleNutrition)return '<p class="registration-example">예시 성분 정보입니다. 실제 제품 라벨과 확인해주세요.</p>';
+  if(!d.labelInfo)return '';
+  const info=d.labelInfo;
+  return `<details class="registration-label-info"><summary>제공된 영양정보 · ${esc(info.totalContent)} / ${info.calories} kcal</summary><p>${esc(info.productType)}</p><table><caption>총 내용량당 영양성분</caption><tbody>${info.macros.map(row=>`<tr>${row.map(cell=>`<td>${esc(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table><table><caption>기능성 원료 · 1일 섭취량당</caption><tbody>${registrationDailyNutrition.map(n=>`<tr><td>${esc(n.name)}</td><td>${n.amount} ${esc(n.unit)}</td><td>${n.percent}%</td></tr>`).join('')}</tbody></table>${info.notices.map(text=>`<p>${esc(text)}</p>`).join('')}</details>`;
+}
+function suppliedLabelRegistrationDraft(){
+  return {...newRegistrationDraft(),name:registrationDailyLabel.name,brand:registrationDailyLabel.brand,productId:'registration-daily-balance',labelInfo:registrationDailyLabel,ingredients:registrationDailyNutrition.map(n=>({...n}))};
+}
+
 const registrationAsset=name=>`<img src="assets/registration/${name}.svg" alt="">`;
 function newRegistrationDraft(){return {name:'',brand:'',dose:1,doseUnit:'정',ingredients:[],times:['08:00'],days:[0,1,2,3,4,5,6],notifications:false,colorIndex:0};}
 function ensureRegistrationDraft(){return registrationDraft ||=newRegistrationDraft();}
@@ -19,7 +40,7 @@ function registrationHeader(title,back){return `<header class="registration-head
 function registrationProduct(p){const tags=p.id==='registration-daily-balance'?['immunity','energy']:p.id==='registration-night-balance'?['bone','sleep']:[];return `<span class="registration-product-art">${p.image?`<img src="${p.image}" alt="${esc(p.name)}">`:bottle(p.color)}</span><span class="registration-product-copy">${p.brand?`<b>${esc(p.brand)}</b>`:''}<span>${esc(p.name)}</span>${tags.length?`<span class="registration-tags">${tags.map(t=>`<span class="${t}" aria-label="${({immunity:'면역',energy:'에너지',bone:'뼈 건강',sleep:'수면'})[t]}">${registrationAsset(t)}</span>`).join('')}</span>`:p.tag?`<small>${esc(p.tag)}</small>`:''}</span>`;}
 function registrationResults(){
   const q=registrationQuery.trim().toLocaleLowerCase();
-  if(!q)return `<section class="registration-recents"><h2>최근 검색어</h2><div>${(state.registrationSearches||[]).map((q,i)=>`<span><button type="button" data-registration="recent" data-index="${i}">${esc(q)}</button><button type="button" data-registration="forget" data-index="${i}" aria-label="${esc(q)} 검색 기록 삭제">×</button></span>`).join('')||'<p>최근 검색어가 없어요.</p>'}</div></section>`;
+  if(!q)return `<section class="registration-recents"><h2>최근 검색어</h2><div>${registrationRecents().map((q,i)=>`<span><button type="button" data-registration="recent" data-index="${i}">${esc(q)}</button><button type="button" data-registration="forget" data-index="${i}" aria-label="${esc(q)} 검색 기록 삭제">×</button></span>`).join('')||'<p>최근 검색어가 없어요.</p>'}</div></section><section class="registration-popular"><h2>지금 많이 찾는 검색어 <span>오후 4:00 업데이트</span></h2><ol>${['동아제약','종근당건강','고려은단','오메가3','유산균','고려은단 비타민C','오쏠몰','루테인'].map((term,i)=>`<li><button type="button" data-registration="popular" data-query="${term}"><b>${i+1}</b>${term}</button></li>`).join('')}</ol></section>`;
   const found=registrationProducts.filter(p=>`${p.name} ${p.brand||''} ${p.nutrient||''}`.toLocaleLowerCase().includes(q));
   return `<div class="registration-results">${found.map(p=>`<button type="button" class="registration-product" data-registration="select" data-id="${esc(p.id)}">${registrationProduct(p)}</button>`).join('')||'<p>검색 결과가 없어요. 직접 입력으로 등록해주세요.</p>'}</div>`;
 }
@@ -29,12 +50,12 @@ function registrationManual(){
     ${scanText&&registrationSource==='ocr'?`<aside class="ocr-review"><strong>인식 결과를 원본과 확인해주세요.</strong><details><summary>인식 원문 보기</summary><pre>${esc(scanText)}</pre></details>${uploadURL?`<img class="upload-preview" src="${uploadURL}" alt="인식한 성분표">`:''}</aside>`:''}
     <label>영양제 이름 <em>*</em><input name="name" value="${esc(d.name)}" placeholder="예) 비타민 D3" maxlength="60" required></label>
     <label>브랜드<input name="brand" value="${esc(d.brand)}" placeholder="예) VITAME" maxlength="60"></label>
-    <section><h2>영양 성분</h2><div class="registration-ingredients">${d.ingredients.map((n,i)=>`<div><input name="ingredient-${i}" aria-label="${i+1}번째 성분명" value="${esc(n.name)}" placeholder="성분명" maxlength="40" required><input name="amount-${i}" aria-label="${i+1}번째 함량" type="number" min="0.01" max="1000000" step="any" value="${esc(n.amount)}" placeholder="함량" required><select name="unit-${i}" aria-label="${i+1}번째 단위">${['mg','μg','IU','g'].map(u=>`<option ${u===n.unit?'selected':''}>${u}</option>`).join('')}</select><button type="button" data-registration="remove-ingredient" data-index="${i}" aria-label="${i+1}번째 성분 삭제">${registrationAsset('minus')}</button></div>`).join('')}</div><button type="button" class="registration-add" data-registration="add-ingredient">+ 성분 추가</button></section>
+    <section><h2>영양 성분</h2><div class="registration-ingredients">${d.ingredients.map((n,i)=>`<div><input name="ingredient-${i}" aria-label="${i+1}번째 성분명" value="${esc(n.name)}" placeholder="성분명" maxlength="40" required><input name="amount-${i}" aria-label="${i+1}번째 함량" type="number" min="0.01" max="1000000" step="any" value="${esc(n.amount)}" placeholder="함량" required><select name="unit-${i}" aria-label="${i+1}번째 단위">${registrationUnits.map(u=>`<option ${u===n.unit?'selected':''}>${u}</option>`).join('')}</select><button type="button" data-registration="remove-ingredient" data-index="${i}" aria-label="${i+1}번째 성분 삭제">${registrationAsset('minus')}</button></div>`).join('')}</div><button type="button" class="registration-add" data-registration="add-ingredient">+ 성분 추가</button></section>
     <label>1회 복용량 <em>*</em><span class="registration-dose"><input name="dose" aria-label="1회 복용량" type="number" min="0.01" max="1000000" step="any" value="${d.dose}" required><select name="doseUnit" aria-label="복용 형태">${['정','캡슐','포','구미','방울','mL','g'].map(u=>`<option ${u===d.doseUnit?'selected':''}>${u}</option>`).join('')}</select></span></label>
-    <button class="registration-primary" type="submit">복용 설정하기</button></form>`;
+    ${registrationLabelInfo(d)}<button class="registration-primary" type="submit">복용 설정하기</button></form>`;
 }
 function registrationScreen(){
-  return `<section class="registration-screen">${registrationHeader('영양제 등록','back-scan')}<main class="registration-content"><div class="registration-tabs" role="tablist" aria-label="등록 방법"><button id="registration-search-tab" role="tab" aria-selected="${registrationTab==='search'}" aria-controls="registration-panel" data-registration="search">영양제 검색</button><button id="registration-manual-tab" role="tab" aria-selected="${registrationTab==='manual'}" aria-controls="registration-panel" data-registration="manual">직접 입력</button></div><div id="registration-panel" role="tabpanel" aria-labelledby="registration-${registrationTab}-tab">${registrationTab==='manual'?registrationManual():`<form id="registration-search" class="registration-search"><input name="query" type="search" aria-label="영양제 검색" placeholder="제품명이나 브랜드명을 입력해보세요" value="${esc(registrationQuery)}"><button type="submit" aria-label="검색">${icon('arrow')}</button></form><div id="registration-results">${registrationResults()}</div>`}</div></main></section>`;
+  return `<section class="registration-screen">${registrationHeader('영양제 등록','back-scan')}<main class="registration-content"><div class="registration-tabs" role="tablist" aria-label="등록 방법"><button id="registration-search-tab" role="tab" aria-selected="${registrationTab==='search'}" aria-controls="registration-panel" data-registration="search">영양제 검색</button><button id="registration-manual-tab" role="tab" aria-selected="${registrationTab==='manual'}" aria-controls="registration-panel" data-registration="manual">직접 입력</button></div><div id="registration-panel" role="tabpanel" aria-labelledby="registration-${registrationTab}-tab">${registrationTab==='manual'?registrationManual():`<form id="registration-search" class="registration-search"><input name="query" type="search" aria-label="영양제 검색" placeholder="제품명이나 브랜드명을 입력해보세요" value="${esc(registrationQuery)}">${registrationSearchAction()}</form><div id="registration-results">${registrationResults()}</div>`}</div></main></section>`;
 }
 function readRegistrationForm(){
   const form=$('#registration-manual');if(!form)return;
@@ -53,8 +74,8 @@ function registrationSettings(){
 function rememberRegistrationSearch(){const q=registrationQuery.trim();if(!q)return;state.registrationSearches=[q,...(state.registrationSearches||[]).filter(x=>x!==q)].slice(0,8);save();}
 function registrationDialog(html){const dialog=$('#dialog');dialog.classList.add('registration-sheet');dialog.innerHTML=`<div class="registration-handle"></div>${html}`;dialog.showModal();}
 function closeRegistrationDialog(){const dialog=$('#dialog');if(dialog.classList.contains('registration-sheet')){dialog.close();dialog.classList.remove('registration-sheet');dialog.innerHTML='';}}
-function confirmRegistrationProduct(p){registrationSelection=p;rememberRegistrationSearch();registrationDialog(`<div class="registration-product">${registrationProduct(p)}</div><h2>이 영양제로 복용 설정을 이어갈까요?</h2>${!p.ingredients?'<p class="registration-missing">성분·함량 미등록 <button data-registration="review-product">직접 입력으로 확인</button></p>':''}<div class="registration-sheet-actions"><button data-registration="dismiss">다시 선택</button><button class="registration-primary" data-registration="confirm">복용 설정하기</button></div>`);}
-function useRegistrationProduct(){const p=registrationSelection;if(!p)return false;if(registrationDraft?.productId!==p.id){const parsed=parseLabelText(p.ingredients||'');registrationDraft={...newRegistrationDraft(),name:p.name,brand:p.brand||'',productId:p.id,ingredients:parsed.ingredients.filter(n=>n.name&&n.amount)};}return true;}
+function confirmRegistrationProduct(p){registrationSelection=p;rememberRegistrationSearch();registrationDialog(`<div class="registration-product">${registrationProduct(p)}</div><h2>이 영양제로 복용 설정을 이어갈까요?</h2>${!p.nutrition?.length?'<p class="registration-missing">성분·함량 미등록 <button data-registration="review-product">직접 입력으로 확인</button></p>':''}${p.exampleNutrition?'<p class="registration-example">예시 성분 정보입니다. 실제 제품 라벨과 확인해주세요.</p>':''}<div class="registration-sheet-actions"><button data-registration="dismiss">다시 선택</button><button class="registration-primary" data-registration="confirm">확인</button></div>`);}
+function useRegistrationProduct(){const p=registrationSelection;if(!p)return false;if(registrationDraft?.productId!==p.id){const parsed=parseLabelText(p.ingredients||'');registrationDraft={...newRegistrationDraft(),name:p.name,brand:p.brandName||p.brand||'',productId:p.id,labelInfo:p.labelInfo,exampleNutrition:p.exampleNutrition,ingredients:p.nutrition?p.nutrition.map(n=>({...n})):parsed.ingredients.filter(n=>n.name&&n.amount)};}return true;}
 function openRegistrationTime(index){
   const d=ensureRegistrationDraft(),time=d.times[index]||'08:00',[h,m]=time.split(':').map(Number);
   registrationDialog(`<h2>복용 시간</h2><div class="registration-wheel" data-time-index="${index}">${[['오전','오후'],Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0')),Array.from({length:60},(_,i)=>String(i).padStart(2,'0'))].map((values,col)=>`<div class="registration-wheel-column" role="listbox" aria-label="${['오전·오후','시','분'][col]}" tabindex="0" data-wheel="${col}">${values.map((value,i)=>`<button type="button" role="option" aria-selected="false" data-wheel-value="${i}">${value}</button>`).join('')}</div>`).join('')}</div><div class="registration-sheet-actions"><button data-registration="dismiss">취소</button><button class="registration-primary" data-registration="save-time">확인</button></div>`);
@@ -71,7 +92,14 @@ render=function(){
 document.addEventListener('input',e=>{
   if(e.target.closest('#registration-manual'))readRegistrationForm();
   if(e.target.closest('#registration-settings')){const d=ensureRegistrationDraft();if(e.target.name==='name')d.name=e.target.value;if(e.target.name==='notifications')d.notifications=e.target.checked;}
-  if(e.target.matches('#registration-search input')){registrationQuery=e.target.value;$('#registration-results').innerHTML=registrationResults();}
+  if(e.target.matches('#registration-search input')){registrationQuery=e.target.value;$('#registration-results').innerHTML=registrationResults();$('#registration-search button').outerHTML=registrationSearchAction();}
+});
+document.addEventListener('focusin',e=>{
+  if(e.target.matches('#registration-search input')&&!registrationQuery.trim()){
+    registrationQuery='VITAME';e.target.value=registrationQuery;
+    $('#registration-results').innerHTML=registrationResults();
+    $('#registration-search button').outerHTML=registrationSearchAction();
+  }
 });
 document.addEventListener('change',e=>{if(e.target.closest('#registration-manual'))readRegistrationForm();if(e.target.matches('#registration-settings [name="notifications"]'))ensureRegistrationDraft().notifications=e.target.checked;});
 document.addEventListener('click',e=>{
@@ -81,16 +109,18 @@ document.addEventListener('click',e=>{
   if(a==='start'){registrationTab='search';go('supplement-register');}
   else if(a==='back-scan'){readRegistrationForm();go('scan');}
   else if(a==='back-entry'){go(registrationSource==='ocr'?'result':'supplement-register');}
-  else if(a==='search'||a==='manual'){readRegistrationForm();registrationTab=a;if(a==='manual'&&registrationSource!=='ocr')registrationSource='manual';render();}
+  else if(a==='search'||a==='manual'){readRegistrationForm();registrationTab=a;if(a==='manual'&&registrationSource!=='ocr')registrationSource='manual';render();window.scrollTo(0,0);}
   else if(a==='add-ingredient'){readRegistrationForm();d.ingredients.push({name:'',amount:'',unit:'mg'});render();}
   else if(a==='remove-ingredient'){readRegistrationForm();d.ingredients.splice(i,1);render();}
-  else if(a==='recent'){registrationQuery=state.registrationSearches[i];render();}
-  else if(a==='forget'){state.registrationSearches.splice(i,1);save();render();}
+  else if(a==='clear-search'){registrationQuery='';render();}
+  else if(a==='popular'){registrationQuery=b.dataset.query;render();}
+  else if(a==='recent'){registrationQuery=registrationRecents()[i];render();}
+  else if(a==='forget'){state.registrationSearches=registrationRecents().filter((_,index)=>index!==i);save();render();}
   else if(a==='select'){const p=registrationProducts.find(p=>p.id===b.dataset.id);if(p)confirmRegistrationProduct(p);}
   else if(a==='dismiss')closeRegistrationDialog();
   else if(a==='confirm'){
     if(!useRegistrationProduct())return;
-    registrationSource='search';registrationTab='search';closeRegistrationDialog();go('registration-settings');
+    registrationSource='search';registrationTab='manual';closeRegistrationDialog();render();window.scrollTo(0,0);
   }
   else if(a==='review-product'){if(!useRegistrationProduct())return;registrationSource='manual';registrationTab='manual';closeRegistrationDialog();render();}
   else if(a==='time')openRegistrationTime(i);
@@ -114,7 +144,7 @@ document.addEventListener('submit',e=>{
     e.preventDefault();const d=ensureRegistrationDraft();if(!e.target.reportValidity())return;if(!validRegistrationDraft(d)){toast('제품명과 성분 정보를 확인해주세요.');return;}if(!d.days.length){toast('복용 요일을 선택해주세요.');return;}
     // Keep legacy time/frequency fields for existing list, edit and analysis consumers.
     state.supplements.push({...d,name:d.name.trim(),id:'s-'+Date.now(),time:d.times[0],frequency:d.days.length===7?'매일':d.days.map(i=>registrationDays[i]).join('·'),ingredientsStatus:d.ingredients.length?'registered':'unregistered',ingredients:d.ingredients.map(n=>({...n}))});
-    state.started=true;save();registrationDraft=null;draft=null;registrationOcrDraft=null;registrationSelection=null;scanText='';if(uploadURL){URL.revokeObjectURL(uploadURL);uploadURL='';}go('dose');toast('영양제를 등록했어요.');
+    state.started=true;save();registrationDraft=null;draft=null;registrationOcrDraft=null;registrationSelection=null;scanText='';if(uploadURL){URL.revokeObjectURL(uploadURL);uploadURL='';}go('home');toast('영양제를 등록했어요.');
   }
 });
 window.addEventListener('hashchange',closeRegistrationDialog);
