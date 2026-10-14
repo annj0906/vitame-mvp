@@ -1,0 +1,47 @@
+'use strict';
+const utilityRoutes=['notifications','likes','cart'];
+let utilityNoticeFilter='all',utilityLikeFilter='',utilityPrevious=route();
+const utilityBack={notifications:'home',likes:'my',cart:'shop'};
+const utilityIcon=(type,filter=false)=>`<img src="assets/utility/${type}${filter?'-filter':''}.svg" alt="">`;
+const utilityLabels={health:'건강',dose:'복용',routine:'루틴'};
+const berryProduct=()=>shoppingProducts.find(p=>p.id==='eye-berry');
+function utilityHeader(title,r){return `<header class="utility-header"><button data-go="${utilityBack[r]}" aria-label="뒤로"><img src="assets/scan/back.svg" alt=""></button><h1>${title}</h1></header>`;}
+function utilityEmpty(title,copy,shop=false){return `<section class="utility-empty"><h2>${title}</h2><p>${copy}</p>${shop?'<button data-go="shop">상품 둘러보기</button>':''}</section>`;}
+function utilityNotices(){
+  if(state.demo)return [
+    {id:'demo-health',type:'health',title:'내 영양 상태를 확인해보세요',text:'비타민 A와 오메가-3가 조금 부족한 편이에요.',date:'2026-10-08'},
+    {id:'demo-routine',type:'routine',title:'오늘도 좋은 흐름을 이어가고 있어요',text:'작은 기록이 건강한 습관을 만들어요. 오늘의 복용 현황을 확인해보세요.',date:'2026-10-08'},
+    {id:'demo-dose',type:'dose',title:'아직 기록하지 않은 복용이 4개 있어요',text:'오늘 복용할 영양제를 확인해볼까요?',date:'2026-10-08'},
+    {id:'demo-week',type:'routine',title:'이번 주 복용률이 좋아졌어요',text:'지난주보다 꾸준히 챙긴 날이 늘었어요.',date:'2026-10-07'}
+  ];
+  const today=dateKey(),day=new Date().getDay(),items=(Array.isArray(state.notifications)?state.notifications:[]).filter(n=>n.id&&utilityLabels[n.type]&&n.title&&n.date).map(n=>({...n}));
+  const due=state.supplements.filter(s=>(!s.days||s.days.includes(day))&&!state.records[today]?.[s.id]);
+  if(due.length)items.push({id:`dose-${today}`,type:'dose',title:`아직 기록하지 않은 복용이 ${due.length}개 있어요`,text:'오늘 복용할 영양제를 확인해볼까요?',date:today});
+  const done=completed(today);if(done)items.push({id:`routine-${today}`,type:'routine',title:'오늘의 복용 기록을 남겼어요',text:`오늘 ${done}개 영양제의 복용을 기록했어요.`,date:today});
+  return items;
+}
+function utilityNotificationList(){const items=utilityNotices().filter(n=>utilityNoticeFilter==='all'||n.type===utilityNoticeFilter);return items.map(n=>`<button class="utility-notice ${state.noticeRead?.[n.id]?'is-read':''}" data-utility-read="${esc(n.id)}" aria-label="${esc(n.title)}${state.noticeRead?.[n.id]?', 읽음':', 읽지 않음'}"><span class="utility-notice-type">${utilityIcon(n.type)}${utilityLabels[n.type]}</span><span class="utility-notice-copy"><strong>${esc(n.title)}</strong><span>${esc(n.text||'')}</span><time datetime="${esc(n.date)}">${Number(n.date.slice(5,7))}월 ${Number(n.date.slice(8,10))}일</time></span></button>`).join('')||utilityEmpty('새로운 알림이 없어요','복용 기록과 건강 관리 알림을 여기에서 확인할 수 있어요.');}
+function utilityNotificationPage(){return `<section class="utility-page utility-notifications">${utilityHeader('알림','notifications')}<div class="utility-notice-filters" aria-label="알림 필터">${['all','health','dose','routine'].map(t=>`<button data-utility-notice-filter="${t}" aria-pressed="${utilityNoticeFilter===t}">${t==='all'?'':`<span class="utility-notice-symbol utility-tone-${t}">${utilityIcon(t,true)}</span>`}${t==='all'?'전체':utilityLabels[t]}</button>`).join('')}</div><main class="utility-notice-list">${utilityNotificationList()}</main></section>`;}
+function utilityFavoriteCard(p){const template=document.createElement('template');template.innerHTML=shoppingCard(p,true);const card=template.content.firstElementChild;card.classList.add('utility-favorite-product');card.querySelector('.ai-product-info').insertAdjacentHTML('beforeend',`<button class="utility-add-cart" data-utility-add="${p.id}" ${p.id==='eye-berry'?'':'disabled'} aria-label="${esc(p.name)} ${p.id==='eye-berry'?'장바구니 담기':'장바구니 등록 준비 중'}">장바구니 ${shoppingAsset('bag')}</button>`);return card.outerHTML;}
+function utilityFavoritesPage(){const products=shoppingProducts.filter(p=>shoppingLiked(p.id)&&(!utilityLikeFilter||p.health.includes(utilityLikeFilter)));const ids=['eyes','energy','sleep','brain','gut','bones','immune','skin','circulation','muscles'];return `<section class="utility-page shopping-page utility-favorites">${utilityHeader('찜','likes')}${shoppingRail('찜 건강 카테고리',ids.map(id=>`<button class="shop-category shop-category-${id}" data-utility-like-filter="${id}" aria-pressed="${utilityLikeFilter===id}">${shoppingHealth(id)}${id==='eyes'?'눈':esc(wellnessGuides.find(g=>g.id===id).title)}</button>`).join(''),'shop-categories')}<main class="utility-favorite-list"><p class="utility-product-count">상품 ${products.length}개</p>${products.map(utilityFavoriteCard).join('')||utilityEmpty('찜한 상품이 없어요',utilityLikeFilter?'이 건강 분야에 찜한 상품이 없어요.':'상품 카드의 하트를 눌러 관심 상품을 저장해보세요.',true)}</main></section>`;}
+function utilityCartQuantity(){return Math.min(99,Math.max(0,Math.floor(Number(state.cart?.['eye-berry'])||0)));}
+function utilityCartSelected(){return state.cartSelected?.['eye-berry']!==false;}
+function utilityCartPage(){const p=berryProduct(),q=utilityCartQuantity(),selected=utilityCartSelected();return `<section class="utility-page shopping-page utility-cart">${utilityHeader('장바구니','cart')}<main><div class="utility-cart-content"><label class="utility-select-all"><input type="checkbox" data-utility-select-all ${q&&selected?'checked':''} ${q?'':'disabled'}>전체선택</label>${q?`<article class="utility-cart-row"><input type="checkbox" aria-label="${esc(p.name)} 선택" data-utility-cart-select ${selected?'checked':''}><a href="#shop-eye-berry"><img class="utility-cart-image" src="${p.image}" alt="${esc(p.name)}"></a><div class="utility-cart-copy"><span>VITAME</span><a href="#shop-eye-berry">${esc(p.name)}</a><div class="ai-product-price"><b>${p.discount}%</b><strong>${money(p.price)}</strong><del>${money(p.original)}</del></div><div class="utility-cart-controls"><div><button data-utility-quantity="-1" aria-label="수량 줄이기" ${q===1?'disabled':''}>−</button><span aria-live="polite">${q}</span><button data-utility-quantity="1" aria-label="수량 늘리기" ${q===99?'disabled':''}>+</button></div><button data-utility-remove>삭제</button></div></div></article>`:utilityEmpty('장바구니가 비어 있어요','아이 베리 제품을 장바구니에 담아보세요.',true)}</div><section class="shop-section utility-related">${shoppingHeading('함께 담으면 좋은 상품','','')}${shoppingRail('함께 담으면 좋은 상품',shoppingProducts.slice(3,6).map(p=>shoppingCard(p)).join(''))}</section></main><footer class="utility-order"><button data-utility-order ${q&&selected?'':'disabled'} aria-live="polite">${money(q&&selected?p.price*q:0)} 주문하기</button></footer></section>`;}
+function utilityAddCart(id){if(id!=='eye-berry')return;state.cart||={};state.cart[id]=Math.min(99,utilityCartQuantity()+1);state.cartSelected||={};state.cartSelected[id]=true;save();toast('장바구니에 담았어요.');if(route()==='cart')render();}
+const beforeUtilityPages=render;
+render=function(){const r=route();if(!utilityRoutes.includes(r)){beforeUtilityPages();return;}stopShoppingVideo();clearInterval(shoppingTimer);clearTimeout(introTimer);document.body.dataset.screen=r;document.title=({notifications:'알림',likes:'찜',cart:'장바구니'})[r]+' · VITAME';$('#app').innerHTML=r==='notifications'?utilityNotificationPage():r==='likes'?utilityFavoritesPage():utilityCartPage();bindShoppingRails();};
+document.addEventListener('click',e=>{
+  const entry=e.target.closest('[data-go],[data-action="notifications"]');if(entry){const destination=entry.dataset.go||'notifications';if(utilityRoutes.includes(destination)&&!utilityRoutes.includes(route()))utilityBack[destination]=route();}
+  const read=e.target.closest('[data-utility-read]');if(read){state.noticeRead||={};state.noticeRead[read.dataset.utilityRead]=true;save();read.classList.add('is-read');read.setAttribute('aria-label',utilityNotices().find(n=>n.id===read.dataset.utilityRead).title+', 읽음');return;}
+  const filter=e.target.closest('[data-utility-notice-filter]');if(filter){utilityNoticeFilter=filter.dataset.utilityNoticeFilter;render();return;}
+  const health=e.target.closest('[data-utility-like-filter]');if(health){utilityLikeFilter=utilityLikeFilter===health.dataset.utilityLikeFilter?'':health.dataset.utilityLikeFilter;render();return;}
+  const add=e.target.closest('[data-utility-add]');if(add){utilityAddCart(add.dataset.utilityAdd);return;}
+  const quantity=e.target.closest('[data-utility-quantity]');if(quantity){state.cart['eye-berry']=Math.min(99,Math.max(1,utilityCartQuantity()+Number(quantity.dataset.utilityQuantity)));save();render();return;}
+  if(e.target.closest('[data-utility-remove]')){delete state.cart['eye-berry'];if(state.cartSelected)delete state.cartSelected['eye-berry'];save();render();return;}
+  if(e.target.closest('[data-utility-order]'))toast('주문 및 결제 기능은 아직 준비 중이에요.');
+},true);
+document.addEventListener('change',e=>{if(e.target.matches('[data-utility-select-all],[data-utility-cart-select]')){state.cartSelected||={};state.cartSelected['eye-berry']=e.target.checked;save();render();}});
+document.addEventListener('vitame:likes',()=>{if(route()==='likes')render();});
+window.addEventListener('hashchange',()=>{const next=route();if(utilityRoutes.includes(next)&&!utilityRoutes.includes(utilityPrevious))utilityBack[next]=utilityPrevious;utilityPrevious=next;});
+window.addEventListener('storage',e=>{if(e.key!=='vitame-v1'||!e.newValue)return;try{const updated=JSON.parse(e.newValue);state.shopLikes=updated.shopLikes||[];state.cart=updated.cart||{};state.cartSelected=updated.cartSelected||{};state.noticeRead=updated.noticeRead||{};if([...utilityRoutes,'shop','shop-eye-berry','my'].includes(route()))render();}catch{}});
+render();
