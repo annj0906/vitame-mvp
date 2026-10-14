@@ -182,7 +182,7 @@ function updateAnalysisScore(entering=false){
 }
 analysis=function(){
   const anchor=chartSelection||periodStart(chartAnchor),score=periodScore(anchor);
-return `${analysisTabs()}<div class="analysis-periods" aria-label="분석 기간">${chartPeriods.filter(([id])=>id!=='day').map(([id,label])=>`<button data-chart-period="${id}" aria-pressed="${chartPeriod===id}">${label}</button>`).join('')}</div><div class="analysis-overview"><p class="analysis-score-label">${analysisScoreDate(anchor)}</p><h1 class="analysis-month-score">${score}점</h1><p class="analysis-month-description">${analysisScoreMessage(score)}</p>${periodChart()}</div><div class="nutrition-panels">${analysisGroups.map(nutritionCard).join('')}</div><section class="analysis-guide-cta"><h3>이제 관리 방법을 알아볼까요?</h3><p>나에게 맞는 관리 가이드를 살펴보세요.</p>${button('AI 가이드 보러가기','guide')}</section>${note()}`;
+return `${analysisTabs()}<div class="analysis-periods" aria-label="분석 기간">${chartPeriods.filter(([id])=>id!=='day').map(([id,label])=>`<button data-chart-period="${id}" aria-pressed="${chartPeriod===id}">${label}</button>`).join('')}</div><div class="analysis-overview"><p class="analysis-score-label">${analysisScoreDate(anchor)}</p><h1 class="analysis-month-score">${score}점</h1><p class="analysis-month-description">${analysisScoreMessage(score)}</p>${periodChart()}</div><div class="nutrition-panels">${analysisGroups.map(nutritionCard).join('')}</div><section class="analysis-guide-cta"><h3>이제 관리 방법을 알아볼까요?</h3><p>나에게 맞는 관리 가이드를 살펴보세요.</p>${button('AI 가이드 보러가기','guide')}</section>`;
 };
 nutrientPage=analysis;
 function moveChart(step){
