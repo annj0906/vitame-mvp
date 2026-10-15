@@ -29,11 +29,12 @@ function utilityCartSelected(){return state.cartSelected?.['eye-berry']!==false;
 function utilityCartPage(){const p=berryProduct(),q=utilityCartQuantity(),selected=utilityCartSelected();return `<section class="utility-page shopping-page utility-cart">${utilityHeader('장바구니','cart')}<main><div class="utility-cart-content"><label class="utility-select-all"><input type="checkbox" data-utility-select-all ${q&&selected?'checked':''} ${q?'':'disabled'}>전체선택</label>${q?`<article class="utility-cart-row"><input type="checkbox" aria-label="${esc(p.name)} 선택" data-utility-cart-select ${selected?'checked':''}><a href="#shop-eye-berry"><img class="utility-cart-image" src="${p.image}" alt="${esc(p.name)}"></a><div class="utility-cart-copy"><span>VITAME</span><a href="#shop-eye-berry">${esc(p.name)}</a><div class="ai-product-price"><b>${p.discount}%</b><strong>${money(p.price)}</strong><del>${money(p.original)}</del></div><div class="utility-cart-controls"><div><button data-utility-quantity="-1" aria-label="수량 줄이기" ${q===1?'disabled':''}>−</button><span aria-live="polite">${q}</span><button data-utility-quantity="1" aria-label="수량 늘리기" ${q===99?'disabled':''}>+</button></div><button data-utility-remove>삭제</button></div></div></article>`:utilityEmpty('장바구니가 비어 있어요','아이 베리 제품을 장바구니에 담아보세요.',true)}</div><section class="shop-section utility-related">${shoppingHeading('함께 담으면 좋은 상품','','')}${shoppingRail('함께 담으면 좋은 상품',shoppingProducts.slice(3,6).map(p=>shoppingCard(p)).join(''))}</section></main><footer class="utility-order"><button data-utility-order ${q&&selected?'':'disabled'} aria-live="polite">${money(q&&selected?p.price*q:0)} 주문하기</button></footer></section>`;}
 function utilityAddCart(id){if(id!=='eye-berry')return;state.cart||={};state.cart[id]=Math.min(99,utilityCartQuantity()+1);state.cartSelected||={};state.cartSelected[id]=true;save();toast('장바구니에 담았어요.');if(route()==='cart')render();}
 const beforeUtilityPages=render;
+let utilityMotionEnabled=true;
 render=function(){
   const r=route();if(!utilityRoutes.includes(r)){
     // Shop/My renderers return before the inner care transition wrapper runs.
     // Capture the outgoing utility page here, before those renderers replace it.
-    const leaving=utilityRoutes.includes(document.body.dataset.screen)&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const leaving=utilityMotionEnabled&&utilityRoutes.includes(document.body.dataset.screen)&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
     const outgoing=leaving?archiveTransitionSnapshot():null;
     beforeUtilityPages();
     if(outgoing)outgoing.snapshot.animate([{transform:'translateX(0)'},{transform:'translateX(100%)'}],{duration:320,easing:'cubic-bezier(.4,0,.8,.6)'}).finished.finally(()=>outgoing.viewport.remove());
@@ -41,7 +42,11 @@ render=function(){
   }
   // Utility routes render outside the shared route wrapper: reuse its frozen
   // underlay here so each incoming page covers, rather than replaces, its origin.
-  const entering=document.body.dataset.screen!==r&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const previous=document.body.dataset.screen;
+  // My-page menu navigation is intentionally immediate in both directions.
+  // Keep this choice through utility rerenders/filters and nested utility pages.
+  if(previous!==r&&!utilityRoutes.includes(previous))utilityMotionEnabled=previous!=='my';
+  const entering=utilityMotionEnabled&&previous!==r&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
   const underlay=entering?archiveTransitionSnapshot():null;
   if(underlay)underlay.viewport.style.zIndex='59';
   stopShoppingVideo();clearInterval(shoppingTimer);clearTimeout(introTimer);
