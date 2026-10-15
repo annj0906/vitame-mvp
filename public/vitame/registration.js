@@ -5,7 +5,11 @@ let registrationSource='search',registrationOcrDraft=null;
 let registrationReturnRoute='home';
 document.addEventListener('click',event=>{
   if(route()==='home'&&event.target.closest('.home-scan-banner'))registrationReturnRoute='home';
-  if(event.target.closest('[data-go="scan"]'))registrationReturnRoute=route()==='dose'?'dose':'home';
+  if(event.target.closest('[data-go="scan"]')){
+    const source=document.body?.dataset.screen;
+    registrationReturnRoute=source==='dose'||route()==='dose'?'dose':source==='registration'?registrationReturnRoute:'home';
+    registrationDraft=null;
+  }
 },true);
 const registrationDays=['일','월','화','수','목','금','토'];
 const registrationDailyNutrition=[
@@ -38,12 +42,12 @@ function suppliedLabelRegistrationDraft(){
 }
 
 const registrationAsset=name=>`<img src="assets/registration/${name}.svg" alt="">`;
-function newRegistrationDraft(){return {name:'',brand:'',dose:1,doseUnit:'정',ingredients:[],times:['08:00'],days:[0,1,2,3,4,5,6],notifications:false,colorIndex:0};}
+function newRegistrationDraft(){return {name:'',brand:'',dose:1,doseUnit:'정',ingredients:[],times:['08:00'],days:[0,1,2,3,4,5,6],notifications:false,colorIndex:0,returnRoute:registrationReturnRoute};}
 function ensureRegistrationDraft(){return registrationDraft ||=newRegistrationDraft();}
 function editRegisteredSupplement(id){
   registrationReturnRoute='dose';
   const item=state.supplements.find(s=>s.id===id);if(!item)return;
-  registrationDraft={...newRegistrationDraft(),...item,editingId:id,
+  registrationDraft={...newRegistrationDraft(),...item,editingId:id,returnRoute:'dose',
     ingredients:(item.ingredients||[]).map(n=>({...n})),
     times:[...(item.times?.length?item.times:[item.time||'08:00'])],
     days:[...(item.days?.length?item.days:[0,1,2,3,4,5,6])]};
@@ -166,10 +170,21 @@ document.addEventListener('click',e=>{
     const picker=document.querySelector('.registration-inline-picker');
     if(picker&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
       if(picker.dataset.closing)return;picker.dataset.closing='true';
-      const scrollTop=window.scrollY;
+      const times=document.querySelector('.registration-times'),oldHeight=times.getBoundingClientRect().height;
+      const template=document.createElement('template');template.innerHTML=registrationSettings();
+      times.innerHTML=template.content.querySelector('.registration-times').innerHTML;
+      const newHeight=times.getBoundingClientRect().height;
       picker.style.animation='none';
-      document.querySelector('.registration-add.is-picker-open')?.classList.remove('is-picker-open');
-      picker.animate([{height:picker.offsetHeight+'px',opacity:1},{height:'0px',opacity:0}],{duration:280,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'}).finished.then(()=>{if(picker.isConnected){render();window.scrollTo(0,scrollTop);}});
+      const add=picker.nextElementSibling;
+      add.classList.remove('is-picker-open');add.textContent='+ 시간 추가';add.disabled=true;
+      const options={duration:280,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'};
+      times.style.overflow='hidden';
+      const listMotion=times.animate([{height:oldHeight+'px'},{height:newHeight+'px'}],options);
+      const pickerMotion=picker.animate([{height:picker.offsetHeight+'px',opacity:1},{height:'0px',opacity:0}],options);
+      Promise.all([listMotion.finished,pickerMotion.finished]).then(()=>{
+        if(picker.isConnected){picker.remove();add.dataset.registration='add-time';add.disabled=false;times.style.removeProperty('overflow');}
+        listMotion.cancel();pickerMotion.cancel();
+      });
     }else render();
   }
 });
@@ -183,10 +198,11 @@ document.addEventListener('submit',e=>{
     // Keep legacy time/frequency fields for existing list, edit and analysis consumers.
     const editingId=d.editingId,index=editingId?state.supplements.findIndex(s=>s.id===editingId):-1;
     if(editingId&&index<0){toast('수정할 영양제를 찾을 수 없어요.');return;}
-    const {editingId:discarded,...fields}=d;
+    const returnRoute=d.returnRoute||registrationReturnRoute;
+    const {editingId:discarded,returnRoute:discardedReturnRoute,...fields}=d;
     const item={...fields,name:d.name.trim(),id:editingId||'s-'+Date.now(),time:d.times[0],frequency:d.days.length===7?'매일':d.days.map(i=>registrationDays[i]).join('·'),ingredientsStatus:d.ingredients.length?'registered':'unregistered',ingredients:d.ingredients.map(n=>({...n}))};
     if(editingId)state.supplements[index]=item;else state.supplements.push(item);
-    state.started=true;save();registrationDraft=null;draft=null;registrationOcrDraft=null;registrationSelection=null;scanText='';if(uploadURL){URL.revokeObjectURL(uploadURL);uploadURL='';}go(editingId?'dose':registrationReturnRoute);toast(editingId?'영양제 설정을 저장했어요.':'영양제를 등록했어요.');
+    state.started=true;save();registrationDraft=null;draft=null;registrationOcrDraft=null;registrationSelection=null;scanText='';if(uploadURL){URL.revokeObjectURL(uploadURL);uploadURL='';}go(editingId?'dose':returnRoute);toast(editingId?'영양제 설정을 저장했어요.':'영양제를 등록했어요.');
   }
 });
 window.addEventListener('hashchange',closeRegistrationDialog);
