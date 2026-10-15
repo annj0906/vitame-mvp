@@ -96,7 +96,8 @@ render=function(){
   }
   const oldCalendar=document.querySelector('.dose-calendar'),oldMode=oldCalendar?.getAttribute('aria-label'),oldHeight=oldCalendar?.getBoundingClientRect().height;
   let ghost,underlay;
-  const overlayScreens=['archive','scan','notifications','likes','cart'];
+  // Utility pages own their entrance/exit outside the Shop/My render wrappers.
+  const overlayScreens=['archive','scan'];
   const returningToScan=previous==='registration'&&next==='scan';
   const enteringOverlay=overlayScreens.includes(next)&&previous!==next&&!returningToScan;
   const leavingOverlay=returningToScan||(overlayScreens.includes(previous)&&previous!==next&&!enteringOverlay);

@@ -30,7 +30,15 @@ function utilityCartPage(){const p=berryProduct(),q=utilityCartQuantity(),select
 function utilityAddCart(id){if(id!=='eye-berry')return;state.cart||={};state.cart[id]=Math.min(99,utilityCartQuantity()+1);state.cartSelected||={};state.cartSelected[id]=true;save();toast('장바구니에 담았어요.');if(route()==='cart')render();}
 const beforeUtilityPages=render;
 render=function(){
-  const r=route();if(!utilityRoutes.includes(r)){beforeUtilityPages();return;}
+  const r=route();if(!utilityRoutes.includes(r)){
+    // Shop/My renderers return before the inner care transition wrapper runs.
+    // Capture the outgoing utility page here, before those renderers replace it.
+    const leaving=utilityRoutes.includes(document.body.dataset.screen)&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const outgoing=leaving?archiveTransitionSnapshot():null;
+    beforeUtilityPages();
+    if(outgoing)outgoing.snapshot.animate([{transform:'translateX(0)'},{transform:'translateX(100%)'}],{duration:320,easing:'cubic-bezier(.4,0,.8,.6)'}).finished.finally(()=>outgoing.viewport.remove());
+    return;
+  }
   // Utility routes render outside the shared route wrapper: reuse its frozen
   // underlay here so each incoming page covers, rather than replaces, its origin.
   const entering=document.body.dataset.screen!==r&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
