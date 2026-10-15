@@ -65,6 +65,11 @@ render = function() {
     const box=document.querySelector('.initial-completion-art .initial-character-box');
     box.insertAdjacentHTML('beforeend',celebration);
     if(celebration){
+      // Measure once, before playback; animation frames remain compositor-only.
+      const origin=box.getBoundingClientRect().top+54;
+      const copyBottom=document.querySelector('.initial-complete-copy').getBoundingClientRect().bottom;
+      box.style.setProperty('--celebration-rise',Math.min(-60,copyBottom+18-origin)+'px');
+      box.style.setProperty('--celebration-floor',Math.max(150,window.innerHeight-origin-10)+'px');
       box.querySelector('[data-initial-character]').classList.add('ob-good-success');
       const bubble=document.querySelector('.initial-completion-art .initial-bubble');
       bubble.classList.add('completion-bubble-after-success');bubble.inert=true;
