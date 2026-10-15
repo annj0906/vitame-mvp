@@ -44,7 +44,9 @@
 .scan-final .scan-cancel{position:absolute;bottom:102px;left:50%;transform:translateX(-50%);z-index:3;padding:6px 12px;border-radius:999px;background:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-semibold-14)}
 .scan-final [hidden]{display:none}
 .scan-final-actions{display:grid;grid-template-columns:188fr 186fr;gap:16px;margin-top:24px}
-.scan-final-actions button{height:104px;padding:20px 24px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-gray60);font:var(--vitame-type-pretendard-body1-semibold-16);letter-spacing:var(--vitame-tracking-pretendard-body1-semibold-16)}
+.scan-final-actions button{height:104px;padding:20px 24px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);font:var(--vitame-type-pretendard-body1-semibold-16);letter-spacing:var(--vitame-tracking-pretendard-body1-semibold-16)}
+.scan-final-actions button:not(:focus-visible){outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
+.scan-final-actions button img{filter:brightness(0)}
 .scan-final img{display:block}
 .scan-final .scan-sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 @media(prefers-reduced-motion:reduce){.scan-final .is-scanning .scan-line{animation:none;top:50%}.scan-final .is-capturing::after{animation:none;display:none}}

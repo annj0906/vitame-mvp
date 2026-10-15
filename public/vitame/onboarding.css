@@ -56,6 +56,7 @@ body .onboarding-final > .primary {
   color: var(--vitame-color-neutral-white);
   font: var(--vitame-type-pretendard-body1-bold-16);
   letter-spacing: var(--vitame-tracking-pretendard-body1-bold-16);
+  box-shadow:0 2px 5px #0000000d;
 }
 body .onboarding-final .login-link {
   display: flex; align-items: center; justify-content: center; gap: 8px;
