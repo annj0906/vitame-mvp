@@ -340,5 +340,6 @@ body[data-screen="guide"] .ai-detail-card .ai-product-grid{touch-action:pan-y;cu
 body[data-screen="guide"] .ai-detail-card .ai-product-grid.is-dragging{scroll-snap-type:none;cursor:grabbing;user-select:none}
 body[data-screen="guide"] .ai-detail-card .ai-tip-symbol{width:20px;height:20px;object-fit:contain}
 body[data-screen="guide"] .ai-detail-card .ai-guide-inner{padding-bottom:5px}
+body[data-screen="guide"]{overflow-anchor:none}
 body[data-screen="guide"] .ai-analysis-disclaimer{font:var(--vitame-type-pretendard-caption-regular-12);margin-bottom:6px}
 @media(prefers-reduced-motion:reduce){body[data-screen="guide"] .ai-character-item>.character-shadow>img{animation:none!important}body[data-screen="guide"] .ai-detail-surface{transition:none}}

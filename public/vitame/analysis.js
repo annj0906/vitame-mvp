@@ -547,6 +547,9 @@ function openFinalGuide(id,jump=false){
   const opening=jump||target.querySelector('[data-ai-guide-toggle]').getAttribute('aria-expanded')!=='true';
   clearTimeout(finalGuideScrollTimer);stopGuideScroll();
   document.querySelectorAll('.ai-guide-card').forEach(card=>{
+    // A direct toggle expands below its own header. Keep earlier cards open
+    // so collapsing content above the viewport cannot pull this card upward.
+    if(!jump&&card!==target)return;
     const expanded=card===target&&opening,body=card.querySelector('.ai-guide-reveal');
     card.querySelector('[data-ai-guide-toggle]').setAttribute('aria-expanded',String(expanded));
     card.classList.toggle('is-open',expanded);body.inert=!expanded;body.setAttribute('aria-hidden',String(!expanded));
