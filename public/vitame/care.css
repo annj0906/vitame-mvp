@@ -201,3 +201,7 @@ body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-r
 body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row) .check{background:transparent;outline:1.5px solid var(--vitame-color-neutral-gray40);outline-offset:-1.5px;color:transparent}
 body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row):not(.taken) .check img{visibility:hidden}
 body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row).taken .check{background:var(--dose-accent);outline-color:var(--dose-accent);color:var(--vitame-color-neutral-white)}
+/* Card strokes are not focus outlines: global focus resets must not hide them. */
+body[data-screen="home"] .home-dose .dose-mini>button{outline:none}
+body[data-screen="home"] .home-dose .dose-mini>button::after{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
+body[data-screen="home"] .home-dose .dose-mini>button.taken::after{border-color:var(--dose-accent)}
