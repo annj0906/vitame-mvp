@@ -86,12 +86,7 @@ document.addEventListener('click',event=>{
     const endHeight=panel.getBoundingClientRect().height;
     if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
       panel.animate([{height:startHeight+'px'},{height:endHeight+'px'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'});
-      if(expanded)body.querySelectorAll('.care-nutrient').forEach(row=>{
-        const bar=row.querySelector('.nutrient-track i'),rate=row.querySelector('.nutrient-rate'),value=Number(row.querySelector('.nutrient-track').getAttribute('aria-valuenow')),start=performance.now();
-        bar.animate([{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{duration:600,easing:'cubic-bezier(.22,1,.36,1)'});
-        function tick(now){if(body.hidden||!row.isConnected||body.dataset.motionId!==motionId)return;const t=Math.min(1,(now-start)/600);rate.textContent=Math.round(value*(1-Math.pow(1-t,3)))+'%';if(t<1)requestAnimationFrame(tick);}
-        requestAnimationFrame(tick);
-      });
+      if(expanded)animateNutrientRows(body);
     }
   }
   const jump=event.target.closest('[data-guide-jump]'),top=event.target.closest('[data-guide-top]');
@@ -239,6 +234,7 @@ function finalGuideIcon(g, large=false){
   const option=initialHealthOptions.find(o=>o[1]===g.interest);
   const active={eyes:'eye',energy:'energy',sleep:'sleep',immune:'immunity',gut:'digestion'};
   const colored={brain:'brain',bones:'bones',skin:'skin',circulation:'circulation',muscles:'muscles'};
+  if(large)return `<span class="ai-health-icon ai-health-icon-large" style="--health-tint:var(--vitame-color-accent-${setupHealthColors[option[2]]}-light)"><img src="assets/guide/${active[g.id]||colored[g.id]}-large-active.svg" alt=""></span>`;
   if(route()==='guide'&&colored[g.id])return `<span class="ai-health-icon" style="--health-tint:var(--vitame-color-accent-${setupHealthColors[option[2]]}-light)"><img src="assets/shop/${colored[g.id]}.svg" alt=""></span>`;
   const asset=active[g.id]?`assets/guide/${active[g.id]}${large&&g.id==='eyes'?'-large':''}-active.svg`:setupAsset(option[2]);
   return `<span class="ai-health-icon${large?' ai-health-icon-large':''}" style="--health-tint:var(--vitame-color-accent-${option[3]}-light)"><img src="${asset}" alt=""></span>`;
@@ -329,6 +325,18 @@ const eyeGuideContent={
   ],
   tips:[['very-bad','채워보기','비타민 A는 식사에서 먼저 챙겨봐요'],['bad','잠깐 확인','오메가-3가 포함된 제품의 성분과 함량을 확인해요'],['normal','오늘의 루틴','오후에 화면을 오래 본 날엔 눈 쉬는 시간을 챙겨봐요']]
 };
+// General lifestyle guidance, not a diagnosis or a personalized dosage plan.
+const categoryGuideContent={
+  energy:{paragraphs:['끼니를 자주 거른다면 식사 시간을 먼저 정하고, 곡류·채소·단백질 식품을 골고루 곁들여보세요.','바쁜 날에도 잠깐 일어나 몸을 움직이고, 쉬는 시간을 나누어 하루의 리듬을 만들어보세요.'],tips:[['','채워보기','잎채소와 콩류 등 다양한 식품을 식사에 더해봐요'],['','잠깐 확인','엽산·마그네슘이 여러 제품에 겹쳐 있는지 성분표를 살펴봐요'],['','오늘의 루틴','점심 뒤 가볍게 걷고, 피곤한 날에는 휴식도 함께 챙겨봐요']]},
+  sleep:{paragraphs:['오후나 저녁에 마시는 커피·차의 시간과 양을 기록하고, 잠들기 전 나에게 편안한 습관을 찾아보세요.','매일 비슷한 시간에 하루를 마무리하고, 화면에서 잠시 벗어나 조용히 쉬는 시간을 가져보세요.'],tips:[['','채워보기','견과류·콩류처럼 다양한 식품을 식사에 곁들여봐요'],['','잠깐 확인','마그네슘·비타민 B6 제품의 표시량과 중복 성분을 확인해요'],['','오늘의 루틴','잠들기 전 조명을 낮추고, 내일 할 일은 잠시 내려놓아봐요']]},
+  brain:{paragraphs:['생선·달걀·콩류 등 여러 식품을 고르게 먹고, 바쁜 날에도 식사를 건너뛰지 않는지 살펴보세요.','오랫동안 한 가지 일에 집중했다면 잠시 자리에서 일어나 쉬고, 다시 시작할 시간을 정해보세요.'],tips:[['','채워보기','같은 메뉴만 반복하기보다 식품의 종류를 하나씩 넓혀봐요'],['','잠깐 확인','오메가-3·비타민 B6가 포함된 제품의 성분과 함량을 확인해요'],['','오늘의 루틴','집중하는 시간 사이에 짧은 휴식을 넣어 나만의 리듬을 찾아봐요']]},
+  gut:{paragraphs:['채소·과일·통곡물 등 평소 먹는 식품의 종류를 살펴보고, 새로운 식품은 편안한 양부터 시도해보세요.','급하게 먹는 날이 잦다면 식사 속도를 늦추고, 식사 뒤 몸이 편안했는지 짧게 기록해보세요.'],tips:[['','채워보기','익숙한 식사에 채소나 통곡물을 조금씩 곁들여봐요'],['','잠깐 확인','등록한 제품의 성분과 섭취 방법이 내 기록과 같은지 확인해요'],['','오늘의 루틴','식사할 때는 잠시 화면을 내려놓고 천천히 씹는 시간을 가져봐요']]},
+  bones:{paragraphs:['우유·두부 등 칼슘이 포함된 식품을 평소 식사에서 찾아보고, 한 가지 식품에 치우치지 않게 챙겨보세요.','오래 앉아 있었다면 가볍게 몸을 풀고, 내 몸에 무리가 없는 활동을 꾸준히 이어갈 방법을 찾아보세요.'],tips:[['','채워보기','평소 먹는 식품에 칼슘이 얼마나 들어 있는지 표시를 살펴봐요'],['','잠깐 확인','칼슘·비타민 D가 여러 제품에 겹쳐 들어 있지 않은지 확인해요'],['','오늘의 루틴','오래 앉아 있는 중간에 일어나 편안한 범위에서 몸을 움직여봐요']]},
+  immune:{paragraphs:['채소·과일과 단백질 식품을 고르게 곁들이고, 바쁜 날에도 규칙적으로 식사할 수 있는 방법을 찾아보세요.','일정이 빽빽한 날에는 쉬는 시간도 미리 남겨두고, 잠드는 시간과 일어나는 시간을 함께 돌아보세요.'],tips:[['','채워보기','다양한 색의 채소와 과일을 식사에 조금씩 곁들여봐요'],['','잠깐 확인','비타민 C·아연 제품의 성분표와 표시된 섭취량을 확인해요'],['','오늘의 루틴','오늘의 활동뿐 아니라 충분히 쉬었는지도 함께 기록해봐요']]},
+  skin:{paragraphs:['한 가지 식품이나 제품에 기대기보다 여러 식품을 골고루 챙기고, 규칙적인 식사 습관을 이어가보세요.','늦게 잠드는 날이나 바깥 활동이 많은 날을 기록하고, 내 일상에 맞는 휴식과 관리 루틴을 찾아보세요.'],tips:[['','채워보기','채소·과일·견과류 등 식사의 종류를 다양하게 구성해봐요'],['','잠깐 확인','비타민 C·비타민 E가 포함된 제품의 함량과 중복 성분을 살펴봐요'],['','오늘의 루틴','하루를 마무리하며 수면 시간과 평소 관리 습관을 함께 돌아봐요']]},
+  circulation:{paragraphs:['평소 자주 먹는 메뉴와 간식의 종류를 기록하고, 채소·통곡물 등 여러 식품을 고르게 곁들여보세요.','오래 앉아 지내는 날에는 틈틈이 자리에서 일어나고, 편안하게 이어갈 수 있는 움직임을 찾아보세요.'],tips:[['','채워보기','식탁의 메뉴를 돌아보고 자주 빠지는 식품군을 챙겨봐요'],['','잠깐 확인','오메가-3 제품을 함께 먹는다면 성분과 표시된 함량을 비교해요'],['','오늘의 루틴','일하는 중간에도 짧게 걸으며 앉아 있는 시간을 나누어봐요']]},
+  muscles:{paragraphs:['운동하는 날에도 끼니를 거르지 않고, 곡류와 단백질 식품 등 여러 식품을 균형 있게 곁들여보세요.','활동한 시간만큼 휴식도 함께 살펴보고, 몸에 무리가 없는 범위에서 꾸준히 이어갈 계획을 세워보세요.'],tips:[['','채워보기','운동 전후의 식사도 기록해 하루의 식사 패턴을 살펴봐요'],['','잠깐 확인','마그네슘·비타민 D가 여러 제품에 겹치는지 성분표를 확인해요'],['','오늘의 루틴','활동한 날에는 쉬는 시간도 남겨 다음 운동을 편안하게 준비해요']]}
+};
 // Guide-only presentation catalog: Figma values explicitly requested by the user.
 // Never mutate the shop catalog or treat these prices as a live sales feed.
 const eyeGuideProducts=[
@@ -354,14 +362,11 @@ function guideProducts(g){
 function detailedGuideCard(g,content){
   // Reuse the same illustrative nutrient values shown in the analysis accordion.
   const current=g.names.map(name=>nutrients.find(n=>n[0]===name)).filter(Boolean);
-  const status=current.length?`<small class="ai-analysis-disclaimer">예시 데이터 · 개인 분석 결과가 아니에요</small>${current.map(n=>`<div class="ai-guide-nutrient" data-status="${esc(n[2])}"><span class="ai-guide-nutrient-name">${esc(n[0])}</span><span class="ai-guide-track" role="meter" aria-label="${esc(n[0])} 예시 섭취 비율" aria-valuemin="0" aria-valuemax="${Math.max(100,n[1])}" aria-valuenow="${n[1]}"><i style="width:${Math.max(0,Math.min(n[1],100))}%"></i></span><span>${n[1]}%</span><b>${esc(n[2])}</b></div>`).join('')}`:'<p>아직 확인할 수 있는 개인 분석 데이터가 없어요.</p>';
+  const status=current.length?current.map(n=>`<div class="ai-guide-nutrient" data-status="${esc(n[2])}"><span class="ai-guide-nutrient-name">${esc(n[0])}</span><span class="ai-guide-track" role="meter" aria-label="${esc(n[0])} 예시 섭취 비율" aria-valuemin="0" aria-valuemax="${Math.max(100,n[1])}" aria-valuenow="${n[1]}"><i style="width:${Math.max(0,Math.min(n[1],100))}%"></i></span><span class="ai-guide-rate">${n[1]}%</span><b>${esc(n[2])}</b></div>`).join(''):'<p>아직 확인할 수 있는 개인 분석 데이터가 없어요.</p>';
   return `<section class="ai-guide-card ai-detail-card" id="guide-${g.id}"><div class="ai-detail-surface"><h2><button class="ai-guide-toggle" data-ai-guide-toggle="${g.id}" aria-expanded="false" aria-controls="ai-guide-body-${g.id}">${finalGuideIcon(g,true)}<span>${esc(g.title)} 가이드</span>${wellnessIcon('chevron')}</button></h2><p class="ai-guide-description">${esc(g.description)}</p></div><div class="ai-guide-reveal" id="ai-guide-body-${g.id}" inert aria-hidden="true"><div class="ai-guide-inner"><div class="ai-detail-content"><div class="ai-guide-status">${status}</div><div class="ai-guide-copy">${content.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</div><div class="ai-guide-tips">${content.tips.map(([,title,copy],i)=>`<div class="ai-guide-tip"><img class="ai-tip-symbol" src="assets/onboarding/${['very-bad','bad','good'][i]}/Body.png" alt=""><div><small>${esc(title)}</small><p>${esc(copy)}</p></div></div>`).join('')}</div></div>${guideProducts(g)}</div></div></section>`;
 }
 function finalGuideCard(g){
-  return detailedGuideCard(g,g.id==='eyes'?eyeGuideContent:{
-    paragraphs:[g.food,g.habit],
-    tips:[['very-good','채워보기',g.food],['bad','함께 확인','등록한 제품의 성분과 표시된 섭취량을 확인해보세요.'],['normal','오늘의 루틴',g.habit]]
-  });
+  return detailedGuideCard(g,g.id==='eyes'?eyeGuideContent:categoryGuideContent[g.id]);
 }
 document.addEventListener('click',e=>{
   const preview=e.target.closest('[data-guide-catalog]');
@@ -504,6 +509,26 @@ slideAdapters.push({
   },
   commit(direction){chartAnchor=periodOffset(chartAnchor,direction*7);chartSelection=null;render();}
 });
+// Shared reveal motion for the comprehensive analysis and AI guide graphs.
+function animateNutrientRows(body){
+  const motionId=String(Number(body.dataset.motionId||0)+1);body.dataset.motionId=motionId;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  body.querySelectorAll('.care-nutrient,.ai-guide-nutrient').forEach(row=>{
+    const meter=row.querySelector('[role="meter"]'),bar=meter?.querySelector('i'),rate=row.querySelector('.nutrient-rate,.ai-guide-rate');
+    if(!meter||!bar||!rate)return;
+    const value=Number(meter.getAttribute('aria-valuenow')),start=performance.now();
+    bar.getAnimations().forEach(a=>a.cancel());rate.textContent=value+'%';
+    if(reduced)return;
+    rate.textContent='0%';
+    bar.animate([{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{duration:600,easing:'cubic-bezier(.22,1,.36,1)'});
+    function tick(now){
+      if(body.hidden||body.inert||!row.isConnected||body.dataset.motionId!==motionId)return;
+      const t=Math.min(1,(now-start)/600);rate.textContent=Math.round(value*(1-Math.pow(1-t,3)))+'%';
+      if(t<1)requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
 function openFinalGuide(id,jump=false){
   const target=document.getElementById('guide-'+id);if(!target)return;
   const opening=jump||target.querySelector('[data-ai-guide-toggle]').getAttribute('aria-expanded')!=='true';
@@ -512,6 +537,8 @@ function openFinalGuide(id,jump=false){
     const expanded=card===target&&opening,body=card.querySelector('.ai-guide-reveal');
     card.querySelector('[data-ai-guide-toggle]').setAttribute('aria-expanded',String(expanded));
     card.classList.toggle('is-open',expanded);body.inert=!expanded;body.setAttribute('aria-hidden',String(!expanded));
+    if(expanded)animateNutrientRows(body);
+    else body.dataset.motionId=String(Number(body.dataset.motionId||0)+1);
   });
   if(jump){
     target.querySelector('[data-ai-guide-toggle]').focus({preventScroll:true});

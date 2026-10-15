@@ -81,6 +81,11 @@ ctx.state.demo=true;ctx.nutrients=[['비타민 A',52,'부족'],['오메가-3',68
 assert.match(run("detailedGuideCard({id:'eyes',title:'눈 건강',names:['비타민 A'],description:'눈 안내'},eyeGuideContent)"),/aria-valuenow="52"/);
 const demoCard=run("detailedGuideCard({id:'eyes',title:'눈 건강',names:['비타민 A','오메가-3'],description:'눈 안내'},eyeGuideContent)");
 assert.match(demoCard,/aria-valuenow="68"/);
+assert.doesNotMatch(demoCard,/ai-analysis-disclaimer|예시 데이터 · 개인 분석 결과가 아니에요/);
+assert.match(demoCard,/class="ai-guide-rate"/);
+assert.equal(run('Object.keys(categoryGuideContent).length'),9);
+assert.equal(run('Object.values(categoryGuideContent).every(c=>c.paragraphs.length===2&&c.tips.length===3&&c.paragraphs.every(p=>p.length>=40)&&c.tips.every(t=>t[2].length>=25))'),true,'all other guides have substantive category-specific copy');
+assert.equal(run('new Set(Object.values(categoryGuideContent).flatMap(c=>c.tips.map(t=>t[2]))).size'),27,'tips are not repeated across categories');
 assert.match(demoCard,/assets\/onboarding\/very-bad\/Body.png/);
 assert.doesNotMatch(demoCard,/assets\/guide\/tip-.*\.png/);
 ctx.state.demo=false;
