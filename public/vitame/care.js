@@ -21,7 +21,7 @@ function updateDoseCompletionCelebration(){
   effect.style.setProperty('--celebration-floor',Math.max(150,window.innerHeight-bounds.top-10)+'px');
   let remaining=5;
   effect.addEventListener('animationend',event=>{
-    if(event.target.classList.contains('completion-pop')&&--remaining===0)effect.remove();
+    if(event.animationName==='dose-celebration-flight'&&event.target.classList.contains('completion-pop')&&--remaining===0)effect.remove();
   });
 }
 const originalNutritionCard=nutritionCard;

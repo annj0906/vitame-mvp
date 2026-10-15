@@ -32,17 +32,21 @@ body[data-screen="dose"] .dose-progress-summary>span,body[data-screen="dose"] .d
 body[data-screen="dose"] .dose-progress-summary strong{position:relative;font:var(--vitame-type-nanumsquareround-title2-extrabold-24)}
 /* Reuse the onboarding particle rules unchanged; override only the origin. */
 body[data-screen="dose"] .dose-completion-celebration{position:fixed;top:0;height:100dvh;overflow:clip;pointer-events:none;z-index:9}
-body[data-screen="dose"] .dose-completion-celebration .completion-pop{left:var(--dose-pop-left);top:var(--dose-pop-top);animation-name:dose-celebration-flight}
+body[data-screen="dose"] .dose-completion-celebration .completion-pop{left:var(--dose-pop-left);top:var(--dose-pop-top);animation-name:dose-celebration-flight,dose-celebration-drift;animation-timing-function:linear,cubic-bezier(.15,.7,.5,1)}
 body[data-screen="dose"] .dose-completion-celebration .completion-pop-one{--pop-x:calc(-36px - var(--dose-pop-left));--pop-y:calc(var(--dose-pop-top) * -.78);animation-duration:2.7s}
 body[data-screen="dose"] .dose-completion-celebration .completion-pop-two{--pop-x:calc(var(--dose-pop-width) - var(--dose-pop-left) + 40px);--pop-y:calc(0px - var(--dose-pop-top) - 110px);animation-duration:3.25s}
 body[data-screen="dose"] .dose-completion-celebration .completion-pop-three{--pop-x:calc(var(--dose-pop-width) * .82 - var(--dose-pop-left));--pop-y:calc(var(--dose-pop-top) * -.55);animation-duration:1.95s}
 body[data-screen="dose"] .dose-completion-celebration .completion-pop-four{--pop-x:calc(var(--dose-pop-width) * .12 - var(--dose-pop-left));--pop-y:calc(0px - var(--dose-pop-top) - 45px);animation-duration:3.05s}
 body[data-screen="dose"] .dose-completion-celebration .completion-pop-five{--pop-x:calc(var(--dose-pop-width) * .44 - var(--dose-pop-left));--pop-y:calc(var(--dose-pop-top) * -.94);animation-duration:2.4s}
-/* Keep horizontal momentum after the apex instead of turning at a shared wall. */
+/* Separate horizontal drift so vertical deceleration never stops sideways motion. */
 @keyframes dose-celebration-flight{
-  0%{opacity:0;transform:translate(0,0) scale(.2) rotate(-15deg);animation-timing-function:cubic-bezier(.333,.667,.667,1)}
-  28%{opacity:1;transform:translate(calc(var(--pop-x) * .7),var(--pop-y)) scale(1.2) rotate(16deg);animation-timing-function:cubic-bezier(.333,0,.667,.333)}
-  100%{opacity:0;transform:translate(var(--pop-x),var(--fall-y)) scale(.85) rotate(80deg)}
+  0%{opacity:0;transform:translateY(0) scale(.2) rotate(-15deg);animation-timing-function:cubic-bezier(.333,.667,.667,1)}
+  28%{opacity:1;transform:translateY(var(--pop-y)) scale(1.2) rotate(16deg);animation-timing-function:cubic-bezier(.333,0,.667,.333)}
+  100%{opacity:0;transform:translateY(var(--fall-y)) scale(.85) rotate(80deg)}
+}
+@keyframes dose-celebration-drift{
+  from{translate:0 0}
+  to{translate:var(--pop-x) 0}
 }
 @media(prefers-reduced-motion:reduce){body[data-screen="dose"] .dose-completion-celebration{display:none}body[data-screen="dose"] .dose-completion-celebration .completion-pop{animation:none}}
 body[data-screen="dose"] .dose-progress-summary .done-count{display:inline-block;font-size:36px}
