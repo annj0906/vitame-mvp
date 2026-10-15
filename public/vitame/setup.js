@@ -61,7 +61,10 @@ render = function() {
   }
   $('#app').innerHTML = `<section class="initial-setup-final initial-${r}">${content}</section>`;
   if(r==='setup-complete'){
-    document.querySelector('.initial-completion-art .initial-character-box').insertAdjacentHTML('beforeend',initialCompletionCelebration());
+    const celebration=initialCompletionCelebration();
+    const box=document.querySelector('.initial-completion-art .initial-character-box');
+    box.insertAdjacentHTML('beforeend',celebration);
+    if(celebration)box.querySelector('[data-initial-character]').classList.add('ob-good-success');
   }
 };
 
@@ -109,7 +112,7 @@ document.addEventListener('click',e=>{
   if (character || e.target.closest('[data-initial-message]')) {
     setupMessageIndex = (setupMessageIndex+1)%setupMessages.length;
     document.querySelector('.initial-bubble [aria-live]').textContent = setupMessages[setupMessageIndex];
-    if (character && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (character && !character.classList.contains('ob-good-success') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
       character.classList.remove('ob-good-tap');
       void character.querySelector('[data-initial-action]').offsetWidth;
       character.classList.add('ob-good-tap');
@@ -119,5 +122,5 @@ document.addEventListener('click',e=>{
   if (finish) { state.started = true; save(); interestDraft = null; go(finish.dataset.initialFinish); }
 });
 document.addEventListener('animationend',e=>{
-  if(e.target.matches('[data-initial-action]'))e.target.closest('[data-initial-character]')?.classList.remove('ob-good-tap');
+  if(e.target.matches('[data-initial-action]'))e.target.closest('[data-initial-character]')?.classList.remove('ob-good-tap','ob-good-success');
 });
