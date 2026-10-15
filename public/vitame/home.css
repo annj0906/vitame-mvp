@@ -55,6 +55,7 @@ body[data-screen="home"] .home-dose .section-head>button:not(.home-view-toggle){
 body[data-screen="home"] .home-view-toggle{display:flex;gap:12px;width:auto;min-width:60px;padding:0;align-items:center}
 body[data-screen="home"] .home-view-toggle button{padding:0;min-height:28px;width:24px;opacity:.45}
 body[data-screen="home"] .home-view-toggle button[aria-pressed="true"]{opacity:1}
+body[data-screen="home"] .home-view-toggle button img{filter:brightness(0)}
 body[data-screen="home"] .home-dose .dose-mini{grid-auto-columns:123px;gap:8px;margin-right:-20px;padding:0 20px 8px 0}
 body[data-screen="home"] .home-dose .dose-mini>button{position:relative;display:flex;flex-direction:column;align-items:center;gap:0;height:167px;min-height:167px;padding:20px 24px;border:0;border-radius:16px;background:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-gray60);box-shadow:none}
 body[data-screen="home"] .home-dose .dose-mini>button.taken{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);box-shadow:0 2px 5px #0000000d}
@@ -65,10 +66,14 @@ body[data-screen="home"] .home-dose .taken .pill{background:var(--vitame-color-a
 body[data-screen="home"] .home-dose .dose-mini b{font:var(--vitame-type-pretendard-body2-semibold-14);letter-spacing:-.02em;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body[data-screen="home"] .home-dose .dose-mini button>span:last-child{font:var(--vitame-type-pretendard-body2-regular-14);color:inherit}
 body[data-screen="home"] .home-dose.list-mode .dose-mini{margin-right:0;padding-right:0}
-body[data-screen="home"] .home-dose.list-mode .dose-mini>button{height:80px;min-height:80px;flex-direction:row;gap:14px;padding:20px 24px}
+body[data-screen="home"] .home-dose.list-mode .dose-mini>button{height:80px;min-height:80px;flex-direction:row;gap:24px;padding:20px 24px;box-shadow:0 2px 10px #0000000d}
 body[data-screen="home"] .home-dose.list-mode .dose-mini b{flex:1;text-align:left;min-width:0}
 body[data-screen="home"] .home-dose.list-mode .check{margin:0 0 0 auto;order:4}
 body[data-screen="home"] .home-dose.list-mode .pill{margin:0}
+body[data-screen="home"] .home-dose.list-mode .home-dose-copy{display:flex;flex-direction:column;align-items:flex-start;flex:1;min-width:0;order:2;text-align:left}
+body[data-screen="home"] .home-dose.list-mode .home-dose-copy b{flex:none;max-width:155px;width:100%;font:var(--vitame-type-pretendard-body2-semibold-14);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body[data-screen="home"] .home-dose.list-mode .home-dose-copy>span{font:var(--vitame-type-pretendard-body2-regular-14)}
+body[data-screen="home"] .home-dose.list-mode .dose-mini>button.taken{box-shadow:0 2px 10px #0000000d}
 @media(max-width:390px){
   body[data-screen="home"] .health-score-link{padding-left:16px;padding-right:16px}
   body[data-screen="home"] .score-body{gap:12px}

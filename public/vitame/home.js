@@ -29,6 +29,12 @@ home = function() {
   if (banner) template.content.prepend(banner);
   template.content.querySelector('.footer-note')?.remove();
   template.content.querySelector('.home-dose .empty')?.remove();
+  if(homeDoseList)template.content.querySelectorAll('.dose-mini>button').forEach(row=>{
+    const name=row.querySelector('b'),time=row.lastElementChild;
+    if(!name||time===name)return;
+    const copy=document.createElement('span');copy.className='home-dose-copy';
+    copy.append(name,time);row.append(copy);
+  });
   return template.innerHTML;
 };
 
