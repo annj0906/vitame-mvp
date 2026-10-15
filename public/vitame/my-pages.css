@@ -46,11 +46,11 @@ body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet
 body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet) p{color:var(--vitame-color-neutral-gray60)}
 body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet) button:focus-visible{outline:none}
 /* Match onboarding interest cards without changing their layout or state. */
-.my-health-card{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px;box-shadow:0 2px 5px #0000000d}
-.my-health-card[aria-pressed="true"]{outline-color:var(--category)}
+.my-health-card{position:relative;background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);outline:none;box-shadow:0 2px 5px #0000000d}
+.my-health-card::after{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
+.my-health-card[aria-pressed="true"]::after{border-color:var(--category)}
 .my-health-card .my-health-symbol{background:var(--category-light)}
 .my-health-card .my-health-symbol>span{background:var(--category)}
 .my-health-card .my-health-check{background:transparent;outline:1.5px solid var(--vitame-color-neutral-gray40);outline-offset:-1.5px}
 .my-health-card[aria-pressed="false"] .my-health-check img{visibility:hidden}
 .my-health-card[aria-pressed="true"] .my-health-check{background:var(--category);outline-color:var(--category)}
-.my-health-card:focus-visible{outline:3px solid var(--category);outline-offset:2px}
