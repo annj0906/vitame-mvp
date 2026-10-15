@@ -117,11 +117,33 @@ function openRegistrationTime(index){
 }
 function updateRegistrationWheel(el){const index=Math.max(0,Math.min(el.children.length-1,Math.round(el.scrollTop/44)));el.dataset.value=index;Array.from(el.children).forEach((b,i)=>b.setAttribute('aria-selected',String(i===index)));}
 const beforeRegistration=render;
+let popularSearchTimer=null;
 render=function(){
+  if(popularSearchTimer){clearInterval(popularSearchTimer);popularSearchTimer=null;}
   const r=route();if(!['supplement-register','registration-settings','result'].includes(r)){beforeRegistration();return;}
+  const oldTab=document.querySelector('.registration-tabs [aria-selected="true"]')?.dataset.registration;
   clearTimeout(introTimer);
   if(r==='result'){registrationTab='manual';registrationSource='ocr';if(draft&&registrationOcrDraft!==draft){registrationOcrDraft=draft;registrationDraft={...newRegistrationDraft(),...draft,times:[draft.time||'08:00'],ingredients:draft.ingredients.map(n=>({...n}))};}}
   document.body.dataset.screen='registration';document.title=(r==='registration-settings'?'복용 설정':'영양제 등록')+' · VITAME';$('#app').innerHTML=r==='registration-settings'?registrationSettings():registrationScreen();
+  if(oldTab&&oldTab!==registrationTab&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.querySelector('.registration-tabs')?.animate([{transform:oldTab==='manual'?'translateX(100%)':'translateX(0)'},{transform:registrationTab==='manual'?'translateX(100%)':'translateX(0)'}],{duration:280,easing:'cubic-bezier(.22,1,.36,1)',pseudoElement:'::before'});
+  }
+  const popular=document.querySelector('.registration-popular');
+  if(popular&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    popularSearchTimer=setInterval(()=>{
+      if(!popular.isConnected||document.hidden)return;
+      const buttons=[...popular.querySelectorAll('[data-registration="popular"]')],terms=buttons.map(b=>b.dataset.query);
+      buttons.forEach((button,index)=>{
+        button.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-5px)'}],{duration:160,fill:'forwards'}).finished.then(()=>{
+          if(!button.isConnected)return;
+          const term=terms[(index+1)%terms.length];button.dataset.query=term;
+          button.innerHTML=`<b>${index+1}</b>${esc(term)}`;
+          button.getAnimations().forEach(a=>a.cancel());
+          button.animate([{opacity:0,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:240});
+        });
+      });
+    },7000);
+  }
 };
 document.addEventListener('input',e=>{
   if(e.target.closest('#registration-manual'))readRegistrationForm();

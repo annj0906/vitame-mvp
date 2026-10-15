@@ -382,6 +382,7 @@ const renderBeforeMotion=render;
 let previousHomeKey='',previousScreen='';
 render=function(){
   const next=route(),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const displayedScore=previousScreen==='home'&&next==='home'?Number(document.querySelector('.health-score-link .ring b')?.textContent)||0:0;
   renderBeforeMotion();
   previousScreen=next;
   if(next==='dose')document.querySelector('.top-actions')?.insertAdjacentHTML('beforeend',`<button class="icon-btn" data-go="archive" aria-label="영양제 아카이브">${archiveIcon}</button>`);
@@ -414,9 +415,10 @@ render=function(){
     function tick(now){
       if(!ring.isConnected)return;
       const t=Math.min(1,(now-start)/800),ease=1-Math.pow(1-t,3);
-      if(number&&total)number.textContent=Math.round(score*ease);
+      const currentScore=displayedScore+(score-displayedScore)*ease;
+      if(number&&total)number.textContent=Math.round(currentScore);
       let pos=0;
-      svg.querySelectorAll('.score-color').forEach((path,i)=>{const size=score*[.42,.27,.1,.21][i],visible=Math.max(0,Math.min(size,score*ease-pos));path.setAttribute('stroke-dasharray',visible+' '+(100-visible));pos+=size;});
+      svg.querySelectorAll('.score-color').forEach((path,i)=>{const ratio=[.42,.27,.1,.21][i],visible=currentScore*ratio;path.setAttribute('stroke-dashoffset',-pos);path.setAttribute('stroke-dasharray',visible+' '+(100-visible));pos+=visible;});
       if(t<1)requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);

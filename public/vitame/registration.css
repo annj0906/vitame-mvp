@@ -9,6 +9,10 @@ body[data-screen="registration"] .app,.registration-screen{background:var(--vita
 .registration-tabs{display:flex;background:var(--vitame-color-neutral-gray20);border-radius:999px;padding:8px;height:52px;margin-bottom:40px}
 .registration-tabs button{flex:1;min-height:36px;border-radius:999px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60)}
 .registration-tabs button[aria-selected="true"]{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);font-weight:700;box-shadow:0 4px 2px #0000000d}
+.registration-tabs{position:relative;isolation:isolate}
+.registration-tabs::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:calc((100% - 16px)/2);border-radius:999px;background:white;box-shadow:0 4px 2px #0000000d;z-index:-1;transform:translateX(0)}
+.registration-tabs:has([data-registration="manual"][aria-selected="true"])::before{transform:translateX(100%)}
+.registration-tabs button[aria-selected="true"]{background:transparent;box-shadow:none}
 .registration-screen input:not([type="checkbox"]),.registration-screen select{height:52px;min-width:0;width:100%;border:0;border-radius:16px;padding:12px 16px;background:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-black);font:var(--vitame-type-pretendard-body2-regular-14);letter-spacing:-.02em}
 .registration-screen input::placeholder{color:var(--vitame-color-neutral-gray60)}
 .registration-screen select{appearance:none;background-image:url('assets/registration/chevron.svg');background-repeat:no-repeat;background-position:right 10px center;background-size:17px 16px;padding-right:30px}

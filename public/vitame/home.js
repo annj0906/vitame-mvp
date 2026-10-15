@@ -62,8 +62,9 @@ render=function(){
   if(homeCountsEntered||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   homeCountsEntered=true;
   const numbers=[...document.querySelectorAll('.score-stat-count b')].map(el=>({el,value:Number(el.textContent)}));
+  numbers.forEach(({el})=>el.animate([{transform:'translateY(7px)',opacity:.4},{transform:'translateY(-3px)',opacity:1,offset:.8},{transform:'translateY(0)',opacity:1}],{duration:900,easing:'cubic-bezier(.22,1,.36,1)'}));
   const start=performance.now();
-  function tick(now){const t=Math.min(1,(now-start)/700),ease=1-Math.pow(1-t,3);numbers.forEach(({el,value})=>{if(el.isConnected)el.textContent=Math.round(value*ease)});if(t<1&&numbers.some(n=>n.el.isConnected))requestAnimationFrame(tick);}
+  function tick(now){const t=Math.min(1,(now-start)/900),ease=1-Math.pow(1-t,4);numbers.forEach(({el,value})=>{if(el.isConnected)el.textContent=Math.round(value*ease)});if(t<1&&numbers.some(n=>n.el.isConnected))requestAnimationFrame(tick);}
   requestAnimationFrame(tick);
 };
 
