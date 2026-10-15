@@ -80,6 +80,7 @@ render=function(){
   const from=oldCapsule?{transform:oldCapsule.transform,backgroundColor:oldCapsule.backgroundColor}:null;
   const oldActive=previous?.dataset.active;
   beforeNavigationMotion();
+  updateDoseCompletionCelebration();
   const next=document.querySelector('.nav');
   if(!from||!next||oldActive===next.dataset.active||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const to=getComputedStyle(next,'::before');

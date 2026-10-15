@@ -42,7 +42,10 @@ let initialCompletionCelebrated=false;
 function initialCompletionCelebration(){
   if(initialCompletionCelebrated||matchMedia('(prefers-reduced-motion: reduce)').matches)return '';
   initialCompletionCelebrated=true;
-  return `<span class="initial-completion-celebration" aria-hidden="true"><img class="completion-pop completion-pop-one" src="assets/onboarding/circle-blue.svg" alt=""><span class="completion-pop completion-pop-two"></span><img class="completion-pop completion-pop-three" src="assets/onboarding/circle-green.svg" alt=""><span class="completion-pop completion-pop-four"></span><img class="completion-pop completion-pop-five" src="assets/onboarding/triangle-purple.svg" alt=""></span>`;
+  return completionCelebrationShapes('initial-completion-celebration');
+}
+function completionCelebrationShapes(className){
+  return `<span class="${className}" aria-hidden="true"><img class="completion-pop completion-pop-one" src="assets/onboarding/circle-blue.svg" alt=""><span class="completion-pop completion-pop-two"></span><img class="completion-pop completion-pop-three" src="assets/onboarding/circle-green.svg" alt=""><span class="completion-pop completion-pop-four"></span><img class="completion-pop completion-pop-five" src="assets/onboarding/triangle-purple.svg" alt=""></span>`;
 }
 render = function() {
   const r = route();

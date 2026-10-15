@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+const source=readFileSync(new URL('../public/vitame/care.js',import.meta.url),'utf8');
+const snippet=source.slice(source.indexOf('let doseCelebrationKey='),source.indexOf('const originalNutritionCard='));
+let screen='dose',done=4,plays=0,reduced=false;
+const ctx={dateKey:()=>'2026-10-15',selectedDate:'2026-10-15',route:()=>screen,state:{supplements:Array(5).fill({})},completed:()=>done,matchMedia:()=>({matches:reduced}),completionCelebrationShapes:()=>'<span></span>',document:{querySelector:()=>({insertAdjacentHTML(){plays++;},querySelector:()=>({addEventListener(){}})})}};
+vm.createContext(ctx);vm.runInContext(snippet,ctx);
+ctx.updateDoseCompletionCelebration();assert.equal(plays,0);
+done=5;ctx.updateDoseCompletionCelebration();assert.equal(plays,1,'last check triggers once');
+ctx.updateDoseCompletionCelebration();assert.equal(plays,1,'rerender does not replay');
+done=4;ctx.updateDoseCompletionCelebration();done=5;ctx.updateDoseCompletionCelebration();assert.equal(plays,2,'uncheck then complete re-arms');
+screen='home';ctx.updateDoseCompletionCelebration();screen='dose';ctx.updateDoseCompletionCelebration();assert.equal(plays,3,'entering with 100% celebrates');
+ctx.selectedDate='2026-10-14';ctx.updateDoseCompletionCelebration();assert.equal(plays,3,'past dates excluded');
+ctx.selectedDate='2026-10-15';ctx.state.supplements=[];done=0;ctx.updateDoseCompletionCelebration();assert.equal(plays,3,'empty list excluded');
+ctx.state.supplements=Array(5).fill({});done=5;reduced=true;ctx.updateDoseCompletionCelebration();assert.equal(plays,3,'reduced motion skips decoration');
+console.log('Dose celebration: last check, completed entry, uncheck/recomplete, no duplicate, past/empty exclusions and reduced motion passed.');

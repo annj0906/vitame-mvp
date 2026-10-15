@@ -1,6 +1,21 @@
 'use strict';
 const careAsset=name=>`<img src="assets/care/${name}.svg" alt="">`;
 const careScreens=['dose','archive','analysis'];
+let doseCelebrationKey='',doseCelebrationComplete=false;
+function updateDoseCompletionCelebration(){
+  const today=dateKey(),onToday=route()==='dose'&&selectedDate===today;
+  if(!onToday){doseCelebrationKey='';doseCelebrationComplete=false;return;}
+  const total=state.supplements.length,complete=total>0&&completed(today)===total;
+  const play=complete&&(doseCelebrationKey!==today||!doseCelebrationComplete);
+  doseCelebrationKey=today;doseCelebrationComplete=complete;
+  if(!play||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const count=document.querySelector('.dose-progress-summary strong');if(!count)return;
+  count.insertAdjacentHTML('beforeend',completionCelebrationShapes('dose-completion-celebration'));
+  const effect=count.querySelector('.dose-completion-celebration');
+  effect.addEventListener('animationend',event=>{
+    if(event.target.classList.contains('completion-pop-five'))effect.remove();
+  });
+}
 const originalNutritionCard=nutritionCard;
 nutritionCard=function(group){
   if(route()!=='analysis')return originalNutritionCard(group);
