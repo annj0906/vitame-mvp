@@ -136,7 +136,8 @@ function periodScore(key){
   return 57+hash%29;
 }
 function periodChart(){
-  const anchor=periodStart(chartAnchor),keys=Array.from({length:7},(_,i)=>periodOffset(anchor,i-3));
+  const anchor=periodStart(chartAnchor),start=chartPeriod==='week'?periodStart(chartAnchor,'week'):periodOffset(anchor,-3);
+  const keys=Array.from({length:7},(_,i)=>periodOffset(start,i));
   const referenceScore=periodScore(chartSelection||anchor);
 return `<div class="period-chart" data-period-kind="${chartPeriod}" aria-label="${chartPeriods.find(p=>p[0]===chartPeriod)[1]} 단위 예시 그래프"><p class="period-hint">좌우로 넘겨 기간을 이동하고, 막대를 눌러 확인해보세요.</p><div class="period-plot"><div class="chart-scale" aria-hidden="true"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><span class="period-reference-line" style="--reference-top:${150*(1-(referenceScore??0)/100)}px" aria-hidden="true"><img src="assets/care/analysis-reference-line.svg" alt=""></span><div class="month-bars">${keys.map((key,i)=>{
     const score=periodScore(key),picked=key===chartSelection,highlight=key===(chartSelection||anchor);
@@ -186,7 +187,7 @@ return `${analysisTabs()}<div class="analysis-periods" aria-label="분석 기간
 };
 nutrientPage=analysis;
 function moveChart(step){
-  const next=periodOffset(chartAnchor,step);
+  const next=periodOffset(chartAnchor,step*7);
   if(next>periodStart(dateKey())||next<'2000-01-01')return;
   chartAnchor=next;chartSelection=null;render();
   const chart=document.querySelector('.period-chart');
@@ -418,12 +419,12 @@ window.addEventListener('hashchange',()=>{cancelAnimationFrame(guideCarousel.fra
 slideAdapters.push({
   selector:'.period-chart .month-bars',
   preview(direction){
-    const previous=chartAnchor,selection=chartSelection,next=periodOffset(chartAnchor,direction);
+    const previous=chartAnchor,selection=chartSelection,next=periodOffset(chartAnchor,direction*7);
     if(next>periodStart(dateKey())||next<'2000-01-01')return null;
     try{chartAnchor=next;chartSelection=null;return slideElement(periodChart(),'.month-bars');}
     finally{chartAnchor=previous;chartSelection=selection;}
   },
-  commit(direction){chartAnchor=periodOffset(chartAnchor,direction);chartSelection=null;render();}
+  commit(direction){chartAnchor=periodOffset(chartAnchor,direction*7);chartSelection=null;render();}
 });
 function openFinalGuide(id,jump=false){
   const target=document.getElementById('guide-'+id);if(!target)return;

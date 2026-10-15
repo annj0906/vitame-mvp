@@ -16,7 +16,7 @@ for(const period of ['week','month','half','year']){
   run(`chartPeriod='${period}';chartSelection=null;`);
   const html=run('periodChart()');
   assert.equal((html.match(/data-period-bar=/g)||[]).length,7);
-  assert.equal((html.match(/ disabled/g)||[]).length,3);
+  assert.equal((html.match(/ disabled/g)||[]).length,period==='week'?4:3);
   run('chartSelection=periodOffset(chartAnchor,-1)');
   const selected=run('periodChart()');
   assert.equal((selected.match(/class="month-bar current/g)||[]).length,1);
