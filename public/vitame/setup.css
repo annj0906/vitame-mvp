@@ -116,3 +116,13 @@
 @media(prefers-reduced-motion:reduce) {
   .initial-character, .initial-character * { animation: none !important; }
 }
+/* Latest interest-card design, Figma 372:966; inset strokes preserve geometry. */
+.initial-health-grid button{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px;box-shadow:0 2px 5px #0000000d}
+.initial-health-grid button[aria-pressed="true"]{outline-color:var(--health-color)}
+.initial-health-grid button .initial-health-icon{background:var(--health-tint)}
+.initial-health-grid button .initial-health-icon>span{background:var(--health-color)}
+.initial-health-grid button[aria-pressed="false"] .initial-health-icon img{filter:none}
+.initial-health-grid button .initial-check{background:transparent;outline:1.5px solid var(--vitame-color-neutral-gray40);outline-offset:-1.5px}
+.initial-health-grid button[aria-pressed="false"] .initial-check img{visibility:hidden}
+.initial-health-grid button[aria-pressed="true"] .initial-check{background:var(--health-color);outline-color:var(--health-color)}
+.initial-health-grid button:focus-visible{outline:3px solid var(--health-color);outline-offset:2px}

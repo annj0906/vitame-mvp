@@ -173,3 +173,10 @@ body[data-screen="analysis"] .analysis-guide-cta .primary{border-radius:999px;he
 body:is([data-screen="home"],[data-screen="dose"]) .calendar-day.picked{position:relative;isolation:isolate;background:transparent}
 body:is([data-screen="home"],[data-screen="dose"]) .calendar-day.picked::before{content:"";position:absolute;z-index:-1;pointer-events:none;left:50%;top:50%;transform:translate(-50%,-50%);width:min(100%,48px);aspect-ratio:1;border-radius:50%;background:var(--vitame-color-neutral-gray20)}
 body:is([data-screen="home"],[data-screen="dose"]) .calendar-week .calendar-day.picked::before{top:auto;bottom:0;transform:translateX(-50%)}
+/* General cards only: inset outline adds no box dimensions and preserves every
+   existing shadow. Explicit allowlist excludes banners, bubbles, dialogs, nav,
+   controls, product image tiles and cards with their own selection borders. */
+body[data-screen] :is(.health-score-link,.home-dose .dose-mini>button,.dose-progress-card,.dose-row-front,.care-archive-row,.nutrition-panel,.my-summary,.card:not(.banner):not(.mint):not(.selected):not([aria-selected]):not([aria-pressed])):not(:focus-visible):not(dialog *){outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
+body[data-screen="guide"] .ai-detail-surface{outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
+body[data-screen="guide"] .ai-detail-card.is-open .ai-detail-surface{outline:none}
+body[data-screen="guide"] .ai-detail-card.is-open .ai-detail-content{outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
