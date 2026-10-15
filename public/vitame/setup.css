@@ -87,6 +87,8 @@
 .initial-bubble [aria-live]{white-space:pre-line;text-align:center}
 .initial-bubble-tail { margin-top: -1.75px; }
 .initial-complete-shadow { margin-top: 22px; }
+/* Confetti may leave the viewport visually, but must not extend document height. */
+.initial-setup-complete{overflow:clip}
 /* Independent decoration layer: never animate the character or its shadow. */
 .initial-setup-complete .initial-completion-art .initial-character-box{isolation:isolate}
 .initial-setup-complete [data-initial-character]{z-index:1}
