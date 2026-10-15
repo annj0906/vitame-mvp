@@ -16,6 +16,19 @@ const setupMessages = [
   '지금 등록하지 않아도\n홈에서 언제든 추가할 수 있어요.'
 ];
 let setupMessageIndex = 0;
+let setupMessageTimer;
+function startSetupMessageRotation(){
+  clearInterval(setupMessageTimer);
+  setupMessageTimer=setInterval(()=>{
+    if(route()!=='setup-complete'){clearInterval(setupMessageTimer);return;}
+    const bubble=document.querySelector('.initial-bubble'),label=bubble?.querySelector('[aria-live]');
+    if(!label||bubble.inert||document.hidden)return;
+    setupMessageIndex=(setupMessageIndex+1)%setupMessages.length;
+    label.textContent=setupMessages[setupMessageIndex];
+    if(!matchMedia('(prefers-reduced-motion: reduce)').matches)label.animate([{opacity:0,transform:'translateY(3px)'},{opacity:1,transform:'translateY(0)'}],{duration:220,easing:'ease-out'});
+  },4500);
+}
+window.addEventListener('hashchange',()=>{if(route()!=='setup-complete')clearInterval(setupMessageTimer);});
 const setupAsset = name => 'assets/setup/' + name + '.svg';
 const setupKeys = ['very-bad', 'bad', 'normal', 'good', 'very-good'];
 
@@ -60,10 +73,11 @@ render = function() {
   } else if (r === 'setup-frequency') {
     content = `${initialHeader('health-interests',2)}<div class="initial-copy"><h1>영양제를 얼마나<br>자주 챙겨 드시나요?</h1><p>꾹 누르고 움직여 보세요</p></div><div class="initial-frequency"><div class="initial-range"><div class="initial-stops" aria-hidden="true">${Array.from({length:5},()=>`<span><img src="${setupAsset('stop')}" alt=""></span>`).join('')}</div><div class="initial-frequency-character" style="left:calc(6px + ${frequencyDraft*25}% - ${frequencyDraft*3}px)">${initialCharacter(setupKeys[frequencyDraft])}</div><input id="initial-frequency" type="range" min="0" max="4" step="0.01" value="${frequencyDraft}" aria-label="영양제 복용 빈도" aria-valuetext="${frequencyLabels[frequencyDraft]}"></div><div class="initial-frequency-labels">${['거의<br>안먹어요','가끔<br>먹어요','절반 정도','자주<br>먹어요','매일<br>먹어요'].map((label,i)=>`<button data-initial-frequency="${i}" aria-pressed="${i===frequencyDraft}">${label}</button>`).join('')}</div></div>${initialFooter('setup-complete')}`;
   } else {
-    content = `${initialHeader('setup-frequency')}<div class="initial-copy initial-complete-copy"><h1>준비가 끝났어요!</h1><p>${esc(state.name)} 님의 관심 건강과 복용<br>습관을 반영했어요.</p></div><div class="initial-completion-art"><div class="initial-bubble"><button data-initial-message aria-label="다른 등록 안내 보기"><span aria-live="polite">${setupMessages[setupMessageIndex]}</span><img src="${setupAsset('refresh')}" alt=""></button><img class="initial-bubble-tail" src="${setupAsset('bubble-tail')}" alt=""></div>${initialCharacter('good',true)}${characterShadow('good', 'initial-complete-shadow')}</div>${initialFooter('',true)}`;
+    content = `${initialHeader('setup-frequency')}<div class="initial-copy initial-complete-copy"><h1>준비가 끝났어요!</h1><p>${esc(state.name)} 님의 관심 건강과 복용<br>습관을 반영했어요.</p></div><div class="initial-completion-art"><div class="initial-bubble"><button data-initial-message aria-label="다른 등록 안내 보기"><span aria-live="polite">${setupMessages[setupMessageIndex]}</span></button><img class="initial-bubble-tail" src="${setupAsset('bubble-tail')}" alt=""></div>${initialCharacter('good',true)}${characterShadow('good', 'initial-complete-shadow')}</div>${initialFooter('',true)}`;
   }
   $('#app').innerHTML = `<section class="initial-setup-final initial-${r}">${content}</section>`;
   if(r==='setup-complete'){
+    startSetupMessageRotation();
     const celebration=initialCompletionCelebration();
     const box=document.querySelector('.initial-completion-art .initial-character-box');
     box.insertAdjacentHTML('beforeend',celebration);

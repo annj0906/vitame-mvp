@@ -110,7 +110,7 @@ function openRegistrationTime(index){
   host.querySelector('.registration-inline-picker')?.remove();
   const add=host.querySelector('[data-registration="add-time"], [data-registration="save-time"]');
   add.insertAdjacentHTML('beforebegin',`<div class="registration-inline-picker"><div class="registration-wheel" data-time-index="${index}">${[['오전','오후'],Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0')),Array.from({length:60},(_,i)=>String(i).padStart(2,'0'))].map((values,col)=>`<div class="registration-wheel-column" role="listbox" aria-label="${['오전·오후','시','분'][col]}" tabindex="0" data-wheel="${col}">${values.map((value,i)=>`<button type="button" role="option" aria-selected="false" data-wheel-value="${i}">${value}</button>`).join('')}</div>`).join('')}</div></div>`);
-  add.dataset.registration='save-time';add.textContent=index===d.times.length?'+ 시간 추가':'시간 적용';
+  add.dataset.registration='save-time';add.textContent='설정 완료';
   add.classList.add('is-picker-open');
 
   const values=[h<12?0:1,(h%12||12)-1,m];document.querySelectorAll('[data-wheel]').forEach((el,i)=>{el.scrollTop=values[i]*44;updateRegistrationWheel(el);});

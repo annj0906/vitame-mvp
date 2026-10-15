@@ -9,7 +9,7 @@ for(const reduced of [false,true]){
   targets.forEach(t=>t.classList.owner=t);
   const observed=[],finished=[];let callback,disconnected=false,stopped=false;
   class Observer{
-    constructor(cb,options){callback=cb;assert.equal(options.threshold,0);}
+    constructor(cb,options){callback=cb;assert.equal(options.threshold,0);assert.equal(options.rootMargin,'0px 0px -45% 0px','start near viewport center, not bottom');}
     observe(target){observed.push(target);}
     unobserve(target){finished.push(target);}
     disconnect(){disconnected=true;}

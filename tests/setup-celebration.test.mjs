@@ -15,7 +15,7 @@ for(const reduced of [false,true]){
   }
   assert.equal(ctx.initialCompletionCelebration(),'','rerender/revisit cannot replay celebration');
 }
-assert.match(source,/if\(r==='setup-complete'\)\{\s*const celebration=initialCompletionCelebration\(\);\s*const box=document.querySelector\('\.initial-completion-art \.initial-character-box'\)/,'decorations attach only to the completion character');
+assert.match(source,/if\(r==='setup-complete'\)\{\s*startSetupMessageRotation\(\);\s*const celebration=initialCompletionCelebration\(\);\s*const box=document.querySelector\('\.initial-completion-art \.initial-character-box'\)/,'decorations attach only to the completion character');
 assert.match(source,/if\(celebration\)\{[\s\S]*?box.querySelector\('\[data-initial-character\]'\).classList.add\('ob-good-success'\)/,'first entry reuses existing Success motion');
 assert.match(source,/copyBottom\+18-origin/,'burst apex follows the copy boundary');
 assert.match(source,/window.innerHeight-origin-10/,'larger particles reach the viewport floor');

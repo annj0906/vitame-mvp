@@ -134,14 +134,14 @@ function bindShoppingDetailMotion(){
     }
     target.classList.add('shop-story-reveal');
   });
-  // Observe each caption separately, not the tall jar section. No timer or
-  // stagger delay: each motion starts as soon as its own section enters view.
+  // Reveal each caption near the viewport center, not at the bottom edge where
+  // the animation would finish before the user reaches it.
   const observer=new IntersectionObserver(entries=>{
     entries.forEach(entry=>{
       if(!entry.isIntersecting)return;
       entry.target.classList.add('is-visible');observer.unobserve(entry.target);
     });
-  },{threshold:0});
+  },{threshold:0,rootMargin:'0px 0px -45% 0px'});
   targets.forEach(target=>observer.observe(target));
   const stopVideo=stopShoppingVideo;
   stopShoppingVideo=()=>{observer.disconnect();stopVideo();};
