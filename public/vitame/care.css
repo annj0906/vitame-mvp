@@ -33,6 +33,11 @@ body[data-screen="dose"] .dose-progress-summary strong{position:relative;font:va
 /* Reuse the onboarding particle rules unchanged; override only the origin. */
 body[data-screen="dose"] .dose-completion-celebration{position:fixed;top:0;height:100dvh;overflow:clip;pointer-events:none;z-index:9}
 body[data-screen="dose"] .dose-completion-celebration .completion-pop{left:var(--dose-pop-left);top:var(--dose-pop-top)}
+body[data-screen="dose"] .dose-completion-celebration .completion-pop-one{--pop-x:-135px}
+body[data-screen="dose"] .dose-completion-celebration .completion-pop-two{--pop-x:-65px}
+body[data-screen="dose"] .dose-completion-celebration .completion-pop-three{--pop-x:-105px}
+body[data-screen="dose"] .dose-completion-celebration .completion-pop-four{--pop-x:-175px}
+body[data-screen="dose"] .dose-completion-celebration .completion-pop-five{--pop-x:-90px}
 @media(prefers-reduced-motion:reduce){body[data-screen="dose"] .dose-completion-celebration{display:none}body[data-screen="dose"] .dose-completion-celebration .completion-pop{animation:none}}
 body[data-screen="dose"] .dose-progress-summary .done-count{display:inline-block;font-size:36px}
 body[data-screen="dose"] .dose-progress-track{background:var(--vitame-color-neutral-gray30);margin-top:4px}
