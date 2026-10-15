@@ -176,7 +176,25 @@ body:is([data-screen="home"],[data-screen="dose"]) .calendar-week .calendar-day.
 /* General cards only: inset outline adds no box dimensions and preserves every
    existing shadow. Explicit allowlist excludes banners, bubbles, dialogs, nav,
    controls, product image tiles and cards with their own selection borders. */
-body[data-screen] :is(.health-score-link,.home-dose .dose-mini>button,.dose-progress-card,.dose-row-front,.care-archive-row,.nutrition-panel,.my-summary,.card:not(.banner):not(.mint):not(.selected):not([aria-selected]):not([aria-pressed])):not(:focus-visible):not(dialog *){outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
+body[data-screen] :is(.health-score-link,.dose-progress-card,.care-archive-row,.nutrition-panel,.my-summary,.card:not(.banner):not(.mint):not(.selected):not([aria-selected]):not([aria-pressed])):not(:focus-visible):not(dialog *){outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
 body[data-screen="guide"] .ai-detail-surface{outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
 body[data-screen="guide"] .ai-detail-card.is-open .ai-detail-surface{outline:none}
 body[data-screen="guide"] .ai-detail-card.is-open .ai-detail-content{outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
+/* Figma 372:1296: dose state is a colored stroke/check, not a gray fill.
+   Home grid/list and dose rows share the existing supplement palette. */
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row){--dose-accent:var(--vitame-color-accent-yellow-main);background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black)}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row):has(.p0){--dose-accent:var(--vitame-color-accent-yellow-main)}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row):has(.p1){--dose-accent:var(--vitame-color-accent-green-main)}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row):has(.p2){--dose-accent:var(--vitame-color-accent-purple-main)}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row):has(.p3){--dose-accent:var(--vitame-color-accent-blue-main)}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row):has(.p4){--dose-accent:var(--vitame-color-accent-pink-main)}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row):has(.p5){--dose-accent:var(--vitame-color-accent-red-main)}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row):has(.p6){--dose-accent:#43c9ec}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row):not(:focus-visible){outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row).taken:not(:focus-visible){outline-color:var(--dose-accent)}
+body[data-screen="home"] .home-dose .dose-mini>button{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black)}
+body[data-screen="dose"] .dose-row-front{outline:none}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row) .pill{background:var(--dose-accent)}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row) .check{background:transparent;outline:1.5px solid var(--vitame-color-neutral-gray40);outline-offset:-1.5px;color:transparent}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row):not(.taken) .check img{visibility:hidden}
+body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row).taken .check{background:var(--dose-accent);outline-color:var(--dose-accent);color:var(--vitame-color-neutral-white)}
