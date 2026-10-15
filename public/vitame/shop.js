@@ -149,10 +149,13 @@ function bindShoppingDetailMotion(){
 }
 const beforeShopping=render;
 render=function(){
+  const closingDetail=document.body.dataset.screen==='shop-eye-berry'&&route()==='shop'&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const outgoingDetail=closingDetail?archiveTransitionSnapshot():null;
   stopShoppingVideo();clearInterval(shoppingTimer);const r=route();if(!['shop','shop-eye-berry'].includes(r)){beforeShopping();return;}
   clearTimeout(introTimer);document.body.dataset.screen=r;document.title=(r==='shop'?'쇼핑':'아이 베리 루테인 구미')+' · VITAME';$('#app').innerHTML=r==='shop'?shoppingScreen():shoppingDetail();bindShoppingRails();
   if(r==='shop'){bindShoppingVideo();bindShoppingAutoplay();updateShoppingTimer();shoppingTimer=setInterval(updateShoppingTimer,1000);}
   else bindShoppingDetailMotion();
+  if(outgoingDetail)outgoingDetail.snapshot.animate([{transform:'translateX(0)'},{transform:'translateX(100%)'}],{duration:320,easing:'cubic-bezier(.4,0,.8,.6)'}).finished.finally(()=>outgoingDetail.viewport.remove());
 };
 document.addEventListener('submit',e=>{if(!e.target.matches('.shop-search'))return;e.preventDefault();shoppingQuery=e.target.querySelector('input').value;shoppingCategory='';shoppingFavorites=false;updateShoppingResults(true);});
 document.addEventListener('input',e=>{if(!e.target.matches('.shop-search input'))return;shoppingQuery=e.target.value;shoppingCategory='';shoppingFavorites=false;updateShoppingResults();});
