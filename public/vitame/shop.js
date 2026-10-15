@@ -122,11 +122,36 @@ function bindShoppingAutoplay(){
   const stopVideo=stopShoppingVideo;
   stopShoppingVideo=()=>{disposed=true;clearTimeout(timer);observer.disconnect();rail.removeEventListener('scroll',schedule);rail.parentElement.removeEventListener('pointerdown',start);document.removeEventListener('pointerup',finish);document.removeEventListener('pointercancel',finish);rail.removeEventListener('keydown',schedule);document.removeEventListener('visibilitychange',schedule);if(reduced.removeEventListener)reduced.removeEventListener('change',schedule);else reduced.removeListener(schedule);stopVideo();};
 }
+function bindShoppingDetailMotion(){
+  const story=document.querySelector('.shop-berry-story');
+  if(!story||!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const targets=[...story.querySelectorAll('.shop-berry-hand h2,.shop-berry-message h2,.shop-berry-message p,.shop-berry-jar p')];
+  targets.forEach(target=>{
+    if(target.matches('.shop-berry-jar p')){
+      const copy=document.createElement('span');copy.className='shop-annotation-copy';
+      [...target.childNodes].filter(node=>node.nodeName!=='IMG').forEach(node=>copy.append(node));
+      target.prepend(copy);
+    }
+    target.classList.add('shop-story-reveal');
+  });
+  // Observe each caption separately, not the tall jar section. No timer or
+  // stagger delay: each motion starts as soon as its own section enters view.
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting)return;
+      entry.target.classList.add('is-visible');observer.unobserve(entry.target);
+    });
+  },{threshold:0});
+  targets.forEach(target=>observer.observe(target));
+  const stopVideo=stopShoppingVideo;
+  stopShoppingVideo=()=>{observer.disconnect();stopVideo();};
+}
 const beforeShopping=render;
 render=function(){
   stopShoppingVideo();clearInterval(shoppingTimer);const r=route();if(!['shop','shop-eye-berry'].includes(r)){beforeShopping();return;}
   clearTimeout(introTimer);document.body.dataset.screen=r;document.title=(r==='shop'?'쇼핑':'아이 베리 루테인 구미')+' · VITAME';$('#app').innerHTML=r==='shop'?shoppingScreen():shoppingDetail();bindShoppingRails();
   if(r==='shop'){bindShoppingVideo();bindShoppingAutoplay();updateShoppingTimer();shoppingTimer=setInterval(updateShoppingTimer,1000);}
+  else bindShoppingDetailMotion();
 };
 document.addEventListener('submit',e=>{if(!e.target.matches('.shop-search'))return;e.preventDefault();shoppingQuery=e.target.querySelector('input').value;shoppingCategory='';shoppingFavorites=false;updateShoppingResults(true);});
 document.addEventListener('input',e=>{if(!e.target.matches('.shop-search input'))return;shoppingQuery=e.target.value;shoppingCategory='';shoppingFavorites=false;updateShoppingResults();});

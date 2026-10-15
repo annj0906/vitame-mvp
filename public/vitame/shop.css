@@ -78,3 +78,16 @@ body:is([data-screen="shop"],[data-screen="shop-eye-berry"]) #app{background:var
 .shop-detail .shop-detail-actions>button img{width:18px;height:18px}
 .shop-detail .shop-detail-actions>.shop-buy{height:56px;border-radius:999px;font:var(--vitame-type-pretendard-body1-bold-16)}
 .shop-detail main>.shop-section{margin-top:40px}
+/* Section-local entrances: no layout shift or page-entry/stagger delay. */
+.shop-detail .shop-berry-message{overflow:hidden}
+.shop-detail .shop-story-reveal:not(.is-visible):not(.shop-annotation-one):not(.shop-annotation-two):not(.shop-annotation-three){opacity:0;transform:translateY(20px)}
+.shop-detail .shop-berry-message h2.shop-story-reveal:not(.is-visible){transform:translateX(-28px)}
+.shop-detail .shop-berry-message p.shop-story-reveal:not(.is-visible){transform:translateX(28px)}
+.shop-detail .shop-story-reveal{transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
+.shop-detail .shop-annotation-copy{display:block;transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
+.shop-detail .shop-story-reveal:not(.is-visible) .shop-annotation-copy{opacity:0;transform:translateY(18px)}
+.shop-detail .shop-story-reveal>img{clip-path:inset(0);transition:clip-path .6s cubic-bezier(.22,1,.36,1)}
+.shop-detail .shop-story-reveal:not(.is-visible)>img{clip-path:inset(0 100% 0 0)}
+@media(prefers-reduced-motion:reduce){
+  .shop-detail .shop-story-reveal,.shop-detail .shop-annotation-copy,.shop-detail .shop-story-reveal>img{transition:none!important;opacity:1!important;transform:none!important;clip-path:none!important}
+}
