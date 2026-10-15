@@ -31,7 +31,9 @@ function utilityAddCart(id){if(id!=='eye-berry')return;state.cart||={};state.car
 const beforeUtilityPages=render;
 render=function(){
   const r=route();if(!utilityRoutes.includes(r)){beforeUtilityPages();return;}
-  const entering=r==='notifications'&&document.body.dataset.screen!=='notifications'&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Utility routes render outside the shared route wrapper: reuse its frozen
+  // underlay here so each incoming page covers, rather than replaces, its origin.
+  const entering=document.body.dataset.screen!==r&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
   const underlay=entering?archiveTransitionSnapshot():null;
   if(underlay)underlay.viewport.style.zIndex='59';
   stopShoppingVideo();clearInterval(shoppingTimer);clearTimeout(introTimer);
