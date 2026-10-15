@@ -30,13 +30,9 @@ body[data-screen="dose"] .dose-progress-card{margin:0 0 40px;padding:20px 24px;b
 body[data-screen="dose"] .dose-progress-card h2{margin-bottom:24px;font:var(--vitame-type-pretendard-subtitle-semibold-18)}
 body[data-screen="dose"] .dose-progress-summary>span,body[data-screen="dose"] .dose-progress-summary small{color:var(--vitame-color-neutral-gray50)}
 body[data-screen="dose"] .dose-progress-summary strong{position:relative;font:var(--vitame-type-nanumsquareround-title2-extrabold-24)}
-body[data-screen="dose"] .dose-completion-celebration{position:absolute;inset:0;pointer-events:none}
-body[data-screen="dose"] .dose-completion-celebration .completion-pop{position:absolute;left:45%;top:0;width:6px;height:6px;opacity:0;animation:completion-celebration-pop 1s linear both;animation-delay:var(--pop-delay);--fall-y:-4px;pointer-events:none}
-body[data-screen="dose"] .dose-completion-celebration .completion-pop-one{--pop-delay:0s;--pop-x:-85px;--pop-y:-28px}
-body[data-screen="dose"] .dose-completion-celebration .completion-pop-two{width:7px;height:7px;background:var(--vitame-color-accent-pink-main);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 94%,50% 72%,21% 94%,32% 57%,2% 35%,39% 35%);--pop-delay:.08s;--pop-x:35px;--pop-y:-30px}
-body[data-screen="dose"] .dose-completion-celebration .completion-pop-three{width:5px;height:5px;--pop-delay:.16s;--pop-x:45px;--pop-y:-16px}
-body[data-screen="dose"] .dose-completion-celebration .completion-pop-four{width:6px;height:6px;border-radius:2px;background:var(--vitame-color-accent-purple-main);--pop-delay:.24s;--pop-x:-120px;--pop-y:-20px}
-body[data-screen="dose"] .dose-completion-celebration .completion-pop-five{--pop-delay:.32s;--pop-x:-32px;--pop-y:-35px}
+/* Reuse the onboarding particle rules unchanged; override only the origin. */
+body[data-screen="dose"] .dose-completion-celebration{position:fixed;top:0;height:100dvh;overflow:clip;pointer-events:none;z-index:9}
+body[data-screen="dose"] .dose-completion-celebration .completion-pop{left:var(--dose-pop-left);top:var(--dose-pop-top)}
 @media(prefers-reduced-motion:reduce){body[data-screen="dose"] .dose-completion-celebration{display:none}body[data-screen="dose"] .dose-completion-celebration .completion-pop{animation:none}}
 body[data-screen="dose"] .dose-progress-summary .done-count{display:inline-block;font-size:36px}
 body[data-screen="dose"] .dose-progress-track{background:var(--vitame-color-neutral-gray30);margin-top:4px}

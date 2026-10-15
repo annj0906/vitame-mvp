@@ -4,7 +4,7 @@ import vm from 'node:vm';
 const source=readFileSync(new URL('../public/vitame/care.js',import.meta.url),'utf8');
 const snippet=source.slice(source.indexOf('let doseCelebrationKey='),source.indexOf('const originalNutritionCard='));
 let screen='dose',done=4,plays=0,reduced=false;
-const ctx={dateKey:()=>'2026-10-15',selectedDate:'2026-10-15',route:()=>screen,state:{supplements:Array(5).fill({})},completed:()=>done,matchMedia:()=>({matches:reduced}),completionCelebrationShapes:()=>'<span></span>',document:{querySelector:()=>({insertAdjacentHTML(){plays++;},querySelector:()=>({addEventListener(){}})})}};
+const ctx={window:{innerHeight:800},dateKey:()=>'2026-10-15',selectedDate:'2026-10-15',route:()=>screen,state:{supplements:Array(5).fill({})},completed:()=>done,matchMedia:()=>({matches:reduced}),completionCelebrationShapes:className=>{assert.match(className,/initial-setup-complete/,'reuse onboarding shape size and motion');return '<span></span>';},document:{querySelector:()=>({getBoundingClientRect:()=>({left:20,top:250,width:300}),insertAdjacentHTML(){plays++;},querySelector:()=>({style:{setProperty(){}},addEventListener(){}})})}};
 vm.createContext(ctx);vm.runInContext(snippet,ctx);
 ctx.updateDoseCompletionCelebration();assert.equal(plays,0);
 done=5;ctx.updateDoseCompletionCelebration();assert.equal(plays,1,'last check triggers once');
