@@ -71,4 +71,20 @@ document.addEventListener('change',e=>{if(e.target.matches('[data-utility-select
 document.addEventListener('vitame:likes',()=>{if(route()==='likes')render();});
 window.addEventListener('hashchange',()=>{const next=route();if(utilityRoutes.includes(next)&&!utilityRoutes.includes(utilityPrevious))utilityBack[next]=utilityPrevious;utilityPrevious=next;});
 window.addEventListener('storage',e=>{if(e.key!=='vitame-v1'||!e.newValue)return;try{const updated=JSON.parse(e.newValue);state.shopLikes=updated.shopLikes||[];state.cart=updated.cart||{};state.cartSelected=updated.cartSelected||{};state.noticeRead=updated.noticeRead||{};if([...utilityRoutes,'shop','shop-eye-berry','my'].includes(route()))render();}catch{}});
+// Outermost renderer: retain the capsule's current visual position even though
+// each screen rebuilds its navigation. Read an interrupted motion before render.
+const beforeNavigationMotion=render;
+render=function(){
+  const previous=document.querySelector('.nav');
+  const oldCapsule=previous?getComputedStyle(previous,'::before'):null;
+  const from=oldCapsule?{transform:oldCapsule.transform,backgroundColor:oldCapsule.backgroundColor}:null;
+  const oldActive=previous?.dataset.active;
+  beforeNavigationMotion();
+  const next=document.querySelector('.nav');
+  if(!from||!next||oldActive===next.dataset.active||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const to=getComputedStyle(next,'::before');
+  next.animate([from,{transform:to.transform,backgroundColor:to.backgroundColor}],{
+    duration:340,easing:'cubic-bezier(.22,1,.36,1)',pseudoElement:'::before'
+  });
+};
 render();

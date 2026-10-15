@@ -6,7 +6,13 @@
 .nav[data-active="shop"]{--nav-accent:var(--vitame-color-accent-pink-main)}
 .nav[data-active="my"]{--nav-accent:var(--vitame-color-accent-purple-main)}
 .nav button{flex:1;min-width:0;min-height:48px;padding:6px 0 7px;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:var(--vitame-color-neutral-gray60);font:600 12px/1.4 var(--vitame-font-pretendard);letter-spacing:-.025em}
-.nav button.active{background:var(--nav-accent);color:var(--vitame-color-neutral-white)}
+.nav{--nav-index:0;isolation:isolate}
+.nav[data-active="dose"]{--nav-index:1}
+.nav:is([data-active="analysis"],[data-active="guide"]){--nav-index:2}
+.nav[data-active="shop"]{--nav-index:3}
+.nav[data-active="my"]{--nav-index:4}
+.nav::before{content:"";position:absolute;left:4px;top:4px;bottom:4px;width:calc((100% - 8px)/5);border-radius:999px;background:var(--nav-accent);transform:translateX(calc(var(--nav-index)*100%));pointer-events:none;z-index:-1}
+.nav button.active{background:transparent;color:var(--vitame-color-neutral-white)}
 .nav-icon{width:28px;height:28px;display:grid;place-items:center}
 .nav-icon img{display:block;max-width:24px;max-height:24px}
 .nav .active .nav-icon img{filter:brightness(0) invert(1)}
