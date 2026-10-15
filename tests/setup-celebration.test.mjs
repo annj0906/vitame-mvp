@@ -16,6 +16,8 @@ for(const reduced of [false,true]){
   assert.equal(ctx.initialCompletionCelebration(),'','rerender/revisit cannot replay celebration');
 }
 assert.match(source,/if\(r==='setup-complete'\)\{\s*const celebration=initialCompletionCelebration\(\);\s*const box=document.querySelector\('\.initial-completion-art \.initial-character-box'\)/,'decorations attach only to the completion character');
-assert.match(source,/if\(celebration\)box.querySelector\('\[data-initial-character\]'\).classList.add\('ob-good-success'\)/,'first entry reuses existing Success motion');
+assert.match(source,/if\(celebration\)\{\s*box.querySelector\('\[data-initial-character\]'\).classList.add\('ob-good-success'\)/,'first entry reuses existing Success motion');
+assert.match(source,/bubble.classList.add\('completion-bubble-after-success'\);bubble.inert=true/,'bubble waits without changing layout or accepting hidden clicks');
+assert.match(source,/bubble.inert=false;bubble.classList.remove\('completion-bubble-after-success'\)/,'bubble becomes interactive after its entrance');
 assert.match(source,/classList.remove\('ob-good-tap','ob-good-success'\)/,'action completion returns to the existing Idle');
 console.log('Completion celebration: five decorative shapes, existing assets, first-entry only, reduced motion and completion-only scope passed.');

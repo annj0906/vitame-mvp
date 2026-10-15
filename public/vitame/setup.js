@@ -64,7 +64,15 @@ render = function() {
     const celebration=initialCompletionCelebration();
     const box=document.querySelector('.initial-completion-art .initial-character-box');
     box.insertAdjacentHTML('beforeend',celebration);
-    if(celebration)box.querySelector('[data-initial-character]').classList.add('ob-good-success');
+    if(celebration){
+      box.querySelector('[data-initial-character]').classList.add('ob-good-success');
+      const bubble=document.querySelector('.initial-completion-art .initial-bubble');
+      bubble.classList.add('completion-bubble-after-success');bubble.inert=true;
+      bubble.addEventListener('animationend',event=>{
+        if(event.target!==bubble)return;
+        bubble.inert=false;bubble.classList.remove('completion-bubble-after-success');
+      },{once:true});
+    }
   }
 };
 
