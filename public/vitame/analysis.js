@@ -432,7 +432,8 @@ function clearGuideMotion(){
   });
 }
 function guideMessage(refresh=false){
-  // Tap, refresh and motion reuse this visit's cached line.
+  // Explicit taps/refresh advance this character only; renders retain the line.
+  if(refresh)delete guideVisitMessages[guideCharacterKeys[guideCharacter]];
   const label=document.querySelector('.ai-guide-message [aria-live]');
   if(label){
     const next=guideCharacterMessage(),changed=label.textContent!==next;label.textContent=next;
