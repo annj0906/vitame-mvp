@@ -16,7 +16,7 @@ body:is([data-screen="my"],[data-screen="interest-settings"]) .app{background:va
 .my-edit-profile{margin-left:auto;white-space:nowrap;min-height:0;border:1px solid var(--vitame-color-neutral-gray20);background:white;border-radius:30px;padding:8px;font:var(--vitame-type-pretendard-body1-regular-16)}
 .my-summary{display:flex;border-radius:99px;background:white;box-shadow:0 2px 5px #0000000d;padding:24px 20px;min-height:98px}
 .my-summary>button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray70)}
-.my-summary>button+button{border-left:1px solid var(--vitame-color-neutral-gray20)}
+.my-summary>button+button{border-left:1px solid var(--vitame-color-neutral-gray40)}
 .my-summary b{font:700 20px/1.4 Pretendard,sans-serif;color:var(--vitame-color-neutral-black)}
 .my-menu-group{display:flex;flex-direction:column;gap:24px}
 .my-menu-group h2{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray70);letter-spacing:-.02em}
