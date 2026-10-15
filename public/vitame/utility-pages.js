@@ -52,6 +52,10 @@ render=function(){
   stopShoppingVideo();clearInterval(shoppingTimer);clearTimeout(introTimer);
   document.body.dataset.screen=r;document.title=({notifications:'알림',likes:'찜',cart:'장바구니'})[r]+' · VITAME';
   $('#app').innerHTML=r==='notifications'?utilityNotificationPage():r==='likes'?utilityFavoritesPage():utilityCartPage();bindShoppingRails();
+  // The global hash handler scrolls to the top after render. Settle that same
+  // position before capturing the entering page, otherwise the frozen page and
+  // live page differ at handoff and the cart appears to jump once.
+  if(previous!==r)window.scrollTo({top:0,left:0,behavior:'instant'});
   if(entering){
     const entry=archiveTransitionSnapshot();
     entry.snapshot.animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'}).finished.finally(()=>{entry.viewport.remove();underlay.viewport.remove();});

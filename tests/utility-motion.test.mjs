@@ -11,6 +11,7 @@ for(const destination of ['notifications','likes','cart']){
     let snapshots=0,animations=0,delegated=0,nextRoute=destination;
     const app={innerHTML:''};
     const context={
+      window:{scrollTo(options){assert.equal(options.top,0);assert.equal(options.behavior,'instant');}},
       utilityRoutes:['notifications','likes','cart'],route:()=>nextRoute,
       render:()=>{delegated++;context.document.body.dataset.screen=nextRoute;},document:{body:{dataset:{screen:origin}}},
       matchMedia:()=>({matches:reduced}),$:()=>app,
