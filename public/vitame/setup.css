@@ -102,6 +102,9 @@
 .initial-setup-complete .completion-pop-four{width:20px;height:20px;animation-duration:2.9s;border-radius:5px;background:var(--vitame-color-accent-purple-main);--pop-delay:.18s;--pop-x:-94px;--pop-y:calc(var(--celebration-rise,-180px) + 34px);--fall-y:var(--celebration-floor,400px)}
 .initial-setup-complete .completion-pop-five{width:11px;height:11px;animation-duration:2.1s;--pop-delay:.24s;--pop-x:-44px;--pop-y:var(--celebration-rise,-180px);--fall-y:140px}
 .initial-setup-complete .initial-actions{position:relative;z-index:2}
+/* These steps have different minimum content heights. Anchor only their CTA
+   rows to the same viewport baseline instead of distributing flex free space. */
+.initial-setup-final:is(.initial-setup-frequency,.initial-setup-complete)>.initial-actions{position:absolute;left:20px;right:20px;top:calc(max(640px,100dvh) - 132px);margin-top:0}
 .initial-setup-complete .completion-bubble-after-success{animation:completion-bubble-arrive .35s ease-out 1.5s both}
 @keyframes completion-bubble-arrive{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes completion-celebration-pop{
