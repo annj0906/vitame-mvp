@@ -21,6 +21,17 @@ run(source.slice(source.indexOf('const guideCarousel='),source.indexOf("slideAda
 const step=()=>{now+=400;const pending=[...frames.values()];frames.clear();pending.forEach(f=>f(now));};
 const finish=()=>{const pending=[...timers.values()];timers.clear();pending.forEach(f=>f());};
 run('paintGuideCarousel()');
+const voices=keys.map((_,i)=>run(`guideCharacter=${i};guideMessageIndex=0;guideCharacterMessage()`));
+assert.equal(new Set(voices).size,5);
+assert.match(voices[0],/음…/);
+assert.match(voices[1],/앗!/);
+assert.match(voices[3],/데이터/);
+ctx.state={demo:false,supplements:[{id:'test'}],records:{unchanged:true}};
+ctx.completed=()=>1;ctx.dateKey=()=>'2026-10-15';
+const beforeRecord=JSON.stringify(ctx.state);
+for(let i=0;i<5;i++){run(`guideCharacter=${i};guideMessageIndex=1`);assert.match(run('guideCharacterMessage()'),/1건/);}
+assert.equal(JSON.stringify(ctx.state),beforeRecord);
+run('guideCharacter=0;guideMessageIndex=0');
 assert.equal(items.filter(i=>!i.querySelector('[data-ai-tap]').disabled).length,1);
 assert.ok(items.every(i=>i.classes.size===0),'first entry starts Idle');
 run("playGuideMotion('tap')");assert.ok(items[0].classes.has('ob-bad-tap'));assert.equal(run('guideCharacter'),0);

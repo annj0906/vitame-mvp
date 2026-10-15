@@ -228,6 +228,7 @@ function refreshedGuideSection(g,index){
   return html;
 }
 guide=function(){
+  if(!guideSessionActive){guideCharacter=guideCharacterKeys.indexOf('normal');guideMessageIndex=0;guideSessionActive=true;}
   const preferred=wellnessGuides.filter(g=>state.interests.includes(g.interest));
   const ordered=[...preferred,...wellnessGuides.filter(g=>!preferred.includes(g))];
   return `${analysisTabs(true)}<div class="ai-guide-page"><section class="ai-guide-hero" id="guide-navigation"><h1>${esc(state.name)} 님,<br>오늘도 잘 하고 있어요!</h1><div class="ai-character-stage">${finalGuideCharacters()}</div><section class="ai-interests"><div class="ai-interest-heading"><div><h2>나의 관심 건강</h2><p>버튼을 눌러 가이드로 이동해보세요</p></div><button data-go="interest-settings"><img src="assets/care/edit.svg" alt="">편집</button></div><div class="ai-interest-tags">${preferred.map(g=>`<button data-guide-jump="${g.id}">${finalGuideIcon(g)}<span>${g.id==='eyes'?'눈':g.title}</span></button>`).join('')}</div></section><span class="ai-guide-down" aria-hidden="true">${wellnessIcon('chevron')}</span></section><div class="ai-guide-cards">${ordered.map(finalGuideCard).join('')}</div></div><button class="guide-fixed-top" data-guide-top aria-label="맨 위로 이동">${wellnessIcon('up')}<span>맨 위</span></button>`;
@@ -244,15 +245,36 @@ function finalGuideIcon(g, large=false){
 }
 const guideCharacterKeys=['bad','very-bad','good','normal','very-good'];
 const guideCharacterMessages={
-  bad:['작은 관리 습관부터 함께 살펴봐요.','오늘은 잠시 쉬어가는 시간을 챙겨봐요.'],
-  'very-bad':['한 번에 모두 바꾸지 않아도 괜찮아요.','지금 할 수 있는 작은 습관부터 시작해요.'],
-  good:['오늘의 작은 습관을 이어가 볼까요?','꾸준히 기록하는 나를 응원해요!'],
-  normal:['나에게 맞는 일상의 균형을 찾아봐요.','식사와 휴식 습관도 함께 돌아봐요.'],
-  'very-good':['꾸준한 나의 루틴을 응원해요!','오늘도 나를 챙기는 시간을 가져봐요.']
+  'very-bad':['앗! 한꺼번에 바꾸지 않아도 괜찮아요. 오늘 챙길 것 하나부터 확인해봐요!','잠깐만요! 여러 제품을 드신다면 같은 성분이 겹치는지 살펴봐요!'],
+  bad:['음… 혹시 제품의 함량과 단위를 같이 확인해볼까요?','혹시 빠뜨린 기록이 있나요? 기억나는 것부터 천천히 살펴봐요.'],
+  normal:['아직 실제 영양 상태를 판단할 분석 데이터는 없어요. 등록한 제품 정보부터 확인하면 좋겠네요.','복용 기록과 실제 영양 상태는 달라요. 식사와 생활 습관도 함께 살펴보세요.'],
+  good:['오, 기록을 살펴보러 왔군요! 작은 관심을 이어가는 것도 좋은 시작이에요.','잘하고 있어요! 완벽함보다는 내가 지킬 수 있는 루틴을 찾아봐요.'],
+  'very-good':['우와아! 내 루틴을 챙기러 왔군요! 무리하지 말고 이 관심 그대로 쭉~!','좋아요, 준비됐죠? 오늘 챙길 제품과 시간을 확인하고 가볍게 시작해요!']
 };
 let guideMessageIndex=0;
+let guideSessionActive=false;
+// Current nutrient values and chart scores are illustrative, not a five-state
+// assessment. Never derive a health state from them or from dose adherence.
+function guideCharacterMessage(){
+  const key=guideCharacterKeys[guideCharacter],variant=guideMessageIndex%2;
+  const model=typeof state==='undefined'?{}:state;
+  const total=model.supplements?.length||0;
+  const done=total&&typeof completed==='function'&&typeof dateKey==='function'?completed(dateKey()):0;
+  if(done>0&&variant===1){
+    const record=model.demo?'체험 기록':'오늘 복용 기록';
+    return ({
+      'very-bad':`앗, ${record}이 ${done}건 있네요! 남은 일정도 부담 없이 확인해봐요!`,
+      bad:`음… ${record}이 ${done}건 있어요. 혹시 빠뜨린 내용은 없는지 같이 볼까요?`,
+      normal:`${record}은 ${done}건이에요. 기록만으로 영양 상태를 판단할 수는 없어요.`,
+      good:`오, ${record} ${done}건을 남겼네요! 차근차근 기록을 이어가 봐요.`,
+      'very-good':`우와아! ${record}이 ${done}건이에요! 내 페이스대로 쭉 이어가요~!`
+    })[key];
+  }
+  return guideCharacterMessages[key][variant];
+}
+window.addEventListener('hashchange',()=>{if(route()!=='guide')guideSessionActive=false;});
 function finalGuideCharacters(){
-  return `<button class="ai-guide-message" data-ai-refresh aria-label="캐릭터 안내 새로고침"><span aria-live="polite">${guideCharacterMessages[guideCharacterKeys[guideCharacter]][guideMessageIndex%2]}</span><img src="assets/setup/refresh.svg" alt=""></button><img class="ai-bubble-tail" src="assets/setup/bubble-tail.svg" alt=""><div class="ai-character-viewport" aria-label="캐릭터 캐러셀">${guideCharacterKeys.map((key,i)=>{const position=((i-guideCharacter+7)%5)-2;return `<div class="ai-character-item" data-ai-item="${i}" style="--position:${position};--scale:${position===0?1:.55};--opacity:${Math.abs(position)>1?0:position===0?1:.45};--blur:${position===0?0:3}px"><button class="ai-character-main" data-ai-tap aria-label="${key} 캐릭터 터치" tabindex="${position===0?0:-1}" ${position===0?'':'disabled'}>${initialCharacter(key)}</button>${characterShadow(key,'ai-character-shadow')}</div>`;}).join('')}</div><button class="ai-character-prev" data-ai-character="-1" aria-label="이전 캐릭터">${icon('back')}</button><button class="ai-character-next" data-ai-character="1" aria-label="다음 캐릭터 보기">${icon('arrow')}</button>`;
+  return `<button class="ai-guide-message" data-ai-refresh aria-label="캐릭터 안내 새로고침"><span aria-live="polite">${guideCharacterMessage()}</span><img src="assets/setup/refresh.svg" alt=""></button><img class="ai-bubble-tail" src="assets/setup/bubble-tail.svg" alt=""><div class="ai-character-viewport" aria-label="캐릭터 캐러셀">${guideCharacterKeys.map((key,i)=>{const position=((i-guideCharacter+7)%5)-2;return `<div class="ai-character-item" data-ai-item="${i}" style="--position:${position};--scale:${position===0?1:.55};--opacity:${Math.abs(position)>1?0:position===0?1:.45};--blur:${position===0?0:3}px"><button class="ai-character-main" data-ai-tap aria-label="${key} 캐릭터 터치" tabindex="${position===0?0:-1}" ${position===0?'':'disabled'}>${initialCharacter(key)}</button>${characterShadow(key,'ai-character-shadow')}</div>`;}).join('')}</div><button class="ai-character-prev" data-ai-character="-1" aria-label="이전 캐릭터">${icon('back')}</button><button class="ai-character-next" data-ai-character="1" aria-label="다음 캐릭터 보기">${icon('arrow')}</button>`;
 }
 const eyeGuideContent={
   paragraphs:[
@@ -366,7 +388,7 @@ function clearGuideMotion(){
 function guideMessage(refresh=false){
   if(refresh)guideMessageIndex++;
   const label=document.querySelector('.ai-guide-message [aria-live]');
-  if(label)label.textContent=guideCharacterMessages[guideCharacterKeys[guideCharacter]][guideMessageIndex%2];
+  if(label)label.textContent=guideCharacterMessage();
 }
 function playGuideMotion(type){
   const item=document.querySelector(`[data-ai-item="${guideCharacter}"]`),el=item?.querySelector('.initial-character');
