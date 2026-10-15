@@ -133,6 +133,12 @@ function periodLabel(key,short=false){
 function periodScore(key){
   if(key>periodStart(dateKey()))return null;
   let hash=0;for(const c of chartPeriod+key)hash=(hash*31+c.charCodeAt(0))>>>0;
+  if(chartPeriod==='week'){
+    // Stable illustrative daily variation, never a personal health measurement.
+    hash=Math.imul(hash^(hash>>>16),0x45d9f3b)>>>0;
+    hash=Math.imul(hash^(hash>>>16),0x45d9f3b)>>>0;
+    return 10+((hash^(hash>>>16))>>>0)%87;
+  }
   return 57+hash%29;
 }
 function periodChart(){

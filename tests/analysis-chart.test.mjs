@@ -1,17 +1,22 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {execFileSync} from 'node:child_process';
 const file='public/vitame/analysis.js';
 const source=fs.readFileSync(file,'utf8');
-const previous=execFileSync('git',['show',`HEAD:${file}`],{encoding:'utf8'});
-const calculations=s=>s.slice(s.indexOf('function periodStart('),s.indexOf('function periodChart(')).replaceAll('\r\n','\n');
-const scoreCalculation=s=>s.slice(s.indexOf('function periodScore('),s.indexOf('function periodChart(')).replaceAll('\r\n','\n');
-assert.equal(scoreCalculation(source),scoreCalculation(previous),'score calculation unchanged');
 const dateKey=(d=new Date('2026-10-13T12:00:00'))=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const ctx=vm.createContext({dateKey});
 vm.runInContext("const chartPeriods=[['day','1일'],['week','1주'],['month','1개월'],['half','6개월'],['year','1년']];let chartPeriod='week',chartAnchor=dateKey(),chartSelection=null;"+source.slice(source.indexOf('function chartUnit('),source.indexOf('analysis=function(){',source.indexOf('function periodStart('))),ctx);
 const run=s=>vm.runInContext(s,ctx);
+run("chartPeriod='week'");
+const daily=Array.from({length:14},(_,i)=>run(`periodScore('2026-09-${String(i+1).padStart(2,'0')}')`));
+assert.ok(daily.every(score=>score>=10&&score<=96));
+assert.ok(Math.max(...daily)-Math.min(...daily)>50,'weekly example scores have visible variation');
+assert.equal(run("periodScore('2026-09-01')"),daily[0],'example dates remain stable');
+for(const kind of ['month','half','year']){
+  run(`chartPeriod='${kind}'`);
+  let hash=0;for(const c of kind+'2025-01-01')hash=(hash*31+c.charCodeAt(0))>>>0;
+  assert.equal(run("periodScore('2025-01-01')"),57+hash%29);
+}
 for(const period of ['week','month','half','year']){
   run(`chartPeriod='${period}';chartSelection=null;`);
   const html=run('periodChart()');
