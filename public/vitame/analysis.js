@@ -178,8 +178,8 @@ function updateAnalysisScore(entering=false){
     analysisScoreFrame=requestAnimationFrame(tick);
   }
   analysisDisplayedKey=`${chartPeriod}:${key}`;
-  if(entering&&!reduced)document.querySelectorAll('.period-chart .month-bar-track i').forEach(bar=>{
-    bar.animate([{transform:'scaleY(0)',transformOrigin:'bottom'},{transform:'scaleY(1)',transformOrigin:'bottom'}],{duration:650,easing:'cubic-bezier(.22,1,.36,1)'});
+  if(entering&&!reduced)document.querySelectorAll('.period-chart .month-bar-track i').forEach((bar,index)=>{
+    bar.animate([{transform:'scaleY(0)',transformOrigin:'bottom'},{transform:'scaleY(1)',transformOrigin:'bottom'}],{duration:650,delay:index*85,fill:'backwards',easing:'cubic-bezier(.22,1,.36,1)'});
   });
 }
 analysis=function(){
