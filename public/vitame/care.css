@@ -176,7 +176,9 @@ body:is([data-screen="home"],[data-screen="dose"]) .calendar-week .calendar-day.
 /* General cards only: inset outline adds no box dimensions and preserves every
    existing shadow. Explicit allowlist excludes banners, bubbles, dialogs, nav,
    controls, product image tiles and cards with their own selection borders. */
-body[data-screen] :is(.health-score-link,.dose-progress-card,.care-archive-row,.nutrition-panel,.my-summary,.card:not(.dose-edit-list):not(.banner):not(.mint):not(.selected):not([aria-selected]):not([aria-pressed])):not(:focus-visible):not(dialog *){outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
+body[data-screen] :is(.health-score-link,.dose-progress-card,.nutrition-panel,.my-summary,.card:not(.dose-edit-list):not(.banner):not(.mint):not(.selected):not([aria-selected]):not([aria-pressed])):not(:focus-visible):not(dialog *){outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
+/* Outline the full swipe surface, never its content-sized inner flex row. */
+body[data-screen="archive"] .dose-row-front::after{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
 /* The two white surfaces form one card: join side strokes without a seam. */
 body[data-screen="guide"] :is(.ai-detail-surface,.ai-detail-content){position:relative;outline:none}
 body[data-screen="guide"] :is(.ai-detail-surface,.ai-detail-content)::after{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
