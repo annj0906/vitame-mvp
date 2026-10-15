@@ -382,18 +382,7 @@ const renderBeforeMotion=render;
 let previousHomeKey='',previousScreen='';
 render=function(){
   const next=route(),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const leavingNotifications=previousScreen==='notifications'&&next!=='notifications';
-  let ghost;
-  if(leavingNotifications&&!reduce){
-    const app=document.querySelector('#app'),rect=app.getBoundingClientRect();
-    ghost=app.cloneNode(true);ghost.removeAttribute('id');ghost.inert=true;ghost.setAttribute('aria-hidden','true');
-    Object.assign(ghost.style,{position:'fixed',left:rect.left+'px',top:'0',width:rect.width+'px',height:'100vh',overflow:'hidden',zIndex:'60',background:'#fff',margin:'0'});
-    document.body.append(ghost);
-  }
   renderBeforeMotion();
-  if(ghost)ghost.animate([{transform:'translateX(0)'},{transform:'translateX(105%)'}],{duration:280,easing:'ease-in'}).finished.finally(()=>ghost.remove());
-  if(next==='notifications'&&previousScreen!=='notifications'&&!reduce)
-    document.querySelector('#app').animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:320,easing:'cubic-bezier(.22,.7,.2,1)'});
   previousScreen=next;
   if(next==='dose')document.querySelector('.top-actions')?.insertAdjacentHTML('beforeend',`<button class="icon-btn" data-go="archive" aria-label="영양제 아카이브">${archiveIcon}</button>`);
   if(next!=='home')return;

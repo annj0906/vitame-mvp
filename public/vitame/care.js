@@ -74,17 +74,20 @@ render=function(){
   const previous=document.body.dataset.screen,next=route(),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const oldCalendar=document.querySelector('.dose-calendar'),oldMode=oldCalendar?.getAttribute('aria-label'),oldHeight=oldCalendar?.getBoundingClientRect().height;
   let ghost,underlay;
-  if(next==='archive'&&previous!=='archive'&&!reduced){
+  const overlayScreens=['archive','scan','notifications'];
+  const enteringOverlay=overlayScreens.includes(next)&&previous!==next;
+  const leavingOverlay=overlayScreens.includes(previous)&&previous!==next&&!enteringOverlay;
+  if(enteringOverlay&&!reduced){
     underlay=archiveTransitionSnapshot();
     underlay.viewport.style.zIndex='59';
   }
-  if(previous==='archive'&&next!=='archive'&&!reduced){
+  if(leavingOverlay&&!reduced){
     ghost=archiveTransitionSnapshot();
   }
   renderBeforeCalendarMotion();
   if(reduced)return;
   if(ghost)ghost.snapshot.animate([{transform:'translateX(0)'},{transform:'translateX(100%)'}],{duration:320,easing:'cubic-bezier(.4,0,.8,.6)'}).finished.finally(()=>ghost.viewport.remove());
-  if(next==='archive'&&previous!=='archive'){
+  if(enteringOverlay){
     const entry=archiveTransitionSnapshot();
     entry.snapshot.animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'}).finished.finally(()=>{entry.viewport.remove();underlay?.viewport.remove();});
   }
