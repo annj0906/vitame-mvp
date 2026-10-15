@@ -103,10 +103,9 @@
 .initial-setup-complete .completion-bubble-after-success{animation:completion-bubble-arrive .35s ease-out 1.5s both}
 @keyframes completion-bubble-arrive{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes completion-celebration-pop{
-  0%{opacity:0;transform:translate(0,0) scale(.2) rotate(-15deg);animation-timing-function:cubic-bezier(.12,.8,.28,1)}
-  22%{opacity:1;transform:translate(var(--pop-x),var(--pop-y)) scale(1.25) rotate(12deg);animation-timing-function:ease-out}
-  40%{opacity:1;transform:translate(var(--pop-x),calc(var(--pop-y) + 3px)) scale(1) rotate(20deg);animation-timing-function:ease-in}
-  78%{opacity:.8;transform:translate(var(--pop-x),calc(var(--pop-y) * .3 + var(--fall-y) * .7)) scale(.95) rotate(40deg)}
+  0%{opacity:0;transform:translate(0,0) scale(.2) rotate(-15deg);animation-timing-function:cubic-bezier(.333,.667,.667,1)}
+  /* One continuous gravity-like descent, with no hold keyframe at the apex. */
+  22%{opacity:1;transform:translate(var(--pop-x),var(--pop-y)) scale(1.25) rotate(12deg);animation-timing-function:cubic-bezier(.333,0,.667,.333)}
   100%{opacity:0;transform:translate(var(--pop-x),var(--fall-y)) scale(.85) rotate(65deg)}
 }
 @media(prefers-reduced-motion:reduce){.initial-setup-complete .initial-completion-celebration{display:none}.initial-setup-complete .completion-pop{animation:none}.initial-setup-complete .completion-bubble-after-success{animation:none;opacity:1;transform:none}}
