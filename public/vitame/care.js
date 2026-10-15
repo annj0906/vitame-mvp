@@ -14,6 +14,7 @@ function updateDoseCompletionCelebration(){
   const effect=count.querySelector('.dose-completion-celebration');
   const bounds=count.getBoundingClientRect(),app=document.querySelector('#app').getBoundingClientRect();
   effect.style.left=app.left+'px';effect.style.width=app.width+'px';
+  effect.style.setProperty('--dose-pop-width',app.width+'px');
   effect.style.setProperty('--dose-pop-left',(bounds.left-app.left+bounds.width*.45)+'px');
   effect.style.setProperty('--dose-pop-top',bounds.top+'px');
   effect.style.setProperty('--celebration-rise',-Math.min(180,Math.max(40,bounds.top-18))+'px');
