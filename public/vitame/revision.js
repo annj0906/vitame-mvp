@@ -375,6 +375,10 @@ render=function(){
   const from=sameDate?previousDoseRate:percent()/100,to=percent()/100;
   previousDoseKey=key;previousDoseRate=to;
   const fill=document.querySelector('.dose-progress-track>span');
+  const doneCount=document.querySelector('.dose-progress-summary .done-count');
+  if(doneCount&&sameDate&&from!==to&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    doneCount.animate([{transform:'translateY(0)'},{transform:'translateY(-5px)',offset:.38},{transform:'translateY(0)'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'});
+  }
   if(fill){fill.style.animation='none';if(from!==to&&!matchMedia('(prefers-reduced-motion: reduce)').matches)fill.animate([{transform:`scaleX(${from})`},{transform:`scaleX(${to})`}],{duration:450,easing:'cubic-bezier(.22,1,.36,1)'});}
 };
 let doseUndoTimer;
