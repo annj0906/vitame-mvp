@@ -2,15 +2,19 @@
 
 // Shared persisted interest strings remain compatible with onboarding and AI guide.
 const myHealthColors={eye:'blue',energy:'yellow',sleep:'purple',brain:'blue',bone:'yellow',immunity:'green',digestion:'pink',skin:'yellow',heart:'pink',muscle:'blue'};
+let interestSettingsBack='my';
+document.addEventListener('click',event=>{
+  if(event.target.closest('[data-go="interest-settings"]'))interestSettingsBack=route()==='guide'?'guide':'my';
+},true);
 function myPageHeader(title,back){
-  return `<header class="my-page-header">${back?`<button data-go="${back}" aria-label="마이페이지로 돌아가기"><img src="assets/setup/back.svg" alt=""></button>`:''}<h1>${title}</h1></header>`;
+  return `<header class="my-page-header">${back?`<button data-go="${back}" aria-label="${back==='guide'?'AI 가이드로 돌아가기':'마이페이지로 돌아가기'}"><img src="assets/setup/back.svg" alt=""></button>`:''}<h1>${title}</h1></header>`;
 }
 function myHealthCard([label,value,asset]){
   const selected=state.interests.includes(value),color=myHealthColors[asset];
   return `<button type="button" class="my-health-card" data-my-interest="${esc(value)}" aria-pressed="${selected}" style="--category:var(--vitame-color-accent-${color}-main);--category-light:var(--vitame-color-accent-${color}-light)"><span class="my-health-symbol" aria-hidden="true"><span style="--glyph:url('assets/setup/${asset}.svg')"></span></span><span class="my-health-label">${esc(label)}</span><span class="my-health-check" aria-hidden="true"><img src="assets/setup/check.svg" alt=""></span></button>`;
 }
 function myInterestSettings(){
-  return `${myPageHeader('관심 건강 설정','my')}<main class="my-interest-content"><h2>현재 신경쓰이는<br>고민이 있으신가요?</h2><p>관심 건강을 눌러 가이드에 추가해보세요</p><div class="my-health-grid" aria-label="관심 건강 선택">${initialHealthOptions.map(myHealthCard).join('')}</div><span class="my-save-status" role="status" aria-live="polite"></span></main>`;
+  return `${myPageHeader('관심 건강 설정',interestSettingsBack)}<main class="my-interest-content"><h2>현재 신경쓰이는<br>고민이 있으신가요?</h2><p>관심 건강을 눌러 가이드에 추가해보세요</p><div class="my-health-grid" aria-label="관심 건강 선택">${initialHealthOptions.map(myHealthCard).join('')}</div><span class="my-save-status" role="status" aria-live="polite"></span></main>`;
 }
 function myMenuGroup(title,items){
   return `<section class="my-menu-group"><h2>${title}</h2>${items.map(([label,destination])=>`<button ${destination?`data-go="${destination}"`:`data-my-unavailable="${label}"`}><span>${label}</span><img src="assets/care/chevron.svg" alt=""></button>`).join('')}</section>`;
