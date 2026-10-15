@@ -38,6 +38,12 @@ function initialFooter(next, complete = false) {
 }
 
 const beforeFinalInitialSetup = render;
+let initialCompletionCelebrated=false;
+function initialCompletionCelebration(){
+  if(initialCompletionCelebrated||matchMedia('(prefers-reduced-motion: reduce)').matches)return '';
+  initialCompletionCelebrated=true;
+  return `<span class="initial-completion-celebration" aria-hidden="true"><img class="completion-pop completion-pop-one" src="assets/onboarding/circle-blue.svg" alt=""><span class="completion-pop completion-pop-two"></span><img class="completion-pop completion-pop-three" src="assets/onboarding/circle-green.svg" alt=""><span class="completion-pop completion-pop-four"></span><img class="completion-pop completion-pop-five" src="assets/onboarding/triangle-purple.svg" alt=""></span>`;
+}
 render = function() {
   const r = route();
   if (!['health-interests','setup-frequency','setup-complete'].includes(r)) return beforeFinalInitialSetup();
@@ -54,6 +60,9 @@ render = function() {
     content = `${initialHeader('setup-frequency')}<div class="initial-copy initial-complete-copy"><h1>준비가 끝났어요!</h1><p>${esc(state.name)} 님의 관심 건강과 복용<br>습관을 반영했어요.</p></div><div class="initial-completion-art"><div class="initial-bubble"><button data-initial-message aria-label="다른 등록 안내 보기"><span aria-live="polite">${setupMessages[setupMessageIndex]}</span><img src="${setupAsset('refresh')}" alt=""></button><img class="initial-bubble-tail" src="${setupAsset('bubble-tail')}" alt=""></div>${initialCharacter('good',true)}${characterShadow('good', 'initial-complete-shadow')}</div>${initialFooter('',true)}`;
   }
   $('#app').innerHTML = `<section class="initial-setup-final initial-${r}">${content}</section>`;
+  if(r==='setup-complete'){
+    document.querySelector('.initial-completion-art .initial-character-box').insertAdjacentHTML('beforeend',initialCompletionCelebration());
+  }
 };
 
 function setInitialFrequency(value,snap=true) {
