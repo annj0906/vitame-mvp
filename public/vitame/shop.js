@@ -67,7 +67,8 @@ function updateShoppingResults(scroll=false){
 function updateShoppingTimer(){const el=$('.shop-countdown');if(!el)return;const now=new Date(),end=new Date(now);end.setHours(24,0,0,0);const seconds=Math.max(0,Math.floor((end-now)/1000));el.textContent=`${[Math.floor(seconds/3600),Math.floor(seconds/60)%60,seconds%60].map(n=>String(n).padStart(2,'0')).join(':')} 남았어요`;}
 function bindShoppingRails(){
   document.querySelectorAll('[data-shop-rail]').forEach(rail=>{
-    const dots=rail.parentElement.querySelector('.shop-dots');
+    // Category/product rails share <main> with the hero, but do not own its dots.
+    const dots=rail.closest('.shop-photo-carousel')?.querySelector('.shop-dots');
     rail.addEventListener('scroll',()=>{if(!dots)return;const step=rail.children[1]?.offsetLeft-rail.children[0]?.offsetLeft||rail.clientWidth;const i=Math.round(rail.scrollLeft/step);dots.querySelectorAll('button').forEach((b,j)=>b.setAttribute('aria-pressed',String(j===i)));},{passive:true});
     // Touch stays native for simultaneous slide movement, momentum and vertical scrolling.
     let drag=null,suppress=false;
