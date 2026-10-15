@@ -85,6 +85,12 @@ function archiveTransitionSnapshot(){
     const computed=getComputedStyle(node);
     copies[index].style.cssText=Array.from(computed).map(property=>property+':'+computed.getPropertyValue(property)+';').join('');
     copies[index].removeAttribute('id');
+    if(node.matches('.utility-order')){
+      // A transformed snapshot makes fixed descendants use its full document
+      // height. Pin the order footer to its measured viewport position instead.
+      const footer=node.getBoundingClientRect();
+      Object.assign(copies[index].style,{position:'absolute',left:(footer.left-rect.left)+'px',top:(footer.top+window.scrollY)+'px',bottom:'auto',right:'auto',width:footer.width+'px',height:footer.height+'px',transform:'none',margin:'0'});
+    }
     if(node.matches('.dose-period-toolbar .segment,.wellness-tabs,.registration-tabs')){
       const pseudo=getComputedStyle(node,'::before');
       if(pseudo.content!=='none'&&pseudo.content!=='normal'){
@@ -94,6 +100,8 @@ function archiveTransitionSnapshot(){
       }
     }
   });
+  // Keep the footer's containing block predictable even on long cart pages.
+  snapshot.querySelector('.utility-order')&&snapshot.append(snapshot.querySelector('.utility-order'));
   const viewport=document.createElement('div');viewport.inert=true;viewport.setAttribute('aria-hidden','true');
   Object.assign(viewport.style,{position:'fixed',left:rect.left+'px',top:'0',width:rect.width+'px',height:'100dvh',overflow:'hidden',zIndex:'60',pointerEvents:'none'});
   Object.assign(snapshot.style,{position:'absolute',left:'0',top:-window.scrollY+'px',width:rect.width+'px',margin:'0',transform:'none',visibility:'visible'});
