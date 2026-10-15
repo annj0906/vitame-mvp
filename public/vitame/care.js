@@ -72,6 +72,20 @@ function archiveTransitionSnapshot(){
 }
 render=function(){
   const previous=document.body.dataset.screen,next=route(),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const oldSegment=document.querySelector('.dose-period-toolbar .segment,.wellness-tabs');
+  const oldSelected=oldSegment?[...oldSegment.children].findIndex(el=>el.classList.contains('selected')):-1;
+  const analysisSwitch=['analysis','guide'].includes(previous)&&['analysis','guide'].includes(next)&&previous!==next;
+  let oldAnalysis;
+  if(analysisSwitch&&!reduced){
+    const tabs=document.querySelector('.wellness-tabs'),top=tabs.getBoundingClientRect().bottom+24,bottom=document.querySelector('.nav')?.getBoundingClientRect().top||innerHeight;
+    oldAnalysis=archiveTransitionSnapshot();
+    oldAnalysis.viewport.style.top=top+'px';oldAnalysis.viewport.style.height=Math.max(0,bottom-top)+'px';
+    oldAnalysis.snapshot.style.top=-(window.scrollY+top)+'px';
+    oldAnalysis.snapshot.querySelector('.top')?.remove();oldAnalysis.snapshot.querySelector('.nav')?.remove();
+    // Preserve header space in the frozen snapshot while hiding fixed controls.
+    oldAnalysis.snapshot.style.paddingTop='64px';
+    oldAnalysis.snapshot.querySelector('.wellness-tabs').style.visibility='hidden';
+  }
   const oldCalendar=document.querySelector('.dose-calendar'),oldMode=oldCalendar?.getAttribute('aria-label'),oldHeight=oldCalendar?.getBoundingClientRect().height;
   let ghost,underlay;
   const overlayScreens=['archive','scan','notifications'];
@@ -91,10 +105,20 @@ render=function(){
     const entry=archiveTransitionSnapshot();
     entry.snapshot.animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'}).finished.finally(()=>{entry.viewport.remove();underlay?.viewport.remove();});
   }
-  const calendar=document.querySelector('.dose-calendar');
-  if(previous==='dose'&&next==='dose'&&calendar&&oldHeight&&oldMode!==calendar.getAttribute('aria-label')){
-    calendar.style.overflow='hidden';
-    calendar.animate([{height:oldHeight+'px'},{height:calendar.getBoundingClientRect().height+'px'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'}).finished.finally(()=>calendar.style.removeProperty('overflow'));
+  const segment=document.querySelector('.dose-period-toolbar .segment,.wellness-tabs');
+  if(segment&&oldSelected>=0){
+    const selected=[...segment.children].findIndex(el=>el.classList.contains('selected'));
+    segment.style.setProperty('--segment-index',selected);
+    if(selected!==oldSelected)segment.animate([{transform:`translateX(${oldSelected*100}%)`},{transform:`translateX(${selected*100}%)`}],{duration:300,easing:'cubic-bezier(.22,1,.36,1)',pseudoElement:'::before'});
+  }
+  if(oldAnalysis){
+    const direction=next==='guide'?1:-1,content=document.querySelector('.content'),moving=document.createElement('div');
+    moving.className='analysis-transition-content';
+    [...content.children].filter(el=>!el.classList.contains('wellness-tabs')).forEach(el=>moving.append(el));content.append(moving);
+    moving.animate([{transform:`translateX(${direction*100}%)`},{transform:'translateX(0)'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'});
+    oldAnalysis.snapshot.animate([{transform:'translateX(0)'},{transform:`translateX(${-direction*100}%)`}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'}).finished.finally(()=>{oldAnalysis.viewport.remove();if(moving.isConnected)moving.replaceWith(...moving.children);});
+    const active=document.querySelector('.nav .active');
+    active?.animate([{backgroundColor:previous==='guide'?'#43c982':'#ffc94a'},{backgroundColor:next==='guide'?'#43c982':'#ffc94a'}],{duration:320});
   }
 };
 render();
