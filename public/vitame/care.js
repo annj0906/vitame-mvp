@@ -103,6 +103,7 @@ function archiveTransitionSnapshot(){
 render=function(){
   const previous=document.body.dataset.screen,next=route(),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const oldSegment=document.querySelector('.dose-period-toolbar .segment,.wellness-tabs');
+  const oldSegmentColor=oldSegment?getComputedStyle(oldSegment).backgroundColor:null;
   const oldSelected=oldSegment?[...oldSegment.children].findIndex(el=>el.classList.contains('selected')):-1;
   const analysisSwitch=['analysis','guide'].includes(previous)&&['analysis','guide'].includes(next)&&previous!==next;
   let oldAnalysis;
@@ -138,6 +139,9 @@ render=function(){
     entry.snapshot.animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'}).finished.finally(()=>{entry.viewport.remove();underlay?.viewport.remove();});
   }
   const segment=document.querySelector('.dose-period-toolbar .segment,.wellness-tabs');
+  if(analysisSwitch&&segment&&oldSegmentColor){
+    segment.animate([{backgroundColor:oldSegmentColor},{backgroundColor:getComputedStyle(segment).backgroundColor}],{duration:300,easing:'cubic-bezier(.22,1,.36,1)'});
+  }
   if(segment&&oldSelected>=0){
     const selected=[...segment.children].findIndex(el=>el.classList.contains('selected'));
     segment.style.setProperty('--segment-index',selected);
