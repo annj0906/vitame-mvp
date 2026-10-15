@@ -125,7 +125,12 @@ body[data-screen="home"] .home-dose .taken .pill,body[data-screen="dose"] .taken
 .registration-icons [aria-pressed="true"]{background:var(--vitame-color-neutral-gray20)}
 @media(max-width:380px){.registration-days{gap:6px}.registration-days button{height:40px}.registration-ingredients>div{grid-template-columns:minmax(0,1fr) 58px 88px 24px}.registration-notifications p{font-size:14px}}
 /* Inline time selection uses the existing wheel values and save action. */
-.registration-inline-picker .registration-wheel{height:132px;margin:12px 0;background:linear-gradient(transparent 44px,var(--vitame-color-accent-orange-light) 44px,var(--vitame-color-accent-orange-light) 88px,transparent 88px);border-radius:999px}
+.registration-inline-picker{overflow:hidden;animation:registration-picker-enter .28s ease-out both}
+@keyframes registration-picker-enter{from{height:0;opacity:0}to{height:156px;opacity:1}}
+.registration-inline-picker .registration-wheel{height:132px;margin:12px 0;background:none;border-radius:0}
+.registration-inline-picker .registration-wheel::before{content:"";position:absolute;left:0;right:0;top:44px;height:44px;border-radius:999px;background:var(--vitame-color-accent-orange-light);pointer-events:none}
+.registration-settings .registration-add.is-picker-open{background:var(--vitame-color-accent-orange-main);color:var(--vitame-color-neutral-white);transition:background .24s,color .24s}
+@media(prefers-reduced-motion:reduce){.registration-inline-picker{animation:none}}
 .registration-inline-picker .registration-wheel-column{padding:44px 0;position:relative}
 .registration-inline-picker .registration-wheel-column button[aria-selected="true"]{color:var(--vitame-color-accent-orange-main)}
 .registration-inline-picker .registration-wheel-column:nth-child(2)::after{content:":";position:sticky;top:54px;float:right;color:var(--vitame-color-neutral-gray60)}

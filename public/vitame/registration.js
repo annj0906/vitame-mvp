@@ -74,7 +74,7 @@ function readRegistrationForm(){
 function registrationTimeLabel(time){const [h,m]=time.split(':').map(Number);return `${h<12?'오전':'오후'} ${String(h%12||12).padStart(2,'0')}:${String(m).padStart(2,'0')}`;}
 function registrationSettings(){
   const d=ensureRegistrationDraft();
-  return `<section class="registration-screen">${registrationHeader('복용 설정','back-entry')}<form id="registration-settings" class="registration-content registration-settings"><section><h2>영양제 정보</h2><p>영양제 이름과 아이콘을 변경해보세요.</p><div class="registration-name"><button type="button" data-registration="icon" aria-label="영양제 아이콘 변경"><span class="registration-icon-preview">${registrationAsset('edit-icon')}<span class="pill p${d.colorIndex}"></span></span></button><label><span>이름</span><input name="name" aria-label="영양제 이름" maxlength="60" value="${esc(d.name)}" required></label></div></section>
+  return `<section class="registration-screen">${registrationHeader('복용 설정','back-entry')}<form id="registration-settings" class="registration-content registration-settings"><section><h2>영양제 정보</h2><p>영양제 이름과 아이콘을 변경해보세요.</p><div class="registration-name"><button type="button" data-registration="icon" aria-label="영양제 아이콘 변경"><span class="registration-icon-preview">${registrationAsset('edit-icon-shell')}<span class="pill p${d.colorIndex}"></span></span></button><label><span>이름</span><input name="name" aria-label="영양제 이름" maxlength="60" value="${esc(d.name)}" required></label></div></section>
     <section><h2>1회 복용량</h2><span class="registration-dose"><input name="dose" aria-label="1회 복용량" type="number" min="0.01" max="1000000" step="any" value="${d.dose}" required><select name="doseUnit" aria-label="복용 형태">${['정','캡슐','포','구미','방울','mL','g'].map(u=>`<option ${u===d.doseUnit?'selected':''}>${u}</option>`).join('')}</select></span></section>
     <section><h2>복용 시간</h2><p>언제 챙겨드시나요?</p><div class="registration-times">${d.times.map((t,i)=>`<div><button type="button" data-registration="time" data-index="${i}">${registrationTimeLabel(t)}</button><button type="button" data-registration="remove-time" data-index="${i}" aria-label="${registrationTimeLabel(t)} 삭제">${registrationAsset('time-minus')}</button></div>`).join('')}</div><button type="button" class="registration-add" data-registration="add-time">+ 시간 추가</button></section>
     <section><h2>복용 요일</h2><div class="registration-days">${registrationDays.map((day,i)=>`<button type="button" data-registration="day" data-index="${i}" aria-pressed="${d.days.includes(i)}">${day}</button>`).join('')}</div></section>
@@ -83,7 +83,15 @@ function registrationSettings(){
 }
 function rememberRegistrationSearch(){const q=registrationQuery.trim();if(!q)return;state.registrationSearches=[q,...(state.registrationSearches||[]).filter(x=>x!==q)].slice(0,8);save();}
 function registrationDialog(html){const dialog=$('#dialog');dialog.classList.add('registration-sheet');dialog.innerHTML=`<div class="registration-handle"></div>${html}`;dialog.showModal();}
-function closeRegistrationDialog(){const dialog=$('#dialog');if(dialog.classList.contains('registration-sheet')){dialog.close();dialog.classList.remove('registration-sheet');dialog.innerHTML='';}}
+function closeRegistrationDialog(afterClose){
+  const dialog=$('#dialog');if(!dialog.classList.contains('registration-sheet'))return;
+  const finish=()=>{dialog.close();dialog.classList.remove('registration-sheet');dialog.innerHTML='';if(typeof afterClose==='function')afterClose();};
+  if(typeof afterClose!=='object'&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&dialog.open){
+    if(dialog.dataset.closing)return;dialog.dataset.closing='true';
+    const animation=dialog.animate([{transform:'translateY(0)'},{transform:'translateY(100%)'}],{duration:260,easing:'cubic-bezier(.4,0,.8,.6)',fill:'forwards'});
+    animation.finished.then(()=>{delete dialog.dataset.closing;finish();animation.cancel();},()=>{delete dialog.dataset.closing;});
+  }else finish();
+}
 function confirmRegistrationProduct(p){registrationSelection=p;rememberRegistrationSearch();registrationDialog(`<div class="registration-product">${registrationProduct(p)}</div><h2>이 영양제로 복용 설정을 이어갈까요?</h2>${!p.nutrition?.length?'<p class="registration-missing">성분·함량 미등록 <button data-registration="review-product">직접 입력으로 확인</button></p>':''}${p.exampleNutrition?'<p class="registration-example">예시 성분 정보입니다. 실제 제품 라벨과 확인해주세요.</p>':''}<div class="registration-sheet-actions"><button data-registration="dismiss">다시 선택</button><button class="registration-primary" data-registration="confirm">확인</button></div>`);}
 function useRegistrationProduct(){const p=registrationSelection;if(!p)return false;if(registrationDraft?.productId!==p.id){const parsed=parseLabelText(p.ingredients||'');registrationDraft={...newRegistrationDraft(),name:p.name,brand:p.brandName||p.brand||'',productId:p.id,labelInfo:p.labelInfo,exampleNutrition:p.exampleNutrition,ingredients:p.nutrition?p.nutrition.map(n=>({...n})):parsed.ingredients.filter(n=>n.name&&n.amount)};}return true;}
 function openRegistrationTime(index){
@@ -93,6 +101,7 @@ function openRegistrationTime(index){
   const add=host.querySelector('[data-registration="add-time"], [data-registration="save-time"]');
   add.insertAdjacentHTML('beforebegin',`<div class="registration-inline-picker"><div class="registration-wheel" data-time-index="${index}">${[['오전','오후'],Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0')),Array.from({length:60},(_,i)=>String(i).padStart(2,'0'))].map((values,col)=>`<div class="registration-wheel-column" role="listbox" aria-label="${['오전·오후','시','분'][col]}" tabindex="0" data-wheel="${col}">${values.map((value,i)=>`<button type="button" role="option" aria-selected="false" data-wheel-value="${i}">${value}</button>`).join('')}</div>`).join('')}</div></div>`);
   add.dataset.registration='save-time';add.textContent=index===d.times.length?'+ 시간 추가':'시간 적용';
+  add.classList.add('is-picker-open');
 
   const values=[h<12?0:1,(h%12||12)-1,m];document.querySelectorAll('[data-wheel]').forEach((el,i)=>{el.scrollTop=values[i]*44;updateRegistrationWheel(el);});
 }
@@ -143,11 +152,16 @@ document.addEventListener('click',e=>{
   else if(a==='remove-time'){if(d.times.length===1){toast('복용 시간을 한 개 이상 설정해주세요.');return;}d.times.splice(i,1);render();}
   else if(a==='day'){d.days=d.days.includes(i)?d.days.filter(day=>day!==i):[...d.days,i].sort();b.setAttribute('aria-pressed',String(d.days.includes(i)));}
   else if(a==='icon')registrationDialog(`<h2>영양제 아이콘</h2><div class="registration-icons">${[4,5,0,1,6,3,2].map(i=>`<button data-registration="pick-icon" data-index="${i}" aria-label="${['노랑','초록','보라','파랑','분홍','빨강','하늘색'][i]} 아이콘" aria-pressed="${d.colorIndex===i}"><span class="pill p${i}"></span></button>`).join('')}</div><button data-registration="dismiss">닫기</button>`);
-  else if(a==='pick-icon'){d.colorIndex=i;closeRegistrationDialog();render();}
+  else if(a==='pick-icon'){d.colorIndex=i;closeRegistrationDialog(()=>render());}
   else if(a==='save-time'){
     const cols=Array.from(document.querySelectorAll('[data-wheel]'));cols.forEach(updateRegistrationWheel);const [period,h,m]=cols.map(c=>Number(c.dataset.value));
     const time=`${String((h+1)%12+period*12).padStart(2,'0')}:${String(m).padStart(2,'0')}`,index=Number($('.registration-wheel').dataset.timeIndex);
-    if(d.times.some((t,i)=>t===time&&i!==index)){toast('이미 추가한 시간이에요.');return;}d.times[index]=time;render();
+    if(d.times.some((t,i)=>t===time&&i!==index)){toast('이미 추가한 시간이에요.');return;}d.times[index]=time;
+    const picker=document.querySelector('.registration-inline-picker');
+    if(picker&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+      if(picker.dataset.closing)return;picker.dataset.closing='true';
+      picker.animate([{height:picker.offsetHeight+'px',opacity:1},{height:'0px',opacity:0}],{duration:240,easing:'ease-in-out',fill:'forwards'}).finished.then(()=>{if(picker.isConnected)render();});
+    }else render();
   }
 });
 document.addEventListener('scroll',e=>{if(e.target.matches?.('[data-wheel]'))updateRegistrationWheel(e.target);},true);
