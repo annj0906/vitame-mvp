@@ -56,18 +56,35 @@ document.addEventListener('click',e=>{
   e.target.closest('.nutrition-panel')?.querySelector('[data-nutrition-toggle]').click();
 });
 const renderBeforeCalendarMotion=render;
+function archiveTransitionSnapshot(){
+  const app=$('#app'),rect=app.getBoundingClientRect(),snapshot=app.cloneNode(true);
+  const originals=[app,...app.querySelectorAll('*')],copies=[snapshot,...snapshot.querySelectorAll('*')];
+  originals.forEach((node,index)=>{
+    const computed=getComputedStyle(node);
+    copies[index].style.cssText=Array.from(computed).map(property=>property+':'+computed.getPropertyValue(property)+';').join('');
+    copies[index].removeAttribute('id');
+  });
+  const viewport=document.createElement('div');viewport.inert=true;viewport.setAttribute('aria-hidden','true');
+  Object.assign(viewport.style,{position:'fixed',left:rect.left+'px',top:'0',width:rect.width+'px',height:'100dvh',overflow:'hidden',zIndex:'60',pointerEvents:'none'});
+  Object.assign(snapshot.style,{position:'absolute',left:'0',top:-window.scrollY+'px',width:rect.width+'px',margin:'0',transform:'none',visibility:'visible'});
+  viewport.append(snapshot);document.body.append(viewport);
+  return {viewport,snapshot};
+}
 render=function(){
   const previous=document.body.dataset.screen,next=route(),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const oldCalendar=document.querySelector('.dose-calendar'),oldMode=oldCalendar?.getAttribute('aria-label'),oldHeight=oldCalendar?.getBoundingClientRect().height;
   let ghost;
   if(previous==='archive'&&next!=='archive'&&!reduced){
-    const app=$('#app'),rect=app.getBoundingClientRect();ghost=app.cloneNode(true);ghost.removeAttribute('id');ghost.inert=true;
-    Object.assign(ghost.style,{position:'fixed',left:rect.left+'px',top:'0',width:rect.width+'px',height:'100dvh',overflow:'hidden',zIndex:'60',background:'var(--vitame-color-neutral-background)'});document.body.append(ghost);
+    ghost=archiveTransitionSnapshot();
   }
   renderBeforeCalendarMotion();
   if(reduced)return;
-  if(ghost)ghost.animate([{transform:'translateX(0)'},{transform:'translateX(100%)'}],{duration:320,easing:'cubic-bezier(.4,0,.8,.6)'}).finished.finally(()=>ghost.remove());
-  if(next==='archive'&&previous!=='archive')$('#app').animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'});
+  if(ghost)ghost.snapshot.animate([{transform:'translateX(0)'},{transform:'translateX(100%)'}],{duration:320,easing:'cubic-bezier(.4,0,.8,.6)'}).finished.finally(()=>ghost.viewport.remove());
+  if(next==='archive'&&previous!=='archive'){
+    const entry=archiveTransitionSnapshot(),app=$('#app');app.style.visibility='hidden';
+    entry.viewport.style.background='var(--vitame-color-neutral-background)';
+    entry.snapshot.animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'}).finished.finally(()=>{app.style.removeProperty('visibility');entry.viewport.remove();});
+  }
   const calendar=document.querySelector('.dose-calendar');
   if(previous==='dose'&&next==='dose'&&calendar&&oldHeight&&oldMode!==calendar.getAttribute('aria-label')){
     calendar.style.overflow='hidden';
