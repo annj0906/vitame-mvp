@@ -176,7 +176,7 @@ body[data-screen="analysis"] .analysis-guide-cta .primary{border-radius:999px;he
 /* Keep calendar cells stable; only the selected date's backdrop becomes circular. */
 body:is([data-screen="home"],[data-screen="dose"]) .calendar-day.picked{position:relative;isolation:isolate;background:transparent}
 body:is([data-screen="home"],[data-screen="dose"]) .calendar-day.picked::before{content:"";position:absolute;z-index:-1;pointer-events:none;left:50%;top:50%;transform:translate(-50%,-50%);width:min(100%,48px);aspect-ratio:1;border-radius:50%;background:var(--vitame-color-neutral-gray20)}
-body:is([data-screen="home"],[data-screen="dose"]) .calendar-week .calendar-day.picked::before{top:auto;bottom:0;transform:translateX(-50%)}
+body:is([data-screen="home"],[data-screen="dose"]) .calendar-week .calendar-day.picked::before{top:0;bottom:0;height:100%;width:100%;aspect-ratio:auto;border-radius:999px;transform:translateX(-50%)}
 /* General cards only: inset outline adds no box dimensions and preserves every
    existing shadow. Explicit allowlist excludes banners, bubbles, dialogs, nav,
    controls, product image tiles and cards with their own selection borders. */
