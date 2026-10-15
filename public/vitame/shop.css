@@ -49,3 +49,31 @@ body:is([data-screen="shop"],[data-screen="shop-eye-berry"]) #app{background:var
 .shopping-page .shop-category-glyph img{width:auto;height:auto;max-width:18px;max-height:18px;object-fit:contain}
 .shopping-page .shop-category-symbol.shop-health-skin .ai-health-icon{background:var(--vitame-color-accent-yellow-light)}
 .shopping-page .shop-category-symbol.shop-health-circulation .ai-health-icon{background:var(--vitame-color-accent-pink-light)}
+/* Product detail: Figma frame 295:2182. No catalog or purchase logic changes. */
+.shop-detail .shop-header>div{display:none}
+.shop-detail .shop-detail-hero{aspect-ratio:430/500;object-fit:cover;object-position:50% 67.1%}
+.shop-detail .shop-detail-info{position:relative;padding:24px 20px}
+.shop-detail .shop-detail-info>p:first-child{font:var(--vitame-type-pretendard-body1-medium-16)}
+.shop-detail .shop-detail-info h2{font:var(--vitame-type-pretendard-body1-regular-16);margin:0 0 8px;padding-right:60px}
+.shop-detail .shop-detail-price{gap:4px}
+.shop-detail .shop-detail-price b,.shop-detail .shop-detail-price strong{font:var(--vitame-type-pretendard-subtitle-semibold-18)}
+.shop-detail .shop-detail-price del{font:var(--vitame-type-pretendard-body2-regular-14)}
+.shop-detail .shop-detail-info>.ai-product-tags{position:absolute;right:20px;top:24px;display:flex;gap:4px;margin:0}
+.shop-detail .shop-detail-tabs{gap:8px;padding:0 20px 24px;border:0;align-items:center;flex-wrap:wrap}
+.shop-detail .shop-detail-tabs>*{flex:none;min-height:36px;padding:8px;border:.8px solid var(--vitame-color-neutral-gray20);border-radius:30px;background:white;color:var(--vitame-color-neutral-gray60);font:var(--vitame-type-pretendard-body2-regular-14);text-decoration:none}
+.shop-detail .shop-detail-tabs a{background:var(--vitame-color-neutral-black);color:white;border-color:var(--vitame-color-neutral-black);font-weight:600}
+.shop-detail .shop-berry-hand{aspect-ratio:auto;display:flex;flex-direction:column;align-items:center;background:white}
+.shop-detail .shop-berry-hand h2{position:static;padding:24px 20px;letter-spacing:-.025em;text-align:center;font:700 34px/1.4 var(--vitame-font-nanum-square-round)}
+.shop-detail .shop-berry-hand h2 strong{font:800 clamp(32px,10.23vw,44px)/1.2 var(--vitame-font-nanum-square-round);white-space:nowrap}
+.shop-detail .shop-berry-hand>img{display:block;width:min(100%,270px);height:auto;aspect-ratio:270/331;object-fit:cover;object-position:bottom}
+.shop-detail .shop-berry-message p{color:white}
+.shop-detail .shop-berry-jar .shop-annotation-one{left:4.65%;top:6.08%;width:42.8%}
+.shop-detail .shop-berry-jar .shop-annotation-two{left:59.07%;right:auto;top:22.28%;width:36.28%;text-align:right}
+.shop-detail .shop-berry-jar .shop-annotation-three{left:4.65%;top:46.31%;width:33.26%}
+.shop-detail .shop-berry-jar p>img{display:block;margin-top:4px;max-width:100%;height:auto}
+.shop-detail .shop-annotation-two>img{transform:scaleX(-1)}
+.shop-detail>.shop-detail-actions{gap:8px;padding:0 20px max(30px,env(safe-area-inset-bottom));background:transparent}
+.shop-detail .shop-detail-actions>.shop-heart,.shop-detail .shop-detail-actions>button:not(.shop-buy){width:56px;height:56px;min-height:56px;flex:0 0 56px;border:.8px solid var(--vitame-color-neutral-gray20);border-radius:50%;background:white;padding:18px}
+.shop-detail .shop-detail-actions>button img{width:18px;height:18px}
+.shop-detail .shop-detail-actions>.shop-buy{height:56px;border-radius:999px;font:var(--vitame-type-pretendard-body1-bold-16)}
+.shop-detail main>.shop-section{margin-top:40px}

@@ -165,3 +165,7 @@ body[data-screen="analysis"] .analysis-guide-cta .primary{border-radius:999px;he
  body[data-screen="analysis"] .care-nutrition-title small{font-size:12px}
 }
 @media(prefers-reduced-motion:reduce){body[data-screen="analysis"] .care-guide-character *{animation:none!important}body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front{transition:none}}
+/* Keep calendar cells stable; only the selected date's backdrop becomes circular. */
+body:is([data-screen="home"],[data-screen="dose"]) .calendar-day.picked{position:relative;isolation:isolate;background:transparent}
+body:is([data-screen="home"],[data-screen="dose"]) .calendar-day.picked::before{content:"";position:absolute;z-index:-1;pointer-events:none;left:50%;top:50%;transform:translate(-50%,-50%);width:min(100%,48px);aspect-ratio:1;border-radius:50%;background:var(--vitame-color-neutral-gray20)}
+body:is([data-screen="home"],[data-screen="dose"]) .calendar-week .calendar-day.picked::before{top:auto;bottom:0;transform:translateX(-50%)}
