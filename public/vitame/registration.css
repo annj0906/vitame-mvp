@@ -49,6 +49,9 @@ body[data-screen="registration"] .app,.registration-screen{background:var(--vita
 .registration-popular ol{display:grid;grid-template-rows:repeat(4,auto);grid-auto-flow:column;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;list-style:none;margin:0;padding:0}
 .registration-popular button{display:flex;align-items:center;gap:12px;text-align:left;min-height:26px;padding:0;font:var(--vitame-type-pretendard-body2-regular-14)}
 .registration-popular button b{width:16px;text-align:center;font-weight:400}
+.registration-rank-window{display:block;height:22px;line-height:22px;overflow:hidden;min-width:0}
+.registration-rank-roll{display:flex;flex-direction:column}
+.registration-rank-roll>span{display:block;height:22px;line-height:22px;flex:none;white-space:nowrap}
 .registration-search button>img{max-width:18px;max-height:18px;filter:brightness(.6)}
 .registration-label-info{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray70)}
 .registration-label-info summary{cursor:pointer}

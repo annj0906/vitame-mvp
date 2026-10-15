@@ -134,12 +134,13 @@ render=function(){
       if(!popular.isConnected||document.hidden)return;
       const buttons=[...popular.querySelectorAll('[data-registration="popular"]')],terms=buttons.map(b=>b.dataset.query);
       buttons.forEach((button,index)=>{
-        button.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-5px)'}],{duration:160,fill:'forwards'}).finished.then(()=>{
+        const term=terms[(index+1)%terms.length];
+        button.innerHTML=`<b>${index+1}</b><span class="registration-rank-window"><span class="registration-rank-roll"><span>${esc(terms[index])}</span><span>${esc(term)}</span></span></span>`;
+        const roll=button.querySelector('.registration-rank-roll');
+        roll.animate([{transform:'translateY(0)'},{transform:'translateY(-50%)'}],{duration:440,delay:index*400,easing:'cubic-bezier(.22,1,.36,1)',fill:'both'}).finished.then(()=>{
           if(!button.isConnected)return;
-          const term=terms[(index+1)%terms.length];button.dataset.query=term;
-          button.innerHTML=`<b>${index+1}</b>${esc(term)}`;
-          button.getAnimations().forEach(a=>a.cancel());
-          button.animate([{opacity:0,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:240});
+          button.dataset.query=term;
+          button.innerHTML=`<b>${index+1}</b><span class="registration-rank-window">${esc(term)}</span>`;
         });
       });
     },7000);
