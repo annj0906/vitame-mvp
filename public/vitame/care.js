@@ -63,6 +63,14 @@ function archiveTransitionSnapshot(){
     const computed=getComputedStyle(node);
     copies[index].style.cssText=Array.from(computed).map(property=>property+':'+computed.getPropertyValue(property)+';').join('');
     copies[index].removeAttribute('id');
+    if(node.matches('.dose-period-toolbar .segment,.wellness-tabs')){
+      const pseudo=getComputedStyle(node,'::before');
+      if(pseudo.content!=='none'&&pseudo.content!=='normal'){
+        const capsule=document.createElement('span');capsule.setAttribute('aria-hidden','true');
+        capsule.style.cssText=Array.from(pseudo).map(property=>property+':'+pseudo.getPropertyValue(property)+';').join('');
+        copies[index].classList.add('transition-frozen-segment');copies[index].prepend(capsule);
+      }
+    }
   });
   const viewport=document.createElement('div');viewport.inert=true;viewport.setAttribute('aria-hidden','true');
   Object.assign(viewport.style,{position:'fixed',left:rect.left+'px',top:'0',width:rect.width+'px',height:'100dvh',overflow:'hidden',zIndex:'60',pointerEvents:'none'});

@@ -4,6 +4,7 @@ body:is([data-screen="dose"],[data-screen="analysis"],[data-screen="guide"]) :is
 body:is([data-screen="dose"],[data-screen="analysis"],[data-screen="guide"]) :is(.dose-period-toolbar .segment,.wellness-tabs)::before{content:"";position:absolute;left:4px;top:4px;bottom:4px;width:calc((100% - 8px)/2);border-radius:999px;background:white;box-shadow:0 4px 2px #0000000d;transform:translateX(calc(var(--segment-index)*100%));z-index:-1}
 body:is([data-screen="dose"],[data-screen="analysis"],[data-screen="guide"]) :is(.dose-period-toolbar .segment,.wellness-tabs) button.selected{background:transparent!important;box-shadow:none!important}
 .analysis-transition-content{overflow-anchor:none}
+.transition-frozen-segment::before{content:none!important}
 body:is([data-screen="analysis"],[data-screen="guide"]) .content{overflow-x:clip}
 body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) #app{background:var(--vitame-color-neutral-background);color:var(--vitame-color-neutral-black)}
 body:is([data-screen="dose"],[data-screen="archive"],[data-screen="analysis"]) .top{position:relative;height:64px;padding:0 20px;background:transparent}
