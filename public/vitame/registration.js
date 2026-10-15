@@ -199,10 +199,10 @@ document.addEventListener('click',e=>{
       picker.style.animation='none';
       const add=picker.nextElementSibling;
       add.classList.remove('is-picker-open');add.textContent='+ 시간 추가';add.disabled=true;
-      const options={duration:280,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'};
+      const options={duration:320,easing:'cubic-bezier(.32,0,.2,1)',fill:'forwards'};
       times.style.overflow='hidden';
       const listMotion=times.animate([{height:oldHeight+'px'},{height:newHeight+'px'}],options);
-      const pickerMotion=picker.animate([{height:picker.offsetHeight+'px',opacity:1},{height:'0px',opacity:0}],options);
+      const pickerMotion=picker.animate([{height:picker.offsetHeight+'px',opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-6px)',offset:.7},{height:'0px',opacity:0,transform:'translateY(-6px)'}],options);
       Promise.all([listMotion.finished,pickerMotion.finished]).then(()=>{
         if(picker.isConnected){picker.remove();add.dataset.registration='add-time';add.disabled=false;times.style.removeProperty('overflow');}
         listMotion.cancel();pickerMotion.cancel();
