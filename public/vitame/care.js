@@ -73,7 +73,11 @@ function archiveTransitionSnapshot(){
 render=function(){
   const previous=document.body.dataset.screen,next=route(),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const oldCalendar=document.querySelector('.dose-calendar'),oldMode=oldCalendar?.getAttribute('aria-label'),oldHeight=oldCalendar?.getBoundingClientRect().height;
-  let ghost;
+  let ghost,underlay;
+  if(next==='archive'&&previous!=='archive'&&!reduced){
+    underlay=archiveTransitionSnapshot();
+    underlay.viewport.style.zIndex='59';
+  }
   if(previous==='archive'&&next!=='archive'&&!reduced){
     ghost=archiveTransitionSnapshot();
   }
@@ -81,9 +85,8 @@ render=function(){
   if(reduced)return;
   if(ghost)ghost.snapshot.animate([{transform:'translateX(0)'},{transform:'translateX(100%)'}],{duration:320,easing:'cubic-bezier(.4,0,.8,.6)'}).finished.finally(()=>ghost.viewport.remove());
   if(next==='archive'&&previous!=='archive'){
-    const entry=archiveTransitionSnapshot(),app=$('#app');app.style.visibility='hidden';
-    entry.viewport.style.background='var(--vitame-color-neutral-background)';
-    entry.snapshot.animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'}).finished.finally(()=>{app.style.removeProperty('visibility');entry.viewport.remove();});
+    const entry=archiveTransitionSnapshot();
+    entry.snapshot.animate([{transform:'translateX(100%)'},{transform:'translateX(0)'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'}).finished.finally(()=>{entry.viewport.remove();underlay?.viewport.remove();});
   }
   const calendar=document.querySelector('.dose-calendar');
   if(previous==='dose'&&next==='dose'&&calendar&&oldHeight&&oldMode!==calendar.getAttribute('aria-label')){
