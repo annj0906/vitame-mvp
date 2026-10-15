@@ -25,12 +25,24 @@ const voices=keys.map((_,i)=>run(`guideCharacter=${i};guideMessageIndex=0;guideC
 assert.equal(new Set(voices).size,5);
 assert.match(voices[0],/음…/);
 assert.match(voices[1],/앗!/);
-assert.match(voices[3],/데이터/);
+assert.match(voices[3],/흠/);
 ctx.state={demo:false,supplements:[{id:'test'}],records:{unchanged:true}};
 ctx.completed=()=>1;ctx.dateKey=()=>'2026-10-15';
 const beforeRecord=JSON.stringify(ctx.state);
-for(let i=0;i<5;i++){run(`guideCharacter=${i};guideMessageIndex=1`);assert.match(run('guideCharacterMessage()'),/1건/);}
+for(let i=0;i<5;i++){run(`guideCharacter=${i};guideMessageIndex=1`);assert.equal(run('guideCharacterMessage()'),voices[i],'same visit preserves each line');}
 assert.equal(JSON.stringify(ctx.state),beforeRecord);
+ctx.nutrients=[['비타민 A',35,'부족'],['비타민 D',43,'부족'],['칼슘',80,'적정']];
+run("Object.keys(guideVisitMessages).forEach(k=>delete guideVisitMessages[k]);guideCharacter=0;guideDialogueCursor.bad=0");
+const firstVisit=run('guideCharacterMessage()');
+run("guideCharacter=2;guideCharacterMessage();guideCharacter=0");
+assert.equal(run('guideCharacterMessage()'),firstVisit);
+run("Object.keys(guideVisitMessages).forEach(k=>delete guideVisitMessages[k])");
+assert.notEqual(run('guideCharacterMessage()'),firstVisit,'next visit advances independently');
+assert.equal(run('guideDialogueFacts().improved'),false,'missing comparison history cannot trigger improvement');
+assert.equal(run('guideDialogueFacts().weekComplete'),false);
+assert.equal(run('Object.values(guideCharacterMessages).reduce((n,lines)=>n+lines.length,0)'),30);
+assert.ok(source.includes("guideCharacter=0,guideVisit=0"),'fresh app defaults to green');
+assert.doesNotMatch(source,/guideCharacter=guideCharacterKeys.indexOf\('normal'\)/);
 run('guideCharacter=0;guideMessageIndex=0');
 assert.equal(items.filter(i=>!i.querySelector('[data-ai-tap]').disabled).length,1);
 assert.ok(items.every(i=>i.classes.size===0),'first entry starts Idle');
