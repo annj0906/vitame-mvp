@@ -119,7 +119,7 @@ function updateRegistrationWheel(el){const index=Math.max(0,Math.min(el.children
 const beforeRegistration=render;
 let popularSearchTimer=null;
 render=function(){
-  if(popularSearchTimer){clearInterval(popularSearchTimer);popularSearchTimer=null;}
+  if(popularSearchTimer){clearTimeout(popularSearchTimer);popularSearchTimer=null;}
   const r=route();if(!['supplement-register','registration-settings','result'].includes(r)){beforeRegistration();return;}
   const oldTab=document.querySelector('.registration-tabs [aria-selected="true"]')?.dataset.registration;
   clearTimeout(introTimer);
@@ -130,7 +130,7 @@ render=function(){
   }
   const popular=document.querySelector('.registration-popular');
   if(popular&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
-    popularSearchTimer=setInterval(()=>{
+    const rotatePopular=()=>{
       if(!popular.isConnected||document.hidden)return;
       const buttons=[...popular.querySelectorAll('[data-registration="popular"]')],terms=buttons.map(b=>b.dataset.query);
       buttons.forEach((button,index)=>{
@@ -143,7 +143,9 @@ render=function(){
           button.innerHTML=`<b>${index+1}</b><span class="registration-rank-window">${esc(term)}</span>`;
         });
       });
-    },7000);
+      popularSearchTimer=setTimeout(rotatePopular,7000);
+    };
+    popularSearchTimer=setTimeout(rotatePopular,200);
   }
 };
 document.addEventListener('input',e=>{

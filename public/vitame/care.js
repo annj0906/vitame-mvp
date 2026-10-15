@@ -63,7 +63,7 @@ function archiveTransitionSnapshot(){
     const computed=getComputedStyle(node);
     copies[index].style.cssText=Array.from(computed).map(property=>property+':'+computed.getPropertyValue(property)+';').join('');
     copies[index].removeAttribute('id');
-    if(node.matches('.dose-period-toolbar .segment,.wellness-tabs')){
+    if(node.matches('.dose-period-toolbar .segment,.wellness-tabs,.registration-tabs')){
       const pseudo=getComputedStyle(node,'::before');
       if(pseudo.content!=='none'&&pseudo.content!=='normal'){
         const capsule=document.createElement('span');capsule.setAttribute('aria-hidden','true');
@@ -97,8 +97,9 @@ render=function(){
   const oldCalendar=document.querySelector('.dose-calendar'),oldMode=oldCalendar?.getAttribute('aria-label'),oldHeight=oldCalendar?.getBoundingClientRect().height;
   let ghost,underlay;
   const overlayScreens=['archive','scan','notifications'];
-  const enteringOverlay=overlayScreens.includes(next)&&previous!==next;
-  const leavingOverlay=overlayScreens.includes(previous)&&previous!==next&&!enteringOverlay;
+  const returningToScan=previous==='registration'&&next==='scan';
+  const enteringOverlay=overlayScreens.includes(next)&&previous!==next&&!returningToScan;
+  const leavingOverlay=returningToScan||(overlayScreens.includes(previous)&&previous!==next&&!enteringOverlay);
   if(enteringOverlay&&!reduced){
     underlay=archiveTransitionSnapshot();
     underlay.viewport.style.zIndex='59';
