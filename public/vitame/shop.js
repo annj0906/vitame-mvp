@@ -108,7 +108,7 @@ function bindShoppingAutoplay(){
   if(!rail||!('IntersectionObserver' in window))return;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   let timer,visible=false,interacting=false,disposed=false;
-  const schedule=()=>{clearTimeout(timer);if(!disposed&&visible&&!document.hidden&&!reduced.matches&&!interacting)timer=setTimeout(()=>{const step=rail.children[1].offsetLeft-rail.children[0].offsetLeft;const next=(Math.round(rail.scrollLeft/step)+1)%rail.children.length;rail.scrollTo({left:next*step,behavior:'smooth'});schedule();},5000);};
+  const schedule=()=>{clearTimeout(timer);if(!disposed&&visible&&!document.hidden&&!reduced.matches&&!interacting)timer=setTimeout(()=>{const step=rail.children[1].offsetLeft-rail.children[0].offsetLeft;const next=(Math.round(rail.scrollLeft/step)+1)%rail.children.length;rail.scrollTo({left:next*step,behavior:'smooth'});schedule();},3500);};
   const start=()=>{interacting=true;clearTimeout(timer);};
   const finish=()=>{if(interacting){interacting=false;schedule();}};
   const observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting&&entries[0].intersectionRatio>=.65;schedule();},{threshold:[0,.65]});
