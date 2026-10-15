@@ -133,6 +133,13 @@ render=function(){
   }
   renderBeforeCalendarMotion();
   if(reduced)return;
+  const calendar=document.querySelector('.dose-calendar');
+  if(previous==='dose'&&next==='dose'&&calendar&&oldHeight&&oldMode!==calendar.getAttribute('aria-label')){
+    calendar.animate([
+      {height:oldHeight+'px',overflow:'hidden'},
+      {height:calendar.getBoundingClientRect().height+'px',overflow:'hidden'}
+    ],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'});
+  }
   if(ghost)ghost.snapshot.animate([{transform:'translateX(0)'},{transform:'translateX(100%)'}],{duration:320,easing:'cubic-bezier(.4,0,.8,.6)'}).finished.finally(()=>ghost.viewport.remove());
   if(enteringOverlay){
     const entry=archiveTransitionSnapshot();
