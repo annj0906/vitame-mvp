@@ -289,9 +289,9 @@ body[data-screen="guide"] .ai-character-item .ai-character-shadow{margin-top:22p
 body[data-screen="guide"] .ai-character-item:has([class$="-tap"])>.character-shadow>img{animation:var(--shadow-tap) var(--shadow-tap-duration) ease-out 1}
 body[data-screen="guide"] .ai-character-item:has([class$="-success"])>.character-shadow>img{animation:var(--shadow-success) var(--shadow-success-duration) ease-in-out 1}
 body[data-screen="guide"] .ai-character-prev,body[data-screen="guide"] .ai-character-next{top:128px;width:28px;height:44px;z-index:40}
-body[data-screen="guide"] .ai-guide-message{min-height:36px;justify-content:center}
+body[data-screen="guide"] .ai-guide-message{width:fit-content;max-width:85%;min-height:36px;align-self:center;justify-content:center;box-sizing:border-box}
 body[data-screen="guide"] .ai-guide-message{padding-left:24px;padding-right:24px;text-align:center}
-body[data-screen="guide"] .ai-guide-message>span{min-width:0;text-wrap:pretty;word-break:keep-all;overflow-wrap:anywhere}
+body[data-screen="guide"] .ai-guide-message>span{flex:0 1 auto;min-width:0;text-wrap:pretty;word-break:keep-all;overflow-wrap:anywhere}
 body[data-screen="guide"] .ai-bubble-tail{margin-bottom:8px}
 body[data-screen="guide"] .ai-health-icon img{max-width:none;max-height:none;width:auto;height:auto;filter:none}
 body[data-screen="guide"] .ai-detail-card{padding:0;background:none;box-shadow:none;border-radius:20px}
