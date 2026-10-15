@@ -53,4 +53,8 @@ assert.equal(state.supplements[0].id,originalId);
 assert.equal(state.supplements[0].name,'수정한 멀티비타민');
 assert.equal(state.supplements[0].time,'12:30');
 assert.equal(state.records['2026-10-14'][originalId],true);
+run("registrationDraft=suppliedLabelRegistrationDraft();registrationReturnRoute='dose'");
+for(const handler of handlers.submit)handler(submit);
+assert.equal(destination,'dose','new registration entered from dose returns to dose');
+assert.equal(state.supplements.length,2);
 console.log('Registration: supplied 17 ingredients/units/metadata, two results, explicit night example, scan handoff, saved schedule and home destination passed.');

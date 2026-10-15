@@ -87,7 +87,8 @@ body[data-screen="registration"] .app,.registration-screen{background:var(--vita
 .registration-times button:first-child{border:1px solid var(--vitame-color-neutral-gray20);border-radius:30px;padding:8px;background:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body1-regular-16);min-height:40px}
 .registration-times button:last-child{padding:0;width:32px;display:grid;place-items:center}
 .registration-times img{width:18px;height:18px}
-.registration-settings .registration-add{border-radius:999px;font:var(--vitame-type-pretendard-body1-bold-16)}
+.registration-settings .registration-add{border-radius:999px;font:var(--vitame-type-pretendard-body1-bold-16);transition:background .28s,color .28s}
+.registration-settings{overflow-anchor:none}
 .registration-days{display:flex;gap:11px;margin-top:24px}
 .registration-days button{flex:1;min-width:0;height:46px;min-height:40px;padding:0;border:1px solid var(--vitame-color-neutral-gray20);border-radius:999px;background:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-semibold-14)}
 .registration-days button[aria-pressed="true"]{background:var(--vitame-color-accent-orange-main);color:var(--vitame-color-neutral-white);border-color:transparent}

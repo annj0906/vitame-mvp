@@ -2,6 +2,11 @@
 // Registration owns its draft; the existing OCR draft and supplement store remain shared.
 let registrationTab='search',registrationQuery='',registrationSelection=null,registrationDraft=null;
 let registrationSource='search',registrationOcrDraft=null;
+let registrationReturnRoute='home';
+document.addEventListener('click',event=>{
+  if(route()==='home'&&event.target.closest('.home-scan-banner'))registrationReturnRoute='home';
+  if(event.target.closest('[data-go="scan"]'))registrationReturnRoute=route()==='dose'?'dose':'home';
+},true);
 const registrationDays=['일','월','화','수','목','금','토'];
 const registrationDailyNutrition=[
   ['비타민 A',700,'μg RE',100],['비타민 B1',1.2,'mg',100],['비타민 B2',1.4,'mg',100],
@@ -36,6 +41,7 @@ const registrationAsset=name=>`<img src="assets/registration/${name}.svg" alt=""
 function newRegistrationDraft(){return {name:'',brand:'',dose:1,doseUnit:'정',ingredients:[],times:['08:00'],days:[0,1,2,3,4,5,6],notifications:false,colorIndex:0};}
 function ensureRegistrationDraft(){return registrationDraft ||=newRegistrationDraft();}
 function editRegisteredSupplement(id){
+  registrationReturnRoute='dose';
   const item=state.supplements.find(s=>s.id===id);if(!item)return;
   registrationDraft={...newRegistrationDraft(),...item,editingId:id,
     ingredients:(item.ingredients||[]).map(n=>({...n})),
@@ -131,7 +137,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-registration]');if(!b)return;
   const a=b.dataset.registration,i=Number(b.dataset.index),d=ensureRegistrationDraft();
   if(a==='start'){if(d.editingId)registrationDraft=null;registrationTab='search';go('supplement-register');}
-  else if(a==='back-scan'){readRegistrationForm();go('scan');}
+  else if(a==='back-scan'){readRegistrationForm();go(d.editingId?'dose':'scan');}
   else if(a==='back-entry'){go(registrationSource==='ocr'?'result':'supplement-register');}
   else if(a==='search'||a==='manual'){readRegistrationForm();registrationTab=a;if(a==='manual'&&registrationSource!=='ocr')registrationSource='manual';render();window.scrollTo(0,0);}
   else if(a==='add-ingredient'){readRegistrationForm();d.ingredients.push({name:'',amount:'',unit:'mg'});render();}
@@ -160,7 +166,10 @@ document.addEventListener('click',e=>{
     const picker=document.querySelector('.registration-inline-picker');
     if(picker&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
       if(picker.dataset.closing)return;picker.dataset.closing='true';
-      picker.animate([{height:picker.offsetHeight+'px',opacity:1},{height:'0px',opacity:0}],{duration:240,easing:'ease-in-out',fill:'forwards'}).finished.then(()=>{if(picker.isConnected)render();});
+      const scrollTop=window.scrollY;
+      picker.style.animation='none';
+      document.querySelector('.registration-add.is-picker-open')?.classList.remove('is-picker-open');
+      picker.animate([{height:picker.offsetHeight+'px',opacity:1},{height:'0px',opacity:0}],{duration:280,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'}).finished.then(()=>{if(picker.isConnected){render();window.scrollTo(0,scrollTop);}});
     }else render();
   }
 });
@@ -177,7 +186,7 @@ document.addEventListener('submit',e=>{
     const {editingId:discarded,...fields}=d;
     const item={...fields,name:d.name.trim(),id:editingId||'s-'+Date.now(),time:d.times[0],frequency:d.days.length===7?'매일':d.days.map(i=>registrationDays[i]).join('·'),ingredientsStatus:d.ingredients.length?'registered':'unregistered',ingredients:d.ingredients.map(n=>({...n}))};
     if(editingId)state.supplements[index]=item;else state.supplements.push(item);
-    state.started=true;save();registrationDraft=null;draft=null;registrationOcrDraft=null;registrationSelection=null;scanText='';if(uploadURL){URL.revokeObjectURL(uploadURL);uploadURL='';}go(editingId?'dose':'home');toast(editingId?'영양제 설정을 저장했어요.':'영양제를 등록했어요.');
+    state.started=true;save();registrationDraft=null;draft=null;registrationOcrDraft=null;registrationSelection=null;scanText='';if(uploadURL){URL.revokeObjectURL(uploadURL);uploadURL='';}go(editingId?'dose':registrationReturnRoute);toast(editingId?'영양제 설정을 저장했어요.':'영양제를 등록했어요.');
   }
 });
 window.addEventListener('hashchange',closeRegistrationDialog);

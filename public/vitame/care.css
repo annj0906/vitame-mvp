@@ -45,6 +45,8 @@ body[data-screen="dose"] .care-swipe-hint{position:absolute;right:88px;top:31px;
 body[data-screen="dose"] .dose-row:has(.care-swipe-hint) b{max-width:88px}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-item-edit,body:is([data-screen="dose"],[data-screen="archive"]) .dose-delete{width:64px;background:var(--vitame-color-neutral-white);border:0;z-index:0;min-height:80px}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-swipe-row{border:0;outline:0;box-shadow:0 2px 10px #0000000d}
+body[data-screen="dose"] .dose-swipe-row,body[data-screen="dose"] .dose-swipe-row .dose-item-edit,body[data-screen="dose"] .dose-swipe-row .dose-delete{background:var(--vitame-color-neutral-gray20)}
+body[data-screen="dose"] .dose-swipe-row:has(.taken),body[data-screen="dose"] .dose-swipe-row:has(.taken) .dose-item-edit,body[data-screen="dose"] .dose-swipe-row:has(.taken) .dose-delete{background:var(--vitame-color-neutral-white)}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front{z-index:1}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front:focus-within{outline:none}
 body[data-screen="dose"] .dose-item-edit img{filter:invert(60%) sepia(96%) saturate(1525%) hue-rotate(337deg) brightness(103%) contrast(101%)}
