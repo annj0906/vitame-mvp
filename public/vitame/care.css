@@ -176,10 +176,13 @@ body:is([data-screen="home"],[data-screen="dose"]) .calendar-week .calendar-day.
 /* General cards only: inset outline adds no box dimensions and preserves every
    existing shadow. Explicit allowlist excludes banners, bubbles, dialogs, nav,
    controls, product image tiles and cards with their own selection borders. */
-body[data-screen] :is(.health-score-link,.dose-progress-card,.care-archive-row,.nutrition-panel,.my-summary,.card:not(.banner):not(.mint):not(.selected):not([aria-selected]):not([aria-pressed])):not(:focus-visible):not(dialog *){outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
-body[data-screen="guide"] .ai-detail-surface{outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
-body[data-screen="guide"] .ai-detail-card.is-open .ai-detail-surface{outline:none}
-body[data-screen="guide"] .ai-detail-card.is-open .ai-detail-content{outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
+body[data-screen] :is(.health-score-link,.dose-progress-card,.care-archive-row,.nutrition-panel,.my-summary,.card:not(.dose-edit-list):not(.banner):not(.mint):not(.selected):not([aria-selected]):not([aria-pressed])):not(:focus-visible):not(dialog *){outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px}
+/* The two white surfaces form one card: join side strokes without a seam. */
+body[data-screen="guide"] :is(.ai-detail-surface,.ai-detail-content){position:relative;outline:none}
+body[data-screen="guide"] :is(.ai-detail-surface,.ai-detail-content)::after{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
+body[data-screen="guide"] .ai-detail-card.is-open .ai-detail-surface::after{border-bottom:0}
+body[data-screen="guide"] .ai-detail-content::after{border-top:0}
+body[data-screen="dose"] .dose-edit-list{outline:none}
 /* Figma 372:1296: dose state is a colored stroke/check, not a gray fill.
    Home grid/list and dose rows share the existing supplement palette. */
 body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-row){--dose-accent:var(--vitame-color-accent-yellow-main);background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black)}
