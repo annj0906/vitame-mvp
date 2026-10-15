@@ -1,4 +1,7 @@
 /* Final dose/archive/analysis only. Existing behavior and tokens remain shared. */
+body:is([data-screen="home"],[data-screen="dose"]) .weekday-labels{color:var(--vitame-color-neutral-gray60)}
+body:is([data-screen="home"],[data-screen="dose"]) .calendar-day .day-label{color:var(--vitame-color-neutral-gray60)}
+body:is([data-screen="home"],[data-screen="dose"]) .calendar-day.picked .day-label{color:var(--vitame-color-neutral-black)}
 body:is([data-screen="dose"],[data-screen="analysis"],[data-screen="guide"]) :is(.dose-period-toolbar .segment,.wellness-tabs){position:relative;isolation:isolate;--segment-index:0}
 body:is([data-screen="dose"],[data-screen="analysis"],[data-screen="guide"]) :is(.dose-period-toolbar .segment,.wellness-tabs):has(button:nth-child(2).selected){--segment-index:1}
 body:is([data-screen="dose"],[data-screen="analysis"],[data-screen="guide"]) :is(.dose-period-toolbar .segment,.wellness-tabs)::before{content:"";position:absolute;left:4px;top:4px;bottom:4px;width:calc((100% - 8px)/2);border-radius:999px;background:white;box-shadow:0 4px 2px #0000000d;transform:translateX(calc(var(--segment-index)*100%));z-index:-1}
