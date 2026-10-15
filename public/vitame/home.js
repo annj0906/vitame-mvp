@@ -62,3 +62,7 @@ render=function(){
 };
 
 render();
+document.addEventListener('click',event=>{
+  const banner=event.target.closest('.home-scan-banner');
+  if(banner&&!event.target.closest('.alert-close,button,a'))go('scan');
+});

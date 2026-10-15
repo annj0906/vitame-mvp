@@ -21,6 +21,7 @@ function prepareSlide(element,adapter){
 function mountSlide(s){
   const frame=document.createElement('div');frame.className='continuous-slide-viewport';
   const rect=s.element.getBoundingClientRect();s.originalStyle=s.element.getAttribute('style');
+  frame.style.margin=getComputedStyle(s.element).margin;
   frame.style.height=rect.height+'px';s.element.before(frame);frame.append(s.element);
   s.frame=frame;s.pages=[s.element];s.transforms=[getComputedStyle(s.element).transform];
   s.neighbours.forEach((node,i)=>{
@@ -125,10 +126,11 @@ function homeCalendar() {
   return `<header class="home-calendar ${calendarOpen ? 'expanded' : ''}" aria-label="홈 달력"><div class="calendar-toolbar"><button class="calendar-date" data-cal="toggle" aria-expanded="${calendarOpen}" aria-controls="month-calendar">${selected.getMonth()+1}월 ${selected.getDate()}일(${weekdays[selected.getDay()]})</button><div class="calendar-actions"><button class="icon-btn" data-go="scan" aria-label="영양제 스캔"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3M7 12h10"/></svg></button><button class="icon-btn" data-go="analysis" aria-label="영양 분석">${icon('chart')}</button><button class="icon-btn" data-action="notifications" aria-label="알림">${icon('bell')}</button></div></div><div class="calendar-surface"><div class="calendar-week" ${calendarOpen ? 'hidden' : ''}>${Array.from({length:7},(_,i)=>{const d=new Date(start);d.setDate(d.getDate()+i);return cell(d,true)}).join('')}</div><section id="month-calendar" ${calendarOpen ? '' : 'hidden'} aria-label="월간 달력"><div class="month-toolbar"><button class="icon-btn" data-cal="prev" aria-label="이전 달">${icon('back')}</button><h2 aria-live="polite">${first.getFullYear()}년 ${first.getMonth()+1}월</h2><button class="icon-btn" data-cal="next" aria-label="다음 달">${icon('arrow')}</button><button class="calendar-today" data-cal="today">오늘</button></div><div class="calendar-grid weekday-labels">${weekdays.map(d=>`<span>${d}</span>`).join('')}</div><div class="calendar-grid">${'<span></span>'.repeat(first.getDay())}${Array.from({length:count},(_,i)=>cell(new Date(first.getFullYear(),first.getMonth(),i+1))).join('')}</div></section><button class="calendar-handle" data-cal="toggle" aria-label="${calendarOpen ? '달력 접기' : '월간 달력 펼치기'}" aria-expanded="${calendarOpen}" aria-controls="month-calendar"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 8 5 5 5-5m-10 6 5 5 5-5"/></svg></button></div></header>`;
 }
 function setCalendarOpen(open) {
+  const old=document.querySelector('.home-calendar'),height=old?.getBoundingClientRect().height;
   calendarOpen = open;
   if (open) { const d = new Date(selectedDate + 'T12:00:00'); calendarMonth = new Date(d.getFullYear(), d.getMonth(), 1); }
   const el = document.querySelector('.home-calendar');
-  if (el) el.outerHTML = homeCalendar();
+  if (el) {el.outerHTML = homeCalendar();const next=document.querySelector('.home-calendar');if(height&&!matchMedia('(prefers-reduced-motion: reduce)').matches)next.animate([{height:height+'px'},{height:next.getBoundingClientRect().height+'px'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'});}
 }
 document.addEventListener('click', event => {
   const b = event.target.closest('[data-cal]');
