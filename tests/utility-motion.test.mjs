@@ -34,4 +34,6 @@ for(const destination of ['notifications','likes','cart']){
 }
 const care=readFileSync(new URL('../public/vitame/care.js',import.meta.url),'utf8');
 assert.match(care,/const overlayScreens=\['archive','scan'\]/,'utility routes must not double-animate in the inner care wrapper');
+assert.match(care,/drawImage\(node,0,0,frame.width,frame.height\)/,'freeze the visible video frame instead of restarting a cloned video');
+assert.match(care,/style.animation='none'/,'snapshot animations do not restart');
 console.log('Utility motion: three entrances, frozen underlay, reduced motion and same-page updates passed.');

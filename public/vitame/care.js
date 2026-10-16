@@ -85,7 +85,22 @@ function archiveTransitionSnapshot(){
   originals.forEach((node,index)=>{
     const computed=getComputedStyle(node);
     copies[index].style.cssText=Array.from(computed).map(property=>property+':'+computed.getPropertyValue(property)+';').join('');
+    // Computed transforms are already frozen; replaying CSS animations would
+    // restart characters/fades as the snapshot is attached to the document.
+    copies[index].style.animation='none';copies[index].style.transition='none';
     copies[index].removeAttribute('id');
+    if(node.matches('video')&&node.readyState>=2){
+      const frame=document.createElement('canvas');
+      frame.width=node.videoWidth;frame.height=node.videoHeight;
+      try{
+        frame.getContext('2d').drawImage(node,0,0,frame.width,frame.height);
+        frame.className=copies[index].className;frame.style.cssText=copies[index].style.cssText;
+        frame.setAttribute('aria-hidden','true');copies[index].replaceWith(frame);
+      }catch{
+        // A cross-origin frame may be unavailable; retain the existing poster.
+        copies[index].removeAttribute('autoplay');copies[index].removeAttribute('src');
+      }
+    }
     if(node.matches('.utility-order')){
       // A transformed snapshot makes fixed descendants use its full document
       // height. Pin the order footer to its measured viewport position instead.
