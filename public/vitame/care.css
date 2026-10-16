@@ -244,3 +244,7 @@ body:is([data-screen="home"],[data-screen="dose"]) :is(.dose-mini>button,.dose-r
 body[data-screen="home"] .home-dose .dose-mini>button{outline:none}
 body[data-screen="home"] .home-dose .dose-mini>button::after{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
 body[data-screen="home"] .home-dose .dose-mini>button.taken::after{border-color:var(--dose-accent)}
+/* Keep the moving dose card stroke independent of focus/drag outlines. */
+body[data-screen="dose"] .dose-row{position:relative;outline:none}
+body[data-screen="dose"] .dose-row::after{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
+body[data-screen="dose"] .dose-row.taken::after{border-color:var(--dose-accent)}
