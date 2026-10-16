@@ -148,8 +148,19 @@ return `<div class="period-chart" data-period-kind="${chartPeriod}" aria-label="
   }).join('')}</div></div></div>`.replace('class="period-hint"',`class="period-hint${periodChart.hintDismissed?' is-dismissed':''}"`);
 }
 function dismissPeriodChartHint(){
+  if(!periodChart.hintDismissed)periodChart.hintCollapseStarted=performance.now();
   periodChart.hintDismissed=true;
   document.querySelectorAll('.period-hint').forEach(hint=>hint.classList.add('is-dismissed'));
+}
+function animatePeriodHintCollapse(){
+  if(!periodChart.hintDismissed||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const elapsed=performance.now()-periodChart.hintCollapseStarted;
+  if(!Number.isFinite(elapsed)||elapsed>=360)return;
+  const chart=document.querySelector('.period-chart'),hint=chart?.querySelector('.period-hint');
+  if(!chart||typeof chart.animate!=='function')return;
+  const options={duration:360,delay:-elapsed,easing:'cubic-bezier(.22,1,.36,1)',fill:'both'};
+  chart.animate([{paddingTop:'64px'},{paddingTop:'0px'}],options);
+  hint?.animate([{opacity:.65,transform:'translateY(0)',visibility:'visible'},{opacity:0,transform:'translateY(-8px)',visibility:'visible'}],options);
 }
 function analysisScoreDate(key){
   if(['month','half','year'].includes(chartPeriod))return periodLabel(key);
@@ -173,6 +184,7 @@ function analysisScoreMessage(score){
 }
 let analysisScoreFrame=0,analysisDisplayedKey='',analysisDisplayedMessage='';
 function updateAnalysisScore(entering=false){
+  animatePeriodHintCollapse();
   const key=chartSelection||periodStart(chartAnchor),score=periodScore(key);
   const heading=document.querySelector('.analysis-month-score');
   if(!heading)return;
