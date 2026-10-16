@@ -14,6 +14,14 @@ const context=vm.createContext({
 });
 for(const name of ['scanner.js','registration.js'])vm.runInContext(fs.readFileSync(new URL('../public/vitame/'+name,import.meta.url),'utf8'),context);
 const run=code=>vm.runInContext(code,context);
+assert.equal(run(`completeRegistrationIngredients([
+  {name:'',amount:'',unit:'mg'},
+  {name:'비타민 A',amount:'',unit:'mg'},
+  {name:'   ',amount:100,unit:'mg'},
+  {name:'비타민 C',amount:100,unit:'mg'}
+]).length`),1,'unfinished ingredient rows are discarded');
+assert.equal(run('completeRegistrationIngredients([]).length'),0,'nutrients are optional');
+assert.match(run('registrationManual()'),/novalidate/,'browser validation does not block cleanup before submit');
 const supplied=JSON.parse(run('JSON.stringify(suppliedLabelRegistrationDraft())'));
 assert.equal(supplied.name,'VITAME 데일리 멀티비타민 미네랄');
 assert.equal(supplied.ingredients.length,17);

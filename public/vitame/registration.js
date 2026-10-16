@@ -65,7 +65,7 @@ function registrationResults(){
 }
 function registrationManual(){
   const d=ensureRegistrationDraft();
-  return `<form id="registration-manual" class="registration-fields">
+  return `<form id="registration-manual" class="registration-fields" novalidate>
     ${scanText&&registrationSource==='ocr'?`<aside class="ocr-review"><strong>인식 결과를 원본과 확인해주세요.</strong><details><summary>인식 원문 보기</summary><pre>${esc(scanText)}</pre></details>${uploadURL?`<img class="upload-preview" src="${uploadURL}" alt="인식한 성분표">`:''}</aside>`:''}
     <label>영양제 이름 <em>*</em><input name="name" value="${esc(d.name)}" placeholder="예) 비타민 D3" maxlength="60" required></label>
     <label>브랜드<input name="brand" value="${esc(d.brand)}" placeholder="예) VITAME" maxlength="60"></label>
@@ -80,6 +80,9 @@ function readRegistrationForm(){
   const form=$('#registration-manual');if(!form)return;
   const f=new FormData(form),d=ensureRegistrationDraft();
   Object.assign(d,{name:String(f.get('name')||''),brand:String(f.get('brand')||''),dose:Number(f.get('dose')),doseUnit:f.get('doseUnit'),ingredients:d.ingredients.map((_,i)=>({name:String(f.get(`ingredient-${i}`)||''),amount:f.get(`amount-${i}`)===''?'':Number(f.get(`amount-${i}`)),unit:f.get(`unit-${i}`)}))});
+}
+function completeRegistrationIngredients(ingredients){
+  return ingredients.filter(n=>n.name.trim()&&Number.isFinite(n.amount)&&n.amount>=.01&&n.amount<=1000000&&registrationUnits.includes(n.unit));
 }
 function registrationTimeLabel(time){const [h,m]=time.split(':').map(Number);return `${h<12?'오전':'오후'} ${String(h%12||12).padStart(2,'0')}:${String(m).padStart(2,'0')}`;}
 function registrationSettings(){
@@ -238,7 +241,15 @@ document.addEventListener('scroll',e=>{if(e.target.matches?.('[data-wheel]'))upd
 document.addEventListener('keydown',e=>{const c=e.target.closest?.('[data-wheel]');if(c&&['ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();c.scrollTop+=(e.key==='ArrowUp'?-44:44);updateRegistrationWheel(c);}});
 document.addEventListener('submit',e=>{
   if(e.target.id==='registration-search'){e.preventDefault();rememberRegistrationSearch();$('#registration-results').innerHTML=registrationResults();}
-  if(e.target.id==='registration-manual'){e.preventDefault();readRegistrationForm();if(!e.target.reportValidity())return;if(!validRegistrationDraft(ensureRegistrationDraft())){toast('제품명과 성분 정보를 확인해주세요.');return;}registrationSource=route()==='result'?'ocr':'manual';go('registration-settings');}
+  if(e.target.id==='registration-manual'){
+    e.preventDefault();readRegistrationForm();
+    // Validate the required product fields, not unfinished optional nutrient rows.
+    if(!Array.from(e.target.elements).filter(field=>!field.closest('.registration-ingredients')).every(field=>field.reportValidity()))return;
+    const d=ensureRegistrationDraft();
+    if(!d.name.trim()||!Number.isFinite(d.dose)||d.dose<=0){toast('제품명과 복용량을 확인해주세요.');return;}
+    d.ingredients=completeRegistrationIngredients(d.ingredients);
+    registrationSource=route()==='result'?'ocr':'manual';go('registration-settings');
+  }
   if(e.target.id==='registration-settings'){
     e.preventDefault();const d=ensureRegistrationDraft();if(!e.target.reportValidity())return;if(!validRegistrationDraft(d)){toast('제품명과 성분 정보를 확인해주세요.');return;}if(!d.days.length){toast('복용 요일을 선택해주세요.');return;}
     // Keep legacy time/frequency fields for existing list, edit and analysis consumers.
