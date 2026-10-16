@@ -161,6 +161,16 @@ document.addEventListener('focusin',e=>{
   }
 });
 document.addEventListener('change',e=>{if(e.target.closest('#registration-manual'))readRegistrationForm();if(e.target.matches('#registration-settings [name="notifications"]'))ensureRegistrationDraft().notifications=e.target.checked;});
+function animateRegistrationIngredient(row,removing,finish=()=>{}){
+  if(!row||matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return;}
+  const height=row.getBoundingClientRect().height;
+  row.style.overflow='hidden';row.style.minHeight='0';
+  const collapsed={height:'0px',marginTop:'-4px',opacity:0,transform:'translateY(-4px)'};
+  const expanded={height:height+'px',marginTop:'0px',opacity:1,transform:'translateY(0)'};
+  const animation=row.animate(removing?[expanded,collapsed]:[collapsed,expanded],{duration:240,easing:'cubic-bezier(.22,1,.36,1)',fill:'both'});
+  animation.finished.then(()=>{animation.cancel();row.style.removeProperty('overflow');row.style.removeProperty('min-height');finish();},()=>{});
+}
+
 document.addEventListener('click',e=>{
   const wheel=e.target.closest('[data-wheel-value]');if(wheel){wheel.parentElement.scrollTo({top:Number(wheel.dataset.wheelValue)*44,behavior:'smooth'});return;}
   const b=e.target.closest('[data-registration]');if(!b)return;
@@ -169,8 +179,19 @@ document.addEventListener('click',e=>{
   else if(a==='back-scan'){readRegistrationForm();go(d.editingId?'dose':'scan');}
   else if(a==='back-entry'){go(registrationSource==='ocr'?'result':'supplement-register');}
   else if(a==='search'||a==='manual'){readRegistrationForm();registrationTab=a;if(a==='manual'&&registrationSource!=='ocr')registrationSource='manual';render();window.scrollTo(0,0);}
-  else if(a==='add-ingredient'){readRegistrationForm();d.ingredients.push({name:'',amount:'',unit:'mg'});render();}
-  else if(a==='remove-ingredient'){readRegistrationForm();d.ingredients.splice(i,1);render();}
+  else if(a==='add-ingredient'){
+    if(document.querySelector('.registration-ingredients[data-removing]'))return;
+    readRegistrationForm();d.ingredients.push({name:'',amount:'',unit:'mg'});render();
+    animateRegistrationIngredient(document.querySelector('.registration-ingredients>div:last-child'),false);
+  }
+  else if(a==='remove-ingredient'){
+    const list=b.closest('.registration-ingredients');if(list.dataset.removing)return;
+    list.dataset.removing='true';
+    animateRegistrationIngredient(b.parentElement,true,()=>{
+      if(!list.isConnected)return;
+      readRegistrationForm();d.ingredients.splice(i,1);render();
+    });
+  }
   else if(a==='clear-search'){registrationQuery='';render();}
   else if(a==='popular'){registrationQuery=b.dataset.query;render();}
   else if(a==='recent'){registrationQuery=registrationRecents()[i];render();}
