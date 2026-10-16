@@ -455,13 +455,37 @@ function clearGuideMotion(){
     delete el.dataset.motion;
   });
 }
+let guideSpeechTimer=0;
+function stopGuideSpeech(){clearTimeout(guideSpeechTimer);guideSpeechTimer=0;}
+function animateGuideSpeech(){
+  stopGuideSpeech();
+  const bubble=document.querySelector('.ai-guide-message');
+  if(!bubble?.matches?.('.ai-guide-message')||route()!=='guide')return;
+  const tail=document.querySelector('.ai-bubble-tail'),parts=[bubble,tail].filter(Boolean);
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  bubble.inert=false;
+  parts.forEach(part=>{
+    part.getAnimations().forEach(animation=>animation.cancel());part.style.visibility='visible';
+    if(!reduced)part.animate([{opacity:0,transform:'translateY(10px) scale(.97)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:340,easing:'cubic-bezier(.22,1,.36,1)'});
+  });
+  guideSpeechTimer=setTimeout(()=>{
+    if(!bubble.isConnected||route()!=='guide')return;
+    bubble.inert=true;
+    parts.forEach(part=>{if(!reduced)part.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-6px)'}],{duration:240,fill:'forwards',easing:'ease-in'});else part.style.visibility='hidden';});
+    guideSpeechTimer=setTimeout(()=>{
+      if(!bubble.isConnected||route()!=='guide')return;
+      guideMessage(true);
+    },1000);
+  },5200);
+}
+window.addEventListener('hashchange',()=>{if(route()!=='guide')stopGuideSpeech();});
 function guideMessage(refresh=false){
   // Explicit taps/refresh advance this character only; renders retain the line.
   if(refresh)delete guideVisitMessages[guideCharacterKeys[guideCharacter]];
   const label=document.querySelector('.ai-guide-message [aria-live]');
   if(label){
-    const next=guideCharacterMessage(),changed=label.textContent!==next;label.textContent=next;
-    if(changed&&typeof label.animate==='function'&&!matchMedia('(prefers-reduced-motion: reduce)').matches)label.animate([{opacity:0,transform:'translateY(2px)'},{opacity:1,transform:'translateY(0)'}],{duration:180,easing:'ease-out'});
+    label.textContent=guideCharacterMessage();
+    animateGuideSpeech();
   }
 }
 function playGuideMotion(type){
@@ -574,7 +598,7 @@ document.addEventListener('click',event=>{
   const character=event.target.closest('[data-ai-character]');
   if(character)moveGuideCharacter(Number(character.dataset.aiCharacter));
   if(event.target.closest('[data-ai-tap]')&&!guideCarousel.frame)playGuideMotion('tap');
-  if(event.target.closest('[data-ai-refresh]'))guideMessage(true);
+  if(event.target.closest('[data-ai-refresh]'))playGuideMotion('tap');
 });
 window.addEventListener('hashchange',()=>clearTimeout(finalGuideScrollTimer));
 window.addEventListener('touchstart',()=>clearTimeout(finalGuideScrollTimer),{passive:true});
@@ -629,4 +653,6 @@ document.addEventListener('click',e=>{
   if(character){guideCharacter=(guideCharacter+1)%5;character.innerHTML=wellnessArt(guideCharacter);if(!matchMedia('(prefers-reduced-motion: reduce)').matches)character.firstElementChild.animate([{transform:'scale(.55)',opacity:.4},{transform:'scale(1.12)',opacity:1},{transform:'scale(1)',opacity:1}],{duration:330,easing:'ease-out'});}
   if(e.target.closest('[data-period-info]'))modal('건강 관리 점수 안내','기간별 점수와 영양소 상태는 화면 체험용 예시입니다. 실제 복용 기록으로 계산한 결과나 의료 평가가 아닙니다.');
 });
+const renderBeforeGuideSpeech=render;
+render=function(){renderBeforeGuideSpeech();if(route()==='guide')animateGuideSpeech();else stopGuideSpeech();};
 render();
