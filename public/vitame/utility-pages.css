@@ -19,8 +19,9 @@ body[data-screen="dose"] :is(.dose-swipe-row,.dose-row-front,.dose-row){box-shad
 /* Shared bottom action treatment. Navigation capsules and ordinary cards are excluded. */
 body[data-screen] :is(.initial-actions button,.onboarding-final>.primary,.registration-primary,.registration-sheet-actions>button,.my-profile-save,.utility-order button,.shop-detail-actions>button,.scan-final-actions>button,.live-scan-buttons>button,.setup-actions>button,.registration-actions>.primary,#demo-login-form>.primary,.analysis-guide-cta>button,.dose-add-action>button,dialog button.primary){box-shadow:none!important;border-radius:999px}
 body[data-screen] :is(.initial-actions button:not(.initial-primary),.registration-sheet-actions>button:not(.registration-primary),.setup-actions>.secondary,.live-scan-buttons>.secondary,.scan-final-actions>button,.shop-detail-actions>button:not(.shop-buy),.dose-add-action>button){
-  background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);outline:1.5px solid var(--vitame-color-neutral-gray40);outline-offset:-1.5px;border:0;
+  background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);outline:none;border:1.5px solid var(--vitame-color-neutral-gray30);box-sizing:border-box;
 }
+body[data-screen] .scan-final-actions>button{border-radius:16px}
 body[data-screen] .registration-sheet-actions>button:not(.registration-primary)::before,body[data-screen] .dose-add-action>button::before{content:none}
 body[data-screen] :is(.initial-actions button:not(.initial-primary),.registration-sheet-actions>button:not(.registration-primary),.setup-actions>.secondary,.live-scan-buttons>.secondary,.scan-final-actions>button,.shop-detail-actions>button:not(.shop-buy)):focus-visible{outline:2px solid var(--vitame-color-neutral-black);outline-offset:3px}
 .utility-notice-filters{min-height:48px;align-items:center}
