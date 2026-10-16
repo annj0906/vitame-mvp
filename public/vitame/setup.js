@@ -17,18 +17,39 @@ const setupMessages = [
 ];
 let setupMessageIndex = 0;
 let setupMessageTimer;
+let setupBubbleTimer;
+function animateSetupBubble(show=true){
+  const bubble=document.querySelector('.initial-completion-art .initial-bubble');
+  const character=document.querySelector('.initial-completion-art .initial-character-box');
+  if(!bubble||!character)return;
+  bubble.getAnimations().forEach(animation=>animation.cancel());
+  const bounds=bubble.getBoundingClientRect(),speaker=character.getBoundingClientRect();
+  bubble.style.transformOrigin=`${speaker.left+speaker.width/2-bounds.left}px ${speaker.top+speaker.height*.4-bounds.top}px`;
+  bubble.inert=!show;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){bubble.style.visibility=show?'visible':'hidden';return;}
+  bubble.style.visibility='visible';
+  bubble.animate(show?[
+    {opacity:0,transform:'scale(.2)'},{opacity:.45,transform:'scale(.72)',offset:.45},{opacity:1,transform:'scale(1)'}
+  ]:[
+    {opacity:1,transform:'scale(1)'},{opacity:.35,transform:'scale(.65)',offset:.6},{opacity:0,transform:'scale(.2)'}
+  ],{duration:show?650:450,easing:'cubic-bezier(.37,0,.63,1)',fill:'forwards'});
+}
 function startSetupMessageRotation(){
   clearInterval(setupMessageTimer);
+  clearTimeout(setupBubbleTimer);
   setupMessageTimer=setInterval(()=>{
     if(route()!=='setup-complete'){clearInterval(setupMessageTimer);return;}
     const bubble=document.querySelector('.initial-bubble'),label=bubble?.querySelector('[aria-live]');
     if(!label||bubble.inert||document.hidden)return;
-    setupMessageIndex=(setupMessageIndex+1)%setupMessages.length;
-    label.textContent=setupMessages[setupMessageIndex];
-    if(!matchMedia('(prefers-reduced-motion: reduce)').matches)label.animate([{opacity:0,transform:'translateY(3px)'},{opacity:1,transform:'translateY(0)'}],{duration:220,easing:'ease-out'});
+    animateSetupBubble(false);
+    setupBubbleTimer=setTimeout(()=>{
+      if(!bubble.isConnected||route()!=='setup-complete')return;
+      setupMessageIndex=(setupMessageIndex+1)%setupMessages.length;
+      label.textContent=setupMessages[setupMessageIndex];animateSetupBubble(true);
+    },matchMedia('(prefers-reduced-motion: reduce)').matches?0:550);
   },4500);
 }
-window.addEventListener('hashchange',()=>{if(route()!=='setup-complete')clearInterval(setupMessageTimer);});
+window.addEventListener('hashchange',()=>{if(route()!=='setup-complete'){clearInterval(setupMessageTimer);clearTimeout(setupBubbleTimer);}});
 const setupAsset = name => 'assets/setup/' + name + '.svg';
 const setupKeys = ['very-bad', 'bad', 'normal', 'good', 'very-good'];
 
@@ -93,8 +114,9 @@ render = function() {
       bubble.addEventListener('animationend',event=>{
         if(event.target!==bubble)return;
         bubble.inert=false;bubble.classList.remove('completion-bubble-after-success');
+        animateSetupBubble(true);
       },{once:true});
-    }
+    }else animateSetupBubble(true);
   }
 };
 
@@ -140,8 +162,10 @@ document.addEventListener('click',e=>{
   if (frequency) setInitialFrequency(frequency.dataset.initialFrequency);
   const character = e.target.closest('[data-initial-character]');
   if (character || e.target.closest('[data-initial-message]')) {
+    clearTimeout(setupBubbleTimer);
     setupMessageIndex = (setupMessageIndex+1)%setupMessages.length;
     document.querySelector('.initial-bubble [aria-live]').textContent = setupMessages[setupMessageIndex];
+    animateSetupBubble(true);
     if (character && !character.classList.contains('ob-good-success') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
       character.classList.remove('ob-good-tap');
       void character.querySelector('[data-initial-action]').offsetWidth;
