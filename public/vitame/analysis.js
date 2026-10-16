@@ -315,6 +315,29 @@ good:[
 };
 let guideMessageIndex=0,guideSessionActive=false;
 const guideDialogueCursor={},guideVisitMessages={};
+// Ten turns per character: 50% contextual reactions, 30% chatter, 20% tips.
+const guideDialogueMix=['reaction','chat','reaction','tip','reaction','chat','reaction','tip','reaction','chat'];
+// General tips checked against WHO healthy-diet and CDC activity guidance.
+// https://www.who.int/news-room/fact-sheets/detail/healthy-diet
+// https://www.cdc.gov/physical-activity-basics/benefits/
+const guideExtraMessages={
+  'very-bad':{
+    chat:['헉, 구름이 따라와요! 아… 제가 움직였네요.','잠깐만요! 제 걱정 보따리, 어디 뒀죠?!','휴우, 오늘의 대소동! 양말 한 짝 실종이에요.'],
+    tip:['헉, 의자랑 한 몸?! 가끔 일어나 움직여봐요!','식탁에 채소도, 과일도! 한 가지만 먹진 말아요!']},
+  bad:{
+    chat:['저기… 구름 구경, 같이 해도 될까요?','음… 할 말은 많은데요. 일단 반가워요, 헤헤.','저… 조용히 있으려 했는데요. 또 말 걸었네요.'],
+    tip:['저기… 오래 앉아 있다면 잠깐 움직여봐요.','음… 채소와 과일도 다양하게 골라보면 좋아요.']},
+  normal:{
+    chat:['흠, 오늘도 출근했군요. 저는 여기 상주합니다.','아무 생각 없는 중입니다. 꽤 바쁘네요.','뭐, 심심하면 말 걸어요. 대답은 합니다.'],
+    tip:['오래 앉아 있었나요? 잠깐 움직이죠. 의자는 안 도망가요.','채소, 과일, 통곡물. 식탁도 다양한 편이 좋죠.']},
+  good:{
+    chat:['오늘은 어떤 이야기를 나눌까요? 천천히 들어줄게요.','잠깐 들러줘서 반가워요. 그냥 인사만 해도 좋아요.','좋아하는 노래가 있나요? 같이 흥얼거리고 싶어요.'],
+    tip:['한 가지보다 다양하게. 채소와 과일도 골고루 만나봐요.','오래 앉아 있었다면 잠깐 움직여요. 작은 움직임도 좋아요.']},
+  'very-good':{
+    chat:['짜잔! 만남 성사! 반가움 박수, 짝짝짝!','와아, 오늘의 응원단 도착! 제가 단장이에요!','인사 한 번에 텐션 충전! 안녀어엉!'],
+    tip:['잠깐 움직이는 것도 좋아요! 의자에서 일어나볼까요!','채소도 과일도 다양하게! 오늘 식탁은 무지개 팀!']}
+};
+const guideDialogueCategoryCursor={},guideLastDialogue={};
 function guideDialogueFacts(){
  const model=typeof state==='undefined'?{}:state,items=model.supplements||[],records=model.records||{};
  const data=typeof nutrients==='undefined'?[]:nutrients;
@@ -329,7 +352,7 @@ function guideDialogueFacts(){
  const complete=recent.length===7&&recent.every(d=>d.known&&d.done===d.total);
  const rate=days=>days.reduce((a,d)=>a+d.done,0)/days.reduce((a,d)=>a+d.total,0);
  const duplicate=items.flatMap(s=>(s.ingredients||[]).map(n=>n.name)).find((name,i,all)=>all.indexOf(name)!==i);
- return {low:low[0]?.[0],optimal:optimal[0]?.[0],manyLow:low.length>1,manyOptimal:optimal.length>1,duplicate,neutral:true,
+ return {low:low[0]?.[0],optimal:optimal[0]?.[0],manyLow:low.length>1,manyOptimal:optimal.length>1,duplicate,neutral:true,recordedDose:seen.some(d=>d.done>0),
  clear:data.length>0&&!low.length&&!data.some(n=>n[2]==='주의'),
  missed:seen.some(d=>d.done<d.total),irregular:seen.some(d=>d.done>0)&&seen.some(d=>d.done<d.total),
  resumed:!!daily[0]?.known&&daily[0].done>0&&!!daily[1]?.known&&daily[1].done===0,
@@ -339,15 +362,24 @@ function guideDialogueFacts(){
 function guideCharacterMessage(){
  const key=guideCharacterKeys[guideCharacter];
  if(guideVisitMessages[key])return guideVisitMessages[key];
- const facts=guideDialogueFacts(),eligible=guideCharacterMessages[key].filter(([condition])=>facts[condition]);
+ const facts=guideDialogueFacts(),eligible=guideCharacterMessages[key].filter(([condition])=>facts[condition]&&(!['optimal','manyOptimal'].includes(condition)||facts.recordedDose)&&(!(key==='good'&&condition==='low')||facts.recordedDose));
  const fallback={bad:'으음… 오늘은 어떤 걸 먼저 챙겨볼까요? 제가 같이 살펴볼게요.',
  'very-bad':'앗! 서두르지 않아도 괜찮아요. 챙길 것부터 같이 살펴봐요!',
  normal:'흠, 기록부터 차분히 살펴보죠. 아직 모르는 상태는 단정하지 않을게요.',
  good:'오, 만나서 반가워요! 내 페이스에 맞는 작은 습관부터 찾아봐요.',
  'very-good':'와아아! 오늘도 반가워요! 무리하지 말고 가볍게 시작해요!'};
- const cursor=guideDialogueCursor[key]||0,selected=eligible.length?eligible[cursor%eligible.length]:null;
- const text=selected?selected[1].replace('{영양소}',facts[selected[0]]||facts.low||facts.optimal):fallback[key];
+ const cursor=guideDialogueCursor[key]||0,category=guideDialogueMix[cursor%guideDialogueMix.length];
+ const categoryKey=key+':'+category,index=guideDialogueCategoryCursor[categoryKey]||0;
+ const reactionLines=eligible.map(([condition,line])=>{
+   const text=line.replace('{영양소}',facts[condition]||facts.low||facts.optimal);
+   return ['low','manyLow','optimal','manyOptimal','clear'].includes(condition)?'예시 분석에서는요. '+text:text;
+ });
+ const pool=category==='reaction'?(reactionLines.length?reactionLines:[fallback[key]]):guideExtraMessages[key][category];
+ let picked=index%pool.length;
+ if(pool[picked]===guideLastDialogue[key]&&pool.length>1)picked=(picked+1)%pool.length;
+ const text=pool[picked];guideDialogueCategoryCursor[categoryKey]=picked+1;
  guideDialogueCursor[key]=cursor+1;
+ guideLastDialogue[key]=text;
  return guideVisitMessages[key]=text;
 }
 window.addEventListener('hashchange',()=>{if(route()!=='guide')guideSessionActive=false;});
