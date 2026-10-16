@@ -116,7 +116,8 @@ body[data-screen="analysis"] .wellness-tabs button{color:var(--vitame-color-neut
 body[data-screen="analysis"] .wellness-tabs .selected{color:var(--vitame-color-neutral-black);font-weight:700}
 body[data-screen="analysis"] .analysis-periods{margin:0 24px 24px;padding:8px;height:52px;background:var(--vitame-color-neutral-gray20);border-radius:999px;display:flex}
 body[data-screen="analysis"] .analysis-periods button{flex:1;min-width:0;padding:8px 0;border-radius:999px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60)}
-body[data-screen="analysis"] .analysis-periods button[aria-pressed="true"]{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);font-weight:700;box-shadow:0 4px 2px #0000000d}
+body[data-screen="analysis"] .analysis-periods button[aria-pressed="true"]{background:transparent;color:var(--vitame-color-neutral-black);font-weight:700;box-shadow:none}
+body[data-screen="analysis"] .analysis-periods::before{inset:8px auto 8px 8px;width:calc((100% - 16px)/4);border-radius:999px;box-shadow:0 4px 2px #0000000d}
 body[data-screen="analysis"] .analysis-overview{margin:0 24px 40px;padding:0}
 body[data-screen="analysis"] .period-navigation{margin:0 0 4px;justify-content:space-between;font:var(--vitame-type-pretendard-subtitle-semibold-18)}
 body[data-screen="analysis"] .analysis-score-label{font:var(--vitame-type-pretendard-subtitle-semibold-18);color:var(--vitame-color-neutral-black);margin:0 0 4px;min-height:28px}
