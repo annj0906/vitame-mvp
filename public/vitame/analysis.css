@@ -293,7 +293,7 @@ body[data-screen="guide"] .ai-character-item .ai-character-shadow{margin-top:22p
 body[data-screen="guide"] .ai-character-item:has([class$="-tap"])>.character-shadow>img{animation:var(--shadow-tap) var(--shadow-tap-duration) ease-out 1}
 body[data-screen="guide"] .ai-character-item:has([class$="-success"])>.character-shadow>img{animation:var(--shadow-success) var(--shadow-success-duration) ease-in-out 1}
 body[data-screen="guide"] .ai-character-prev,body[data-screen="guide"] .ai-character-next{top:128px;width:28px;height:44px;z-index:40}
-body[data-screen="guide"] .ai-guide-message{width:max-content;max-width:34%;min-height:36px;align-self:center;justify-content:center;box-sizing:border-box;flex:none;position:relative;left:0;margin-bottom:23px;gap:6px}
+body[data-screen="guide"] .ai-guide-message{width:max-content;max-width:40.8%;min-height:36px;align-self:center;justify-content:center;box-sizing:border-box;flex:none;position:relative;left:0;margin-bottom:23px;gap:6px}
 body[data-screen="guide"] .ai-guide-message{padding:10px 12px;text-align:center}
 body[data-screen="guide"] .ai-guide-message::after{content:"";position:absolute;top:calc(100% - 1px);left:calc(50% - var(--bubble-offset,0px));transform:translateX(-50%);width:18px;height:15px;background:url('assets/setup/bubble-tail.svg') center top/18px 15px no-repeat;pointer-events:none}
 body[data-screen="guide"] .ai-guide-message>img{width:14px;height:14px;align-self:flex-start;margin-top:3px}

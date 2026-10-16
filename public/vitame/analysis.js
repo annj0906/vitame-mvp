@@ -508,7 +508,12 @@ function animateGuideSpeech(){
   bubble.inert=false;
   parts.forEach(part=>{
     part.getAnimations().forEach(animation=>animation.cancel());part.style.visibility='visible';
-    if(!reduced)part.animate([{opacity:0,transform:'translateY(10px) scale(.97)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:340,easing:'cubic-bezier(.22,1,.36,1)'});
+    if(!reduced)part.animate([
+      {opacity:0,transform:'translateY(22px) scale(.92)',offset:0},
+      {opacity:1,transform:'translateY(-5px) scale(1.025)',offset:.62},
+      {opacity:1,transform:'translateY(1px) scale(.995)',offset:.84},
+      {opacity:1,transform:'translateY(0) scale(1)',offset:1}
+    ],{duration:580,easing:'cubic-bezier(.22,1,.36,1)'});
   });
   guideSpeechTimer=setTimeout(()=>{
     if(!bubble.isConnected||route()!=='guide')return;
