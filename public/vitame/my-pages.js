@@ -17,13 +17,14 @@ function myInterestSettings(){
   return `${myPageHeader('관심 건강 설정',interestSettingsBack)}<main class="my-interest-content"><h2>현재 신경쓰이는<br>고민이 있으신가요?</h2><p>관심 건강을 눌러 가이드에 추가해보세요</p><div class="my-health-grid" aria-label="관심 건강 선택">${initialHealthOptions.map(myHealthCard).join('')}</div><span class="my-save-status" role="status" aria-live="polite"></span></main>`;
 }
 function myMenuGroup(title,items){
-  return `<section class="my-menu-group"><h2>${title}</h2>${items.map(([label,destination])=>`<button ${destination?`data-go="${destination}"`:`data-my-unavailable="${label}"`}><span>${label}</span><img src="assets/care/chevron.svg" alt=""></button>`).join('')}</section>`;
+  const inactive=['주문·배송 조회','최근 본 제품','앱 알림 설정','계정 및 개인정보','고객센터','이용약관'];
+  return `<section class="my-menu-group"><h2>${title}</h2>${items.map(([label,destination])=>`<button ${inactive.includes(label)?'type="button" inert aria-disabled="true"':destination?`data-go="${destination}"`:`data-my-unavailable="${label}"`}><span>${label}</span><img src="assets/care/chevron.svg" alt=""></button>`).join('')}</section>`;
 }
 function finalMyPage(){
   return `${myPageHeader('마이페이지')}<main class="my-page-content"><section class="my-identity"><button class="my-avatar" data-go="profile" aria-label="프로필 수정">${initialCharacter('good')}<span><img src="assets/care/edit.svg" alt=""></span></button><h2>${esc(state.name)}</h2><button class="my-edit-profile" data-go="profile">프로필 수정</button></section><section class="my-summary" aria-label="나의 건강 관리 요약">${[['관심 건강',new Set(state.interests).size,'interest-settings'],['등록 영양제',state.supplements.length,'manage'],['찜한 제품',(state.shopLikes||[]).filter(id=>shoppingProducts.some(p=>p.id===id)).length,'likes']].map(([label,count,destination])=>`<button data-go="${destination}"><span>${label}</span><b>${count}</b></button>`).join('')}</section>${myMenuGroup('나의 건강 관리',[['관심 건강 설정','interest-settings'],['등록한 영양제 관리','manage'],['복용 알림 설정',null]])}${myMenuGroup('나의 쇼핑',[['주문·배송 조회',null],['찜한 제품','likes'],['최근 본 제품',null]])}${myMenuGroup('설정',[['앱 알림 설정',null],['계정 및 개인정보','profile'],['고객센터',null],['이용약관',null]])}<button class="my-logout" data-go="login">로그아웃</button></main>${nav('my')}`;
 }
 const myPageBeforeDoseDestination=finalMyPage;
-finalMyPage=function(){return myPageBeforeDoseDestination().replaceAll('data-go="manage"','data-go="dose"');};
+finalMyPage=function(){return myPageBeforeDoseDestination().replaceAll('data-go="manage"','data-go="dose"').replace('class="my-logout" data-go="login"','class="my-logout" type="button" inert aria-disabled="true"');};
 const renderBeforeMyPages=render;
 render=function(){
   const r=route();
