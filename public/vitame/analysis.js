@@ -145,7 +145,11 @@ return `<div class="period-chart" data-period-kind="${chartPeriod}" aria-label="
     const score=periodScore(key),picked=key===chartSelection,highlight=key===(chartSelection||anchor);
     const label=chartPeriod==='month'?periodLabel(key,true).replace(' ','<br>'):periodLabel(key,true);
     return `<div class="period-column ${i<2?'edge-left':i>4?'edge-right':''}"><button class="month-bar ${highlight?'current':''} ${picked?'picked':''}" data-period-bar="${key}" aria-pressed="${picked}" aria-label="${periodLabel(key)} ${score===null?'기록 없음':score+'점'}" ${score===null?'disabled':''}><span class="month-bar-track"><i style="--bar-height:${score??4}%"></i></span><span class="month-bar-label">${label}</span></button>${picked?`<div class="period-tooltip" role="status" style="bottom:calc(28px + ${score*1.5}px + 8px)"><small>${periodLabel(key)}</small><b>${score}<span>점</span></b></div>`:''}</div>`;
-  }).join('')}</div></div></div>`;
+  }).join('')}</div></div></div>`.replace('class="period-hint"',`class="period-hint${periodChart.hintDismissed?' is-dismissed':''}"`);
+}
+function dismissPeriodChartHint(){
+  periodChart.hintDismissed=true;
+  document.querySelectorAll('.period-hint').forEach(hint=>hint.classList.add('is-dismissed'));
 }
 function analysisScoreDate(key){
   if(['month','half','year'].includes(chartPeriod))return periodLabel(key);
@@ -191,7 +195,7 @@ nutrientPage=analysis;
 function moveChart(step){
   const next=periodOffset(chartAnchor,step*7);
   if(next>periodStart(dateKey())||next<'2000-01-01')return;
-  chartAnchor=next;chartSelection=null;render();
+  dismissPeriodChartHint();chartAnchor=next;chartSelection=null;render();
   const chart=document.querySelector('.period-chart');
   if(chart&&!matchMedia('(prefers-reduced-motion: reduce)').matches)chart.animate([{opacity:.5,transform:`translateX(${step*18}px)`},{opacity:1,transform:'translateX(0)'}],{duration:220,easing:'ease-out'});
 }
@@ -521,7 +525,7 @@ slideAdapters.push({
     try{chartAnchor=next;chartSelection=null;return slideElement(periodChart(),'.month-bars');}
     finally{chartAnchor=previous;chartSelection=selection;}
   },
-  commit(direction){chartAnchor=periodOffset(chartAnchor,direction*7);chartSelection=null;render();}
+  commit(direction){dismissPeriodChartHint();chartAnchor=periodOffset(chartAnchor,direction*7);chartSelection=null;render();}
 });
 // Shared reveal motion for the comprehensive analysis and AI guide graphs.
 function animateNutrientRows(body){
@@ -619,7 +623,7 @@ document.addEventListener('click',e=>{
     }
   }
   if(step&&!step.disabled)moveChart(Number(step.dataset.periodStep));
-  if(bar&&!bar.disabled){chartSelection=bar.dataset.periodBar;document.querySelector('.period-chart').outerHTML=periodChart();updateAnalysisScore();document.querySelector(`[data-period-bar="${chartSelection}"]`)?.focus({preventScroll:true});}
+  if(bar&&!bar.disabled){dismissPeriodChartHint();chartSelection=bar.dataset.periodBar;document.querySelector('.period-chart').outerHTML=periodChart();updateAnalysisScore();document.querySelector(`[data-period-bar="${chartSelection}"]`)?.focus({preventScroll:true});}
   if(add)addGuide(add.dataset.guideAdd);
   if(character){guideCharacter=(guideCharacter+1)%5;character.innerHTML=wellnessArt(guideCharacter);if(!matchMedia('(prefers-reduced-motion: reduce)').matches)character.firstElementChild.animate([{transform:'scale(.55)',opacity:.4},{transform:'scale(1.12)',opacity:1},{transform:'scale(1)',opacity:1}],{duration:330,easing:'ease-out'});}
   if(e.target.closest('[data-period-info]'))modal('건강 관리 점수 안내','기간별 점수와 영양소 상태는 화면 체험용 예시입니다. 실제 복용 기록으로 계산한 결과나 의료 평가가 아닙니다.');
