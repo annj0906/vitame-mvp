@@ -74,7 +74,7 @@ body[data-screen="archive"] .p2{background:var(--vitame-color-accent-purple-main
 body[data-screen="archive"] .p3{background:var(--vitame-color-accent-blue-main)}
 body[data-screen="dose"] .check{width:20px;height:20px;min-width:20px;border:0;background:var(--vitame-color-neutral-gray40);display:grid;place-items:center}
 body[data-screen="dose"] .taken .check{background:var(--vitame-color-neutral-black)}
-body[data-screen="dose"] .care-swipe-hint{position:absolute;right:88px;top:50%;transform:translateY(-50%);text-align:center;color:var(--vitame-color-neutral-gray60);font:400 10px/1.4 var(--vitame-font-pretendard);pointer-events:none}
+body[data-screen="dose"] .care-swipe-hint{position:absolute;right:88px;top:calc(50% + 10px);transform:translateY(-50%);text-align:center;color:var(--vitame-color-neutral-gray60);font:400 10px/1.4 var(--vitame-font-pretendard);pointer-events:none}
 body[data-screen="dose"] .care-swipe-hint{animation:care-hint-pulse 2.4s ease-in-out infinite}
 @keyframes care-hint-pulse{0%,100%{opacity:1}50%{opacity:.3}}
 @media(prefers-reduced-motion:reduce){body[data-screen="dose"] .care-swipe-hint{animation:none}}
