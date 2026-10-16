@@ -170,7 +170,8 @@ function returnCalendarToToday(selector,commit){
   if(direction<0){track.style.flexDirection='row-reverse';track.style.width=(pages.length+1)*width+'px';track.style.marginLeft=-pages.length*width+'px';}
   [old,...pages].forEach(page=>{page.style.width=width+'px';page.style.flex='0 0 '+width+'px';page.style.margin='0';});
   const duration=Math.min(900,360+pages.length*65),easing='cubic-bezier(.3,0,.18,1)';
-  frame.animate([old,...pages].map((page,i)=>({height:page.getBoundingClientRect().height+'px',offset:i/pages.length})),{duration,easing,fill:'forwards'});
+  // Rewind pages freely, but resize only once between the start and today.
+  frame.animate([{height:old.getBoundingClientRect().height+'px'},{height:pages.at(-1).getBoundingClientRect().height+'px'}],{duration,easing,fill:'forwards'});
   const animation=track.animate([{transform:'translateX(0)'},{transform:`translateX(${-direction*pages.length*width}px)`}],{duration,easing,fill:'forwards'});
   const cleanup=()=>{if(style===null)old.removeAttribute('style');else old.setAttribute('style',style);if(frame.isConnected)frame.replaceWith(old);todayCalendarReturn=null;};
   todayCalendarReturn={animation,cleanup};
