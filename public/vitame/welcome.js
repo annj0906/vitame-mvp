@@ -113,7 +113,15 @@ document.addEventListener('click',e=>{
 },true);
 document.addEventListener('click',e=>{
   const choice=e.target.closest('[data-setup-interest]');
-  if(choice){const name=choice.dataset.setupInterest;interestDraft=interestDraft.includes(name)?interestDraft.filter(t=>t!==name):[...interestDraft,name];render();}
+  if(choice){
+    const name=choice.dataset.setupInterest;
+    const selected=!interestDraft.includes(name);
+    interestDraft=selected?[...interestDraft,name]:interestDraft.filter(t=>t!==name);
+    choice.setAttribute('aria-pressed',String(selected));
+    choice.classList.toggle('selected',selected);
+    const legacyCheck=choice.querySelector('.interest-check');
+    if(legacyCheck)legacyCheck.textContent=selected?'✓':'';
+  }
   if(e.target.closest('[data-skip-interests]')){interestDraft=null;go('setup-frequency');}
   if(e.target.closest('[data-save-interests]')){state.interests=[...interestDraft];save();interestDraft=null;go('setup-frequency');}
   if(e.target.closest('[data-check-demo-id]')){
