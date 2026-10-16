@@ -66,3 +66,15 @@ document.addEventListener('animationend', event => {
   if(!character)return;
   for (const name of [...character.classList]) if (name.endsWith('-tap')||name.endsWith('-success')) character.classList.remove(name);
 });
+// Preserve the previous indicator position across the slide's existing render.
+const renderBeforeOnboardingIndicator=render;
+render=function(){
+  const previous=document.querySelector('.onboarding-final .slide-dots .selected');
+  const previousIndex=previous?Number(previous.dataset.index):null;
+  renderBeforeOnboardingIndicator();
+  const dots=document.querySelector('.onboarding-final .slide-dots');
+  if(dots&&previousIndex!==null&&previousIndex!==introPage){
+    dots.style.setProperty('--indicator-from',String(previousIndex));
+    dots.classList.add('indicator-moving');
+  }
+};

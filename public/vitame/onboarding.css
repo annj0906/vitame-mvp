@@ -51,6 +51,14 @@ body .onboarding-final .slide-dots button { width:16px; flex:0 0 16px; height:24
 body .onboarding-final .slide-dots button:after { position:static; inset:auto; transform:none; width:8px; height:8px; border-radius:999px; background:var(--vitame-color-neutral-gray40); transition:none; }
 body .onboarding-final .slide-dots .selected { width:26px; flex-basis:26px; }
 body .onboarding-final .slide-dots .selected:after { width:18px; height:8px; background:var(--vitame-color-neutral-black); }
+body .onboarding-final .slide-dots{position:relative;--indicator-index:0;--indicator-from:0}
+body .onboarding-final .slide-dots:has(button:nth-child(2).selected){--indicator-index:1}
+body .onboarding-final .slide-dots:has(button:nth-child(3).selected){--indicator-index:2}
+body .onboarding-final .slide-dots .selected:after{background:transparent}
+body .onboarding-final .slide-dots::before{content:"";position:absolute;left:4px;top:12px;width:18px;height:8px;border-radius:999px;background:var(--vitame-color-neutral-black);transform:translateX(calc(var(--indicator-index)*16px));pointer-events:none;z-index:1}
+body .onboarding-final .slide-dots.indicator-moving::before{animation:onboarding-indicator-slide 280ms cubic-bezier(.22,.61,.36,1) both}
+@keyframes onboarding-indicator-slide{from{transform:translateX(calc(var(--indicator-from)*16px))}to{transform:translateX(calc(var(--indicator-index)*16px))}}
+@media(prefers-reduced-motion:reduce){body .onboarding-final .slide-dots.indicator-moving::before{animation:none}}
 body .onboarding-final > .primary {
   margin: 0; padding: 0 20px; height: 56px; min-height: 56px; border: 0;
   border-radius: 999px; background: var(--vitame-color-neutral-black);
