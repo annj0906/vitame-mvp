@@ -488,8 +488,8 @@ function clearGuideMotion(){
 let guideSpeechTimer=0;
 function stopGuideSpeech(){clearTimeout(guideSpeechTimer);guideSpeechTimer=0;}
 function guideSpeechOffset(stageWidth,bubbleWidth,random=Math.random()){
-  // Keep the bubble on-screen and its central tail attached away from corners.
-  const limit=Math.max(0,Math.min(56,(stageWidth-bubbleWidth)/2-8,bubbleWidth/2-24));
+  // Reserve the arrow's 28px hit area plus an 8px inset on either side.
+  const limit=Math.max(0,(stageWidth-bubbleWidth)/2-36);
   return Math.round((random*2-1)*limit);
 }
 function animateGuideSpeech(){
@@ -500,8 +500,15 @@ function animateGuideSpeech(){
   if(label)label.innerHTML=esc(guideCharacterMessage()).replace(/([.!?。！？])\s+/g,'$1<br>');
   const stage=bubble.closest('.ai-character-stage');
   if(stage){
-    const offset=guideSpeechOffset(stage.getBoundingClientRect().width,bubble.getBoundingClientRect().width);
-    bubble.style.left=offset+'px';bubble.style.setProperty('--bubble-offset',offset+'px');
+    const width=bubble.getBoundingClientRect().width;
+    const offset=guideSpeechOffset(stage.getBoundingClientRect().width,width);
+    bubble.style.left=offset+'px';bubble.style.right=-offset+'px';
+    const tip=width/2-offset,base=Math.max(20,Math.min(width-20,tip)),left=Math.min(base-9,tip-1);
+    bubble.style.setProperty('--tail-left',left+'px');
+    bubble.style.setProperty('--tail-width',Math.max(base+9,tip+1)-left+'px');
+    bubble.style.setProperty('--tail-base-left',base-9-left+'px');
+    bubble.style.setProperty('--tail-base-right',base+9-left+'px');
+    bubble.style.setProperty('--tail-tip',tip-left+'px');
   }
   const parts=[bubble];
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
