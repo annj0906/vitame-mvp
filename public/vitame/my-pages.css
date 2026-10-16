@@ -9,12 +9,12 @@ dialog.my-profile-sheet{position:fixed;inset:auto 0 var(--profile-keyboard-inset
 .my-profile-close{position:absolute;right:-8px;top:22px;width:44px;height:44px;padding:0;background:none;font-size:28px;font-weight:400;color:var(--vitame-color-neutral-gray60)}
 #my-profile-form{display:flex;flex-direction:column;gap:0}
 .my-profile-preview{width:96px;height:96px;margin:0 auto 24px;position:relative}
-.my-profile-preview .initial-character-box{position:absolute;left:0;top:0;transform:scale(.793388);transform-origin:top left}
+.my-profile-preview .initial-character-box{position:absolute;left:7px;top:7px;transform:scale(.677686);transform-origin:top left}
 .my-profile-choices{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:24px}
 .my-profile-choices>button{position:relative;justify-self:center;width:100%;max-width:64px;min-width:0;min-height:44px;aspect-ratio:1;display:grid;place-items:center;padding:4px;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:50%;background:white}
 .my-profile-choices>button[aria-pressed="true"]{border-color:var(--profile-accent);background:white;box-shadow:none}
 .my-profile-art{position:relative;width:40px;height:40px;display:block}
-.my-profile-art .initial-character-box{position:absolute;left:0;top:0;transform:scale(.330579);transform-origin:top left}
+.my-profile-art .initial-character-box{position:absolute;left:3px;top:3px;transform:scale(.280992);transform-origin:top left}
 .my-profile-choice-check{display:none}
 .my-profile-sheet .initial-character-box *{animation:none!important;pointer-events:none}
 :is(.my-profile-sheet,.my-avatar) .ob-good-charBtn{width:156.21px;height:158.82px;left:-19.81px;top:-23.44px}
