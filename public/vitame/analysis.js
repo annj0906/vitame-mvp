@@ -551,6 +551,10 @@ function animateGuideSpeech(){
     bubble.style.setProperty('--tail-base-left',base-9-left+'px');
     bubble.style.setProperty('--tail-base-right',base+9-left+'px');
     bubble.style.setProperty('--tail-tip',tip-left+'px');
+    const tailWidth=Math.max(base+9,tip+1)-left;
+    const stroke=getComputedStyle(bubble).getPropertyValue('--vitame-color-neutral-gray20').trim()||'#f1f1f3';
+    const tailSvg=`<svg xmlns="http://www.w3.org/2000/svg" width="${tailWidth}" height="17" viewBox="0 0 ${tailWidth} 17"><path d="M${base-9-left} 0 L${tip-left} 15 L${base+9-left} 0" fill="white" stroke="${stroke}" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+    bubble.style.setProperty('--tail-art',`url("data:image/svg+xml,${encodeURIComponent(tailSvg)}")`);
   }
   const parts=[bubble];
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
