@@ -22,9 +22,12 @@ body[data-screen="registration"] .app,.registration-screen{background:var(--vita
 .registration-fields em{color:var(--vitame-color-accent-orange-main);font-style:normal}
 .registration-fields h2{font:var(--vitame-type-pretendard-body1-semibold-16);margin:0 0 12px 5px}
 .registration-ingredients{display:flex;flex-direction:column;gap:4px}
-.registration-ingredients>div{display:grid;grid-template-columns:minmax(0,1fr) 64px 74px 32px;gap:4px}
-.registration-screen .registration-ingredients input:not([type="checkbox"]),.registration-screen .registration-ingredients select{height:44px}
-.registration-ingredients input{padding:12px 10px!important}
+.registration-ingredients>div{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr) 64px 88px 32px;gap:0}
+.registration-ingredients>div::before{content:"";position:absolute;inset:0 32px 0 0;z-index:-1;border-radius:16px;box-shadow:inset 0 0 0 1.5px var(--vitame-color-neutral-gray20);background-color:var(--vitame-color-neutral-gray20);background-image:linear-gradient(var(--vitame-color-neutral-gray40),var(--vitame-color-neutral-gray40)),linear-gradient(var(--vitame-color-neutral-gray40),var(--vitame-color-neutral-gray40));background-size:1px 24px;background-position:calc(100% - 152px) center,calc(100% - 88px) center;background-repeat:no-repeat;pointer-events:none}
+.registration-screen .registration-ingredients input:not([type="checkbox"]),.registration-screen .registration-ingredients select{height:52px;border-radius:0;background-color:transparent}
+.registration-ingredients input{padding:12px!important}
+.registration-ingredients input:first-child{padding-left:16px!important}
+.registration-ingredients [data-registration="remove-ingredient"]{width:24px;justify-self:end}
 .registration-ingredients button{padding:0;display:grid;place-items:center}
 .registration-ingredients img{width:24px;height:24px}
 .registration-add{height:52px;border-radius:16px;background:var(--vitame-color-neutral-white);box-shadow:0 2px 5px #0000000d;width:100%;margin-top:16px;font:var(--vitame-type-pretendard-body2-semibold-14)}
@@ -61,7 +64,7 @@ body[data-screen="registration"] .app,.registration-screen{background:var(--vita
 .registration-label-info caption{text-align:left;font-weight:600;margin-bottom:8px}
 .registration-label-info td{border-bottom:1px solid var(--vitame-color-neutral-gray30);padding:6px 2px}
 .registration-example{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray70);margin:12px 0}
-.registration-ingredients>div{grid-template-columns:minmax(0,1fr) 64px 88px 24px}
+.registration-ingredients>div{grid-template-columns:minmax(0,1fr) 64px 88px 32px}
 .registration-ingredients select{padding-left:8px;padding-right:20px;background-position:right 5px center;background-size:12px 12px}
 .registration-screen input[type="number"]{appearance:textfield;-moz-appearance:textfield}
 .registration-screen input[type="number"]::-webkit-inner-spin-button,
@@ -152,7 +155,7 @@ dialog.registration-sheet[open]{animation:registration-sheet-enter .3s cubic-bez
 .registration-icons .pill,.registration-name .pill{display:block;width:24px;height:10px;margin:0;transform:none;border-radius:999px;box-shadow:none;background:var(--pill-color)}
 body[data-screen="home"] .home-dose .taken .pill,body[data-screen="dose"] .taken .pill,body[data-screen="archive"] .pill{background:var(--pill-color)}
 .registration-icons [aria-pressed="true"]{background:var(--vitame-color-neutral-gray20)}
-@media(max-width:380px){.registration-days{gap:6px}.registration-days button{height:40px}.registration-ingredients>div{grid-template-columns:minmax(0,1fr) 58px 88px 24px}.registration-notifications p{font-size:14px}}
+@media(max-width:380px){.registration-days{gap:6px}.registration-days button{height:40px}.registration-ingredients>div{grid-template-columns:minmax(0,1fr) 58px 88px 32px}.registration-ingredients>div::before{background-position:calc(100% - 146px) center,calc(100% - 88px) center}.registration-notifications p{font-size:14px}}
 /* Inline time selection uses the existing wheel values and save action. */
 .registration-inline-picker{overflow:hidden;animation:registration-picker-enter .36s cubic-bezier(.22,1,.36,1) both}
 @keyframes registration-picker-enter{0%{height:0;opacity:0;transform:translateY(-6px)}65%{opacity:1}100%{height:156px;opacity:1;transform:translateY(0)}}
