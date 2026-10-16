@@ -14,7 +14,7 @@ dialog.my-profile-sheet{position:fixed;inset:auto 0 var(--profile-keyboard-inset
 .my-profile-choices>button{position:relative;justify-self:center;width:100%;max-width:64px;min-width:0;min-height:44px;aspect-ratio:1;display:grid;place-items:center;padding:4px;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:50%;background:white}
 .my-profile-choices>button[aria-pressed="true"]{border-color:var(--profile-accent);background:white;box-shadow:none}
 .my-profile-art{position:relative;width:40px;height:40px;display:block}
-.my-profile-art .initial-character-box{position:absolute;left:3px;top:3px;transform:scale(.280992);transform-origin:top left}
+.my-profile-art .initial-character-box{position:absolute;left:4px;top:4px;transform:scale(.264463);transform-origin:top left}
 .my-profile-choice-check{display:none}
 .my-profile-sheet .initial-character-box *{animation:none!important;pointer-events:none}
 :is(.my-profile-sheet,.my-avatar) .ob-good-charBtn{width:156.21px;height:158.82px;left:-19.81px;top:-23.44px}
