@@ -30,7 +30,7 @@ function shoppingCard(p,deal=false){
   card.querySelector('.ai-product-info').insertAdjacentHTML('beforeend',`<span class="ai-product-tags">${p.health.map(shoppingHealth).join('')}</span>`);
   return `<article class="shop-product ai-product${deal?' shop-deal':''}" data-shop-product="${p.id}">${card.innerHTML}</article>`;
 }
-function shoppingHeading(title,subtitle='',more='all'){return `<div class="shop-section-heading"><div><h2>${esc(title)}</h2></div>${more?`<button data-shop-filter="${more}">전체보기 <span aria-hidden="true">›</span></button>`:''}</div>`;}
+function shoppingHeading(title,subtitle='',more='all'){return `<div class="shop-section-heading"><div><h2>${esc(title)}</h2></div>${more?`<button type="button" inert aria-disabled="true">전체보기 <span aria-hidden="true">›</span></button>`:''}</div>`;}
 function shoppingRail(label,content,cls=''){return `<div class="shop-rail ${cls}" tabindex="0" aria-label="${label}" data-shop-rail>${content}</div>`;}
 function shoppingPhotoCarousel(type,slides){return `<div class="shop-photo-carousel shop-${type}">${shoppingRail(type==='hero'?'메인 광고 배너':'비타미 건강 노트',slides.map(([title,subtitle],i)=>`<article class="shop-photo-slide"><img src="assets/shop/${type}-${i+1}.webp" alt="" draggable="false" ${type==='note'?'loading="lazy"':''}>${type==='hero'&&i===0?'<video class="shop-hero-video" data-src="assets/shop/hero-1.mp4" poster="assets/shop/hero-1.webp" autoplay muted loop playsinline preload="none" aria-hidden="true" disablepictureinpicture></video>':''}<div><h2>${esc(title).replace(/\n/g,'<br>')}</h2><p>${esc(subtitle)}</p></div></article>`).join(''),'shop-pages')}<div class="shop-dots" aria-label="${type==='hero'?'배너':'건강 노트'} 선택">${slides.map((_,i)=>`<button data-shop-slide="${i}" aria-label="${i+1}번 슬라이드" aria-pressed="${i===0}"></button>`).join('')}</div></div>`;}
 function shoppingResults(){
@@ -38,7 +38,7 @@ function shoppingResults(){
   if(!active)return '';
   const found=shoppingProducts.filter(p=>(!shoppingCategory||p.health.includes(shoppingCategory))&&(!shoppingFavorites||shoppingLiked(p.id))&&(`${p.brand} ${p.name}`.toLocaleLowerCase().includes(shoppingQuery.trim().toLocaleLowerCase())));
   const title=shoppingFavorites?'찜한 상품':shoppingCategory?wellnessGuides.find(g=>g.id===shoppingCategory).title:'상품 검색';
-  return `<div class="shop-section-heading"><h2>${title}</h2><button data-shop-reset>전체보기 <span aria-hidden="true">›</span></button></div><div class="shop-result-grid">${found.map(p=>shoppingCard(p)).join('')||'<p class="shop-empty">해당하는 상품이 없어요.</p>'}</div>`;
+  return `<div class="shop-section-heading"><h2>${title}</h2><button type="button" inert aria-disabled="true">전체보기 <span aria-hidden="true">›</span></button></div><div class="shop-result-grid">${found.map(p=>shoppingCard(p)).join('')||'<p class="shop-empty">해당하는 상품이 없어요.</p>'}</div>`;
 }
 function shoppingNavigation(){return nav('shop');}
 function shoppingHeader(detail=false){return `<header class="shop-header">${detail?'<button data-go="shop" aria-label="뒤로"><img src="assets/scan/back.svg" alt=""></button>':''}<h1>${detail?'제품 상세':'쇼핑'}</h1><div><button data-go="likes" aria-label="찜한 상품">${shoppingAsset('header-heart')}</button><button data-go="cart" aria-label="장바구니">${shoppingAsset('bag')}</button></div></header>`;}
@@ -50,7 +50,7 @@ function shoppingScreen(){
     <section id="shop-results" class="shop-results" ${shoppingCategory||shoppingQuery||shoppingFavorites?'':'hidden'}>${shoppingResults()}</section>
     <section class="shop-section">${shoppingHeading(`${state.name} 님을 위한 추천 제품`,'현재 부족한 영양소를 바탕으로 추천했어요.','eyes')}${shoppingRail('추천 제품',shoppingProducts.slice(0,3).map(p=>shoppingCard(p)).join(''))}</section>
     <section class="shop-section">${shoppingHeading('요즘 많이 찾는 영양제','지금 가장 많은 관심을 받고 있어요.')}${shoppingRail('인기 영양제',shoppingProducts.slice(3,6).map(p=>shoppingCard(p)).join(''))}</section>
-    <section class="shop-section shop-curations" aria-label="상황별 큐레이션">${shoppingRail('상황별 큐레이션',curations.map(([character,id,title,subtitle])=>`<article class="shop-curation"><div><span class="shop-curation-character">${initialCharacter(character)}</span><button data-shop-filter="${id}">전체보기 <span aria-hidden="true">›</span></button></div><h2>${title}</h2><p>${subtitle}</p></article>`).join(''),'shop-pages')}</section>
+    <section class="shop-section shop-curations" aria-label="상황별 큐레이션">${shoppingRail('상황별 큐레이션',curations.map(([character,id,title,subtitle])=>`<article class="shop-curation"><div><span class="shop-curation-character">${initialCharacter(character)}</span><button type="button" inert aria-disabled="true">전체보기 <span aria-hidden="true">›</span></button></div><h2>${title}</h2><p>${subtitle}</p></article>`).join(''),'shop-pages')}</section>
     <section class="shop-section shop-deals"><p class="shop-countdown" role="timer" aria-label="오늘의 특가 남은 시간"></p>${shoppingHeading('오늘만 이 가격에 살 수 있어요.','', 'deals')}<div class="shop-deal-list">${shoppingProducts.slice(6).map(p=>shoppingCard(p,true)).join('')}</div></section>
     <section class="shop-section shop-notes">${shoppingHeading('비타미 건강 노트','알아두면 좋은 영양제 이야기','')}${shoppingPhotoCarousel('note',shoppingNotes)}</section>
   </main>${shoppingNavigation()}</div>`;
