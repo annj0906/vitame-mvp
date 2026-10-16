@@ -23,7 +23,8 @@ body:is([data-screen="shop"],[data-screen="shop-eye-berry"]) #app{background:var
 .shop-curation-character .ob-normal-charBtn{width:121px;height:121px;left:0;top:0}
 .shop-curation-character .ob-very-bad-charBtn{width:174.6px;height:154.3px;left:-29.65px;top:-21.93px}
 .shop-curation-character .ob-very-good-charBtn{width:121px;height:122.4px;left:0;top:0}
-.shop-curation{flex-basis:calc(100% - 30px);width:calc(100% - 30px);padding:20px 24px}
+.shop-curation{position:relative;flex-basis:calc(100% - 30px);width:calc(100% - 30px);padding:20px 24px}
+.shop-curation::after{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
 .shop-curation h2{font:var(--vitame-type-pretendard-subtitle-semibold-18)}
 .shop-curation p{font:var(--vitame-type-pretendard-body1-regular-16);color:var(--vitame-color-neutral-gray60)}
 .shop-photo-slide p,.shop-berry-message p{color:var(--vitame-color-neutral-white)}
