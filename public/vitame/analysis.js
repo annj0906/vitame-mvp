@@ -531,10 +531,13 @@ function animateGuideSpeech(){
   bubble.getAnimations().forEach(animation=>animation.cancel());
   const label=bubble.querySelector('[aria-live]');
   if(label)label.textContent=guideCharacterMessage();
+  const speaker=document.querySelector(`[data-ai-item="${guideCharacter}"] .ai-character-main`);
+  const face=speaker?.getBoundingClientRect();
   const stage=bubble.closest('.ai-character-stage');
   if(stage){
-    const width=bubble.getBoundingClientRect().width;
-    const offset=guideSpeechOffset(stage.getBoundingClientRect().width,width);
+    const size=bubble.getBoundingClientRect(),width=size.width,stageBounds=stage.getBoundingClientRect();
+    const offset=guideSpeechOffset(stageBounds.width,width);
+    if(face)bubble.style.top=Math.max(8,face.top-stageBounds.top-size.height-(18+Math.random()*12))+'px';
     bubble.style.left=offset+'px';bubble.style.right=-offset+'px';
     const tip=width/2-offset,base=Math.max(20,Math.min(width-20,tip)),left=Math.min(base-9,tip-1);
     bubble.style.setProperty('--tail-left',left+'px');
@@ -545,22 +548,19 @@ function animateGuideSpeech(){
   }
   const parts=[bubble];
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const speaker=document.querySelector(`[data-ai-item="${guideCharacter}"] .ai-character-main`);
-  const bounds=bubble.getBoundingClientRect(),face=speaker?.getBoundingClientRect();
+  const bounds=bubble.getBoundingClientRect();
   const originX=face?face.left+face.width/2-bounds.left:bounds.width/2;
-  const rise=face?Math.max(0,face.top+face.height*.4-bounds.bottom):60;
   bubble.style.transformOrigin=`${originX}px 100%`;
   if(!guideCarousel.frame&&!guideCarousel.drag&&!document.querySelector(`[data-ai-item="${guideCharacter}"] .initial-character`)?.dataset.motion)playGuideMotion('speak');
   bubble.inert=false;
   parts.forEach(part=>{
     part.getAnimations().forEach(animation=>animation.cancel());part.style.visibility='visible';
     if(!reduced)part.animate([
-      {opacity:0,transform:`translateY(${rise}px) scale(.08)`,offset:0},
-      {opacity:.9,transform:`translateY(${rise*.3}px) scale(.65)`,offset:.28},
-      {opacity:1,transform:'translateY(-5px) scale(1.025)',offset:.67},
-      {opacity:1,transform:'translateY(1px) scale(.995)',offset:.84},
+      {opacity:0,transform:'translateY(12px) scale(.985)',offset:0},
+      {opacity:.85,transform:'translateY(4px) scale(.995)',offset:.4},
+      {opacity:1,transform:'translateY(-2px) scale(1)',offset:.78},
       {opacity:1,transform:'translateY(0) scale(1)',offset:1}
-    ],{duration:620,easing:'cubic-bezier(.22,1,.36,1)'});
+    ],{duration:760,easing:'cubic-bezier(.25,.46,.45,.94)'});
   });
   guideSpeechTimer=setTimeout(()=>{
     if(!bubble.isConnected||route()!=='guide')return;
