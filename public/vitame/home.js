@@ -10,6 +10,8 @@ homeCalendar = function() {
   template.content.querySelector('[data-go="scan"]').innerHTML = homeAsset('scan');
   template.content.querySelector('[data-action="notifications"]').innerHTML = homeAsset('bell');
   template.content.querySelector('.calendar-handle').innerHTML = '<span class="home-calendar-grip"></span>';
+  // The grip belongs to the stationary shell, never to a sliding week/month.
+  template.content.querySelector('.home-calendar').append(template.content.querySelector('.calendar-handle'));
   return template.innerHTML;
 };
 

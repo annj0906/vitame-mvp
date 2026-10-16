@@ -68,9 +68,10 @@ function animateSlide(element,adapter,direction){
 }
 document.addEventListener('pointerdown',e=>{
   if(e.button!==0||!e.isPrimary)return;
-  const adapter=slideAdapters.find(a=>e.target.closest(a.selector));if(!adapter)return;
+  const handle=e.target.closest('.calendar-handle');
+  const adapter=slideAdapters.find(a=>handle?a.selector==='.calendar-surface':e.target.closest(a.selector));if(!adapter)return;
   e.stopImmediatePropagation();if(liveSlide)return;
-  const element=e.target.closest(adapter.selector),s=prepareSlide(element,adapter);
+  const element=handle?handle.closest('.home-calendar').querySelector(adapter.selector):e.target.closest(adapter.selector),s=prepareSlide(element,adapter);
   Object.assign(s,{id:e.pointerId,x:e.clientX,y:e.clientY,lastX:e.clientX,lastTime:performance.now(),velocity:0,active:false,handle:!!e.target.closest('.calendar-handle')});
   liveSlide=s;
 },true);
@@ -97,7 +98,7 @@ function endLiveSlide(e){
 document.addEventListener('pointerup',endLiveSlide,true);
 document.addEventListener('pointercancel',endLiveSlide,true);
 document.addEventListener('click',e=>{
-  if(performance.now()<slideClickUntil&&e.target.closest('.continuous-slide-viewport,'+slideAdapters.map(a=>a.selector).join(','))){e.preventDefault();e.stopImmediatePropagation();}
+  if(performance.now()<slideClickUntil&&e.target.closest('.calendar-handle,.continuous-slide-viewport,'+slideAdapters.map(a=>a.selector).join(','))){e.preventDefault();e.stopImmediatePropagation();}
 },true);
 function cancelLiveSlide(){if(liveSlide){cancelAnimationFrame(liveSlide.animation);cleanSlide(liveSlide);liveSlide=null;}}
 window.addEventListener('hashchange',cancelLiveSlide);
