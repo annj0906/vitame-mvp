@@ -487,10 +487,17 @@ function clearGuideMotion(){
 }
 let guideSpeechTimer=0;
 function stopGuideSpeech(){clearTimeout(guideSpeechTimer);guideSpeechTimer=0;}
+function guideSpeechOffset(stageWidth,bubbleWidth,random=Math.random()){
+  // Keep the bubble on-screen and its central tail attached away from corners.
+  const limit=Math.max(0,Math.min(56,(stageWidth-bubbleWidth)/2-8,bubbleWidth/2-24));
+  return Math.round((random*2-1)*limit);
+}
 function animateGuideSpeech(){
   stopGuideSpeech();
   const bubble=document.querySelector('.ai-guide-message');
   if(!bubble?.matches?.('.ai-guide-message')||route()!=='guide')return;
+  const stage=bubble.closest('.ai-character-stage');
+  if(stage)bubble.style.left=guideSpeechOffset(stage.getBoundingClientRect().width,bubble.getBoundingClientRect().width)+'px';
   const tail=document.querySelector('.ai-bubble-tail'),parts=[bubble,tail].filter(Boolean);
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   bubble.inert=false;

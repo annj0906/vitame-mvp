@@ -17,7 +17,7 @@ function myInterestSettings(){
   return `${myPageHeader('관심 건강 설정',interestSettingsBack)}<main class="my-interest-content"><h2>현재 신경쓰이는<br>고민이 있으신가요?</h2><p>관심 건강을 눌러 가이드에 추가해보세요</p><div class="my-health-grid" aria-label="관심 건강 선택">${initialHealthOptions.map(myHealthCard).join('')}</div><span class="my-save-status" role="status" aria-live="polite"></span></main>`;
 }
 function myMenuGroup(title,items){
-  const inactive=['주문·배송 조회','최근 본 제품','앱 알림 설정','계정 및 개인정보','고객센터','이용약관'];
+  const inactive=['복용 알림 설정','주문·배송 조회','최근 본 제품','앱 알림 설정','계정 및 개인정보','고객센터','이용약관'];
   return `<section class="my-menu-group"><h2>${title}</h2>${items.map(([label,destination])=>`<button ${inactive.includes(label)?'type="button" inert aria-disabled="true"':destination?`data-go="${destination}"`:`data-my-unavailable="${label}"`}><span>${label}</span><img src="assets/care/chevron.svg" alt=""></button>`).join('')}</section>`;
 }
 function finalMyPage(){
