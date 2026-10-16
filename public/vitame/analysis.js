@@ -496,9 +496,14 @@ function animateGuideSpeech(){
   stopGuideSpeech();
   const bubble=document.querySelector('.ai-guide-message');
   if(!bubble?.matches?.('.ai-guide-message')||route()!=='guide')return;
+  const label=bubble.querySelector('[aria-live]');
+  if(label)label.innerHTML=esc(guideCharacterMessage()).replace(/([.!?。！？])\s+/g,'$1<br>');
   const stage=bubble.closest('.ai-character-stage');
-  if(stage)bubble.style.left=guideSpeechOffset(stage.getBoundingClientRect().width,bubble.getBoundingClientRect().width)+'px';
-  const tail=document.querySelector('.ai-bubble-tail'),parts=[bubble,tail].filter(Boolean);
+  if(stage){
+    const offset=guideSpeechOffset(stage.getBoundingClientRect().width,bubble.getBoundingClientRect().width);
+    bubble.style.left=offset+'px';bubble.style.setProperty('--bubble-offset',offset+'px');
+  }
+  const parts=[bubble];
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   bubble.inert=false;
   parts.forEach(part=>{
