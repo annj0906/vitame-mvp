@@ -63,6 +63,19 @@ body[data-screen="registration"] .app,.registration-screen{background:var(--vita
 .registration-example{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray70);margin:12px 0}
 .registration-ingredients>div{grid-template-columns:minmax(0,1fr) 64px 88px 24px}
 .registration-ingredients select{padding-left:8px;padding-right:20px;background-position:right 5px center;background-size:12px 12px}
+/* Keep native keyboard/form behavior while styling the unit picker itself. */
+@supports (appearance:base-select){
+  .registration-screen .registration-ingredients select,
+  .registration-screen .registration-ingredients select::picker(select){appearance:base-select}
+  .registration-screen .registration-ingredients select{display:flex;align-items:center;justify-content:space-between;gap:4px;background-image:none;padding:0 8px;white-space:nowrap}
+  .registration-ingredients select::picker-icon{content:"";width:12px;height:12px;flex:none;background:url('assets/registration/chevron.svg') center/12px no-repeat;transition:transform .18s ease}
+  .registration-ingredients select:open::picker-icon{transform:rotate(180deg)}
+  .registration-ingredients select::picker(select){min-width:132px;max-height:288px;margin:6px 0;padding:6px;border:1px solid var(--vitame-color-neutral-gray20);border-radius:16px;background:var(--vitame-color-neutral-white);box-shadow:0 6px 20px #00000014;color:var(--vitame-color-neutral-black);font:var(--vitame-type-pretendard-body2-regular-14);scrollbar-width:thin}
+  .registration-ingredients select option{min-height:36px;padding:8px 10px;display:flex;align-items:center;gap:8px;border-radius:10px;cursor:pointer}
+  .registration-ingredients select option:is(:hover,:focus-visible){background:var(--vitame-color-neutral-gray20);outline:none}
+  .registration-ingredients select option:checked{background:var(--vitame-color-neutral-gray20);font-weight:600}
+  .registration-ingredients select option::checkmark{order:1;margin-left:auto;color:var(--vitame-color-neutral-black)}
+}
 .registration-results{display:flex;flex-direction:column;gap:8px}
 .registration-product{display:flex;align-items:center;gap:16px;width:100%;padding:0;text-align:left}
 .registration-product-art{width:100px;height:100px;flex:0 0 100px;background:var(--vitame-color-neutral-gray20);border-radius:16px;display:grid;place-items:center;overflow:hidden}
