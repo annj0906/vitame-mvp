@@ -31,8 +31,9 @@ function mountSlide(s){
     node.dataset.slideSide=i===0?'-1':'1';
   });
   s.pages.forEach(node=>{node.style.width=s.width+'px';node.style.margin='0';node.style.transition='none';});
-  // Reserve enough room for six-week months while dragging; never crop their last row.
-  frame.style.height=Math.max(rect.height,...s.pages.map(node=>node.scrollHeight))+'px';
+  s.pageHeights=s.pages.map(node=>node.getBoundingClientRect().height);
+  s.resizeCalendar=['.calendar-surface','.dose-calendar'].includes(s.adapter.selector);
+  frame.style.height=(s.resizeCalendar?rect.height:Math.max(rect.height,...s.pageHeights))+'px';
   moveSlide(s,0);
 }
 function moveSlide(s,dx){
@@ -42,6 +43,11 @@ function moveSlide(s,dx){
     const base=i===0?0:Number(node.dataset.slideSide)*s.width;
     node.style.transform=`translate3d(${base+s.offset}px,0,0) ${s.transforms[i]==='none'?'':s.transforms[i]}`;
   });
+  if(s.resizeCalendar){
+    const index=s.pages.findIndex(node=>Number(node.dataset.slideSide)===direction);
+    const height=s.pageHeights[0],target=index<0?height:s.pageHeights[index];
+    s.frame.style.height=(height+(target-height)*Math.min(1,Math.abs(s.offset)/s.width))+'px';
+  }
 }
 function cleanSlide(s){
   if(!s.frame)return;
@@ -158,13 +164,14 @@ function returnCalendarToToday(selector,commit){
   const width=old.getBoundingClientRect().width,style=old.getAttribute('style');
   const frame=document.createElement('div'),track=document.createElement('div');
   frame.className='continuous-slide-viewport';frame.style.margin=getComputedStyle(old).margin;
-  frame.style.height=old.getBoundingClientRect().height+'px';track.style.display='flex';
+  frame.style.height=old.getBoundingClientRect().height+'px';track.style.display='flex';track.style.alignItems='flex-start';
   old.before(frame);frame.append(track);track.append(old,...pages);track.inert=true;
   const direction=Math.sign(offsets.at(-1));
   if(direction<0){track.style.flexDirection='row-reverse';track.style.width=(pages.length+1)*width+'px';track.style.marginLeft=-pages.length*width+'px';}
   [old,...pages].forEach(page=>{page.style.width=width+'px';page.style.flex='0 0 '+width+'px';page.style.margin='0';});
-  frame.style.height=Math.max(...[old,...pages].map(page=>page.scrollHeight))+'px';
-  const animation=track.animate([{transform:'translateX(0)'},{transform:`translateX(${-direction*pages.length*width}px)`}],{duration:Math.min(900,360+pages.length*65),easing:'cubic-bezier(.3,0,.18,1)',fill:'forwards'});
+  const duration=Math.min(900,360+pages.length*65),easing='cubic-bezier(.3,0,.18,1)';
+  frame.animate([old,...pages].map((page,i)=>({height:page.getBoundingClientRect().height+'px',offset:i/pages.length})),{duration,easing,fill:'forwards'});
+  const animation=track.animate([{transform:'translateX(0)'},{transform:`translateX(${-direction*pages.length*width}px)`}],{duration,easing,fill:'forwards'});
   const cleanup=()=>{if(style===null)old.removeAttribute('style');else old.setAttribute('style',style);if(frame.isConnected)frame.replaceWith(old);todayCalendarReturn=null;};
   todayCalendarReturn={animation,cleanup};
   animation.finished.then(()=>{const connected=frame.isConnected;cleanup();if(connected)commit();},cleanup);
