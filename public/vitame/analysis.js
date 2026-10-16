@@ -196,7 +196,7 @@ nutrientPage=analysis;
 function moveChart(step){
   const next=periodOffset(chartAnchor,step*7);
   if(next>periodStart(dateKey())||next<'2000-01-01')return;
-  dismissPeriodChartHint();chartAnchor=next;chartSelection=null;updateAnalysisScore.animateNext=true;render();
+  dismissPeriodChartHint();chartAnchor=next;chartSelection=null;render();
   const chart=document.querySelector('.period-chart');
   if(chart&&!matchMedia('(prefers-reduced-motion: reduce)').matches)chart.animate([{opacity:.5,transform:`translateX(${step*18}px)`},{opacity:1,transform:'translateX(0)'}],{duration:220,easing:'ease-out'});
 }
@@ -526,7 +526,7 @@ slideAdapters.push({
     try{chartAnchor=next;chartSelection=null;return slideElement(periodChart(),'.month-bars');}
     finally{chartAnchor=previous;chartSelection=selection;}
   },
-  commit(direction){dismissPeriodChartHint();chartAnchor=periodOffset(chartAnchor,direction*7);chartSelection=null;updateAnalysisScore.animateNext=true;render();}
+  commit(direction){dismissPeriodChartHint();chartAnchor=periodOffset(chartAnchor,direction*7);chartSelection=null;render();}
 });
 // Shared reveal motion for the comprehensive analysis and AI guide graphs.
 function animateNutrientRows(body){
