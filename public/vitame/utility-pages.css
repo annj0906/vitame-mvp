@@ -21,7 +21,8 @@ body[data-screen] :is(.initial-actions button,.onboarding-final>.primary,.regist
 body[data-screen] :is(.initial-actions button:not(.initial-primary),.registration-sheet-actions>button:not(.registration-primary),.setup-actions>.secondary,.live-scan-buttons>.secondary,.scan-final-actions>button,.shop-detail-actions>button:not(.shop-buy),.dose-add-action>button){
   background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);outline:none;border:1.5px solid var(--vitame-color-neutral-gray30);box-sizing:border-box;
 }
-body[data-screen] .scan-final-actions>button{border-radius:16px}
+/* Scanner utility actions retain their original rounded-rectangle shape. */
+body[data-screen] .scan-final-actions>button{border-radius:16px!important}
 body[data-screen] .registration-sheet-actions>button:not(.registration-primary)::before,body[data-screen] .dose-add-action>button::before{content:none}
 body[data-screen] :is(.initial-actions button:not(.initial-primary),.registration-sheet-actions>button:not(.registration-primary),.setup-actions>.secondary,.live-scan-buttons>.secondary,.scan-final-actions>button,.shop-detail-actions>button:not(.shop-buy)):focus-visible{outline:2px solid var(--vitame-color-neutral-black);outline-offset:3px}
 .utility-notice-filters{min-height:48px;align-items:center}

@@ -46,10 +46,11 @@ body .onboarding-final .onboarding-description {
   letter-spacing: var(--vitame-tracking-nanumsquareround-body-regular-16);
   color: var(--vitame-color-neutral-gray60);
 }
-body .onboarding-final .slide-dots { width: 90px; height: 32px; margin: 12px auto 20px; gap: 0; }
-body .onboarding-final .slide-dots button { width: 20px; flex: 0 0 20px; }
-body .onboarding-final .slide-dots button:after { background: var(--vitame-color-neutral-gray40); }
-body .onboarding-final .slide-dots .selected:after { background: var(--vitame-color-neutral-black); }
+body .onboarding-final .slide-dots { width: max-content; height: 32px; margin: 12px auto 20px; gap: 0; align-items:center; }
+body .onboarding-final .slide-dots button { width:16px; flex:0 0 16px; height:24px; min-height:24px; padding:0; display:grid; place-items:center; }
+body .onboarding-final .slide-dots button:after { position:static; inset:auto; transform:none; width:8px; height:8px; border-radius:999px; background:var(--vitame-color-neutral-gray40); transition:none; }
+body .onboarding-final .slide-dots .selected { width:26px; flex-basis:26px; }
+body .onboarding-final .slide-dots .selected:after { width:18px; height:8px; background:var(--vitame-color-neutral-black); }
 body .onboarding-final > .primary {
   margin: 0; padding: 0 20px; height: 56px; min-height: 56px; border: 0;
   border-radius: 999px; background: var(--vitame-color-neutral-black);
