@@ -529,7 +529,7 @@ function animateGuideSpeech(){
   const bubble=document.querySelector('.ai-guide-message');
   if(!bubble?.matches?.('.ai-guide-message')||route()!=='guide')return;
   const label=bubble.querySelector('[aria-live]');
-  if(label)label.innerHTML=esc(guideCharacterMessage()).replace(/([.!?。！？])\s+/g,'$1<br>');
+  if(label)label.textContent=guideCharacterMessage();
   const stage=bubble.closest('.ai-character-stage');
   if(stage){
     const width=bubble.getBoundingClientRect().width;
@@ -544,6 +544,7 @@ function animateGuideSpeech(){
   }
   const parts=[bubble];
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!guideCarousel.frame&&!guideCarousel.drag&&!document.querySelector(`[data-ai-item="${guideCharacter}"] .initial-character`)?.dataset.motion)playGuideMotion('speak');
   bubble.inert=false;
   parts.forEach(part=>{
     part.getAnimations().forEach(animation=>animation.cancel());part.style.visibility='visible';
@@ -577,10 +578,10 @@ function guideMessage(refresh=false){
 function playGuideMotion(type){
   const item=document.querySelector(`[data-ai-item="${guideCharacter}"]`),el=item?.querySelector('.initial-character');
   if(!el)return;
-  if(type==='tap')guideMessage(true);
+  if(type==='tap'){guideMessage(true);if(el.dataset.motion)return;}
   if(el.dataset.motion){guideCarousel.tapPending=type==='tap';return;}
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  const key=guideCharacterKeys[guideCharacter],name=`ob-${key}-${type}`;
+  const key=guideCharacterKeys[guideCharacter],name=`ob-${key}-${type==='speak'?'tap':type}`;
   el.dataset.motion=type;el.classList.add(name);
   const action=el.querySelector('[data-initial-action]');
   const finish=(discard=false)=>{el.classList.remove(name);delete el.dataset.motion;clearTimeout(guideCarousel.motionTimer);action.removeEventListener('animationend',end);guideCarousel.motionCleanup=null;if(discard)return;if(guideCarousel.arrivalPending&&!guideCarousel.drag&&!guideCarousel.frame){guideCarousel.arrivalPending=false;playGuideMotion('success');}else if(guideCarousel.queue&&el.isConnected&&!guideCarousel.drag&&!guideCarousel.frame){const next=Math.sign(guideCarousel.queue);guideCarousel.queue-=next;moveGuideCharacter(next);}else if(guideCarousel.tapPending&&el.isConnected&&!guideCarousel.drag&&!guideCarousel.frame){guideCarousel.tapPending=false;playGuideMotion('tap');}};

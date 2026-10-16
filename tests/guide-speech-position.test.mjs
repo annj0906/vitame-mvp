@@ -5,7 +5,7 @@ const source=readFileSync(new URL('../public/vitame/analysis.js',import.meta.url
 const ctx=vm.createContext({});
 vm.runInContext(source.slice(source.indexOf('function guideSpeechOffset('),source.indexOf('function animateGuideSpeech(')),ctx);
 for(const stage of [280,320,390,430]){
-  for(const width of [70,Math.min(160,stage*.408),stage*.408]){
+  for(const width of [70,160,stage-72]){
     for(const random of [0,.25,.5,.75,1]){
       const offset=ctx.guideSpeechOffset(stage,width,random);
       assert.ok(Math.abs(offset)+width/2<=stage/2-35,'bubble stays 8px inside arrow hit areas');
