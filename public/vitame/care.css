@@ -57,6 +57,7 @@ body[data-screen="dose"] .section-head h2{font:var(--vitame-type-pretendard-subt
 body[data-screen="dose"] .section-head button{padding:0;display:flex;align-items:center;gap:3px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60);white-space:nowrap}
 body[data-screen="dose"] .section-head [data-dose-sort]+[data-dose-edit]{margin-left:4px}
 body[data-screen="dose"] .dose-edit-list{padding:0;margin:0;border:0;background:transparent;box-shadow:none;display:flex;flex-direction:column;gap:8px;overflow:visible}
+body[data-screen="dose"] .dose-reorder-hint{margin:0 0 12px;color:var(--vitame-color-neutral-gray60);font:var(--vitame-type-pretendard-body2-regular-14)}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-swipe-row{height:80px;margin:0;position:relative;overflow:hidden;border-radius:16px;touch-action:pan-y;background:var(--vitame-color-neutral-white)}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front{position:relative;height:80px;border:0;border-radius:16px;background:var(--vitame-color-neutral-gray20);touch-action:pan-y;transition:transform .16s ease-out;user-select:none}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-swipe-row:has(.taken),body[data-screen="archive"] .dose-swipe-row{box-shadow:0 2px 10px #0000000d}
@@ -86,6 +87,12 @@ body:is([data-screen="dose"],[data-screen="archive"]) :is(.dose-item-edit,.dose-
 body[data-screen="dose"] .dose-swipe-row:has(.taken),body[data-screen="dose"] .dose-swipe-row:has(.taken) .dose-item-edit,body[data-screen="dose"] .dose-swipe-row:has(.taken) .dose-delete{background:var(--vitame-color-neutral-white)}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front{z-index:1}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front:focus-within{outline:none}
+body[data-screen="dose"] .dose-swipe-row:has(.dose-grip),body[data-screen="dose"] .dose-row-front:has(.dose-grip){background:transparent;box-shadow:none}
+body[data-screen="dose"] .dose-swipe-row:has(.dose-grip)::before{content:none}
+body[data-screen="dose"] .dose-swipe-row:has(.dose-grip) :is(.dose-item-edit,.dose-delete){visibility:hidden}
+body[data-screen="dose"] .dose-grip{background:transparent;border:0;box-shadow:none;color:var(--vitame-color-neutral-gray60)}
+body[data-screen="dose"] .dose-row-front:has(.dose-grip) .dose-row{box-shadow:0 2px 10px #0000000d}
+body[data-screen="dose"] .top-actions [data-go="archive"]{background:transparent;border:0;box-shadow:none}
 body[data-screen="dose"] .dose-item-edit img{filter:invert(60%) sepia(96%) saturate(1525%) hue-rotate(337deg) brightness(103%) contrast(101%)}
 body[data-screen="guide"] .wellness-tabs{display:flex;width:167px;padding:4px;margin:0 auto 24px;border-radius:999px;background:var(--vitame-color-accent-green-main)}
 body[data-screen="guide"] .wellness-tabs button{flex:1;min-width:0;padding:12px 0;min-height:44px;white-space:nowrap;font:var(--vitame-type-pretendard-body2-medium-14);color:var(--vitame-color-neutral-white)}

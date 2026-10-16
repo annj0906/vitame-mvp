@@ -166,7 +166,7 @@ function doseRows(){
 }
 dose=function(){
   const base=doseBeforeEditing();const prefix=base.slice(0,base.indexOf('<div class="section-head">'));
-  return prefix+`<div class="section-head"><h2>복용 목록</h2><button data-dose-edit aria-pressed="${doseEditing}">${doseEditing?'완료':'✎ 편집'}</button></div>${doseEditing?'<p class="subtle">왼쪽 손잡이를 위아래로 끌어 순서를 바꿔주세요.</p>':''}<section class="card dose-edit-list">${state.supplements.length?doseRows():'<p>영양제를 등록하면 복용 목록이 표시돼요.</p>'}</section><div class="dose-add-action">${button('+ 영양제 등록하기','scan','secondary')}</div>`;
+  return prefix+`<div class="section-head"><h2>복용 목록</h2><button data-dose-edit aria-pressed="${doseEditing}">${doseEditing?'완료':'✎ 편집'}</button></div>${doseEditing?'<p class="subtle dose-reorder-hint">손잡이를 위아래로 끌어 순서를 바꿔주세요.</p>':''}<section class="card dose-edit-list">${state.supplements.length?doseRows():'<p>영양제를 등록하면 복용 목록이 표시돼요.</p>'}</section><div class="dose-add-action">${button('+ 영양제 등록하기','scan','secondary')}</div>`;
 };
 function moveDose(id,index){
   const from=state.supplements.findIndex(s=>s.id===id);
