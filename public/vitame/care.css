@@ -126,6 +126,7 @@ body[data-screen="analysis"] .analysis-month-score small{font:var(--vitame-type-
 body[data-screen="analysis"] .analysis-month-description{font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-black)}
 body[data-screen="analysis"] .analysis-month-description b{color:inherit}
 body[data-screen="analysis"] .period-chart{margin-top:24px;padding:64px 0 0}
+body[data-screen="analysis"] .period-chart:has(.period-hint.is-dismissed){padding-top:0}
 body[data-screen="analysis"] .analysis-month-description{margin:0}
 body[data-screen="analysis"] .period-hint{position:absolute;top:24px;left:0;right:34px;font:var(--vitame-type-pretendard-caption-regular-12);color:var(--vitame-color-neutral-gray60);margin:0;text-align:center;word-break:keep-all;pointer-events:none;animation:period-hint-pulse 2s ease-in-out infinite}
 body[data-screen="analysis"] .period-hint.is-dismissed{visibility:hidden;animation:none}
