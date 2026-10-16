@@ -78,8 +78,8 @@ document.addEventListener('pointermove',e=>{
   const s=liveSlide;if(!s||s.settling||s.id!==e.pointerId)return;
   const dx=e.clientX-s.x,dy=e.clientY-s.y,now=performance.now();
   if(!s.active){
-    if(Math.abs(dy)>6&&Math.abs(dy)>Math.abs(dx)){if(s.handle){s.vertical=true;return;}liveSlide=null;return;}
-    if(Math.abs(dx)<6||Math.abs(dx)<=Math.abs(dy))return;
+    if(Math.abs(dy)>10&&Math.abs(dy)>Math.abs(dx)*1.35){if(s.handle){s.vertical=true;return;}liveSlide=null;return;}
+    if(Math.abs(dx)<8||Math.abs(dx)<Math.abs(dy)*.85)return;
     s.active=true;mountSlide(s);s.frame.setPointerCapture(e.pointerId);
   }
   e.preventDefault();e.stopImmediatePropagation();
@@ -107,7 +107,12 @@ function warmSlideImages(){
 window.addEventListener('hashchange',()=>requestAnimationFrame(warmSlideImages));
 window.addEventListener('resize',cancelLiveSlide);
 window.addEventListener('blur',cancelLiveSlide);
-document.addEventListener('lostpointercapture',e=>{const s=liveSlide;if(s?.active&&!s.settling&&s.id===e.pointerId)settleSlide(s,0);},true);
+// Touch starts with implicit capture on the tapped day. Transferring it to
+// the slide frame emits a loss on that old target, not the end of the drag.
+document.addEventListener('lostpointercapture',e=>{
+  const s=liveSlide;
+  if(s?.active&&!s.settling&&s.id===e.pointerId&&e.target===s.frame&&!s.frame.hasPointerCapture(e.pointerId))settleSlide(s,0);
+},true);
 document.addEventListener('dragstart',e=>{if(slideAdapters.some(a=>e.target.closest(a.selector)))e.preventDefault();});
 let calendarOpen = false;
 let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
