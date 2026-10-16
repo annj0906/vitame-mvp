@@ -8,7 +8,7 @@ const products=[{id:'d',name:'비타민 D 2000IU',nutrient:'비타민 D',price:2
 const nutrients=[['비타민 D',43,'부족','☀'],['마그네슘',56,'부족','✿'],['비타민 A',35,'부족','◉'],['엽산',60,'부족','♧'],['오메가-3',112,'주의','◈'],['비타민 B6',105,'주의','✦'],['비타민 C',78,'적정','◉'],['칼슘',82,'적정','☾'],['아연',90,'적정','⬡'],['비타민 E',76,'적정','♧'],['비타민 K',88,'적정','♧'],['비타민 B1',80,'적정','✦']];
 const groups=[['부족','low','보완 필요','등록된 섭취량을 확인해보세요.'],['주의','high','주의','여러 제품에 겹치는 성분이 있는지 확인해보세요.'],['적정','ok','유지','지금의 복용 루틴을 이어가세요.']];
 const interests=['에너지','피부','눈 건강','면역','뼈 · 관절','심혈관','두뇌 · 집중력','소화 · 장 건강','근육 · 운동','수면 · 스트레스'];
-const initial={started:false,name:'수진',supplements:[],records:{},interests:[],likes:[],cart:{},demo:false};
+const initial={started:false,name:'서연',supplements:[],records:{},interests:[],likes:[],cart:{},demo:false};
 let state;try{state={...initial,...JSON.parse(localStorage.getItem('vitame-v1')||'{}')}}catch{state={...initial}}
 const save=()=>{try{localStorage.setItem('vitame-v1',JSON.stringify(state))}catch{toast('현재 환경에서는 기록을 저장할 수 없어요.')}};
 const dateKey=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;

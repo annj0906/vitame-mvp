@@ -377,7 +377,8 @@ function guideCharacterMessage(){
  const pool=category==='reaction'?(reactionLines.length?reactionLines:[fallback[key]]):guideExtraMessages[key][category];
  let picked=index%pool.length;
  if(pool[picked]===guideLastDialogue[key]&&pool.length>1)picked=(picked+1)%pool.length;
- const text=pool[picked];guideDialogueCategoryCursor[categoryKey]=picked+1;
+ const name=typeof state!=='undefined'&&typeof state.name==='string'?state.name.trim().replace(/님$/,''):'';
+ const text=name&&cursor%4===2?`${name}님, ${pool[picked]}`:pool[picked];guideDialogueCategoryCursor[categoryKey]=picked+1;
  guideDialogueCursor[key]=cursor+1;
  guideLastDialogue[key]=text;
  return guideVisitMessages[key]=text;

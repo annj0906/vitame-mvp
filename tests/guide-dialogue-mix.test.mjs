@@ -24,6 +24,14 @@ for(let i=0;i<5;i++){
   assert.deepEqual(counts,{reaction:15,chat:9,tip:6});
 }
 const snapshot=JSON.stringify(ctx.state);
+ctx.state.name='서연';
+run("guideCharacter=0;guideDialogueCursor.bad=2;delete guideVisitMessages.bad");
+assert.match(run('guideCharacterMessage()'),/^서연님, /);
+ctx.state.name='민지';
+run("guideDialogueCursor.bad=6;delete guideVisitMessages.bad");
+assert.match(run('guideCharacterMessage()'),/^민지님, /);
+run("guideDialogueCursor.bad=7;delete guideVisitMessages.bad");
+assert.doesNotMatch(run('guideCharacterMessage()'),/^민지님, /,'name appears occasionally, not every turn');
 for(let i=0;i<14;i++){const d=new Date('2026-10-16T12:00:00');d.setDate(d.getDate()-i);ctx.state.records[dateKey(d)]={s1:true};}
 assert.equal(run('guideDialogueFacts().recordedDose'),true);
 assert.equal(run('guideDialogueFacts().steady'),true);
