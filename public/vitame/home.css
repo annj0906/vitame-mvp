@@ -1,7 +1,7 @@
 /* Final home frame 95:440. All rules are scoped to home. */
 body[data-screen="home"] #app{background:var(--vitame-color-neutral-background);color:var(--vitame-color-neutral-black)}
 body[data-screen="home"] .content{padding:0 20px 120px;min-height:0}
-body[data-screen="home"] .home-calendar{padding:0 16px 10px;margin:0 0 16px;border-radius:24px;background:var(--vitame-color-neutral-white);box-shadow:0 2px 5px #0000000d;color:var(--vitame-color-neutral-black)}
+body[data-screen="home"] .home-calendar{padding:0 16px;margin:0 0 16px;border-radius:24px;background:var(--vitame-color-neutral-white);box-shadow:0 2px 5px #0000000d;color:var(--vitame-color-neutral-black)}
 body[data-screen="home"] .calendar-toolbar{height:64px;margin:0 4px;gap:6px}
 body[data-screen="home"] .calendar-date{padding:0;font:var(--vitame-type-pretendard-subtitle-semibold-18);letter-spacing:-.02em}
 body[data-screen="home"] .calendar-actions{gap:18px}
@@ -11,11 +11,11 @@ body[data-screen="home"] .calendar-day .day-label{font:inherit;color:inherit}
 body[data-screen="home"] .calendar-day.picked{background:var(--vitame-color-neutral-gray20);font-weight:700}
 body[data-screen="home"] .calendar-day.is-today .day-number{color:inherit;font-weight:inherit}
 body[data-screen="home"] .record-dot.recorded{background:var(--vitame-color-neutral-black)}
-body[data-screen="home"] .calendar-handle{height:44px;min-height:44px;padding:0;justify-content:center}
+body[data-screen="home"] .calendar-handle{height:34px;min-height:34px;padding:20px 0 10px;justify-content:center}
 body[data-screen="home"] .home-calendar{overflow:hidden;overflow-anchor:none}
 body[data-screen="home"] .calendar-today{border-radius:999px;min-height:36px;padding:8px 11px;font:var(--vitame-type-pretendard-body2-regular-14);border-color:var(--vitame-color-neutral-gray20)}
 body[data-screen="home"] .home-scan-banner{cursor:pointer}
-body[data-screen="home"] .home-calendar-grip{width:48px;height:4px;border-radius:2px;background:var(--vitame-color-neutral-gray30)}
+body[data-screen="home"] .home-calendar-grip{width:40px;height:4px;flex:none;border-radius:2px;background:var(--vitame-color-neutral-gray30)}
 body[data-screen="home"] .home-scan-banner{position:relative;display:flex;flex-direction:column;align-items:center;height:390px;margin:0 0 16px;padding:60px 24px 20px;border-radius:20px;background:var(--vitame-color-neutral-gray10)}
 body[data-screen="home"] .home-scan-banner h2{text-align:center;font:var(--vitame-type-nanumsquareround-title2-extrabold-24);letter-spacing:-.025em}
 body[data-screen="home"] .home-scan-banner .alert-close{position:absolute;top:6px;right:11px;width:40px;height:40px;min-height:40px;padding:8px;display:grid;place-items:center}
