@@ -78,7 +78,6 @@ body[data-screen="registration"] .app,.registration-screen{background:var(--vita
   .registration-screen select::picker-icon{content:"";width:12px;height:12px;flex:none;background:url('assets/registration/chevron.svg') center/12px no-repeat;transition:transform .18s ease}
   .registration-screen select:open::picker-icon{transform:rotate(180deg)}
   .registration-screen select::picker(select){min-width:132px;max-height:288px;margin:6px 0;padding:6px;border:1px solid var(--vitame-color-neutral-gray20);border-radius:16px;background:var(--vitame-color-neutral-white);box-shadow:0 6px 20px #00000014;color:var(--vitame-color-neutral-black);font:var(--vitame-type-pretendard-body2-regular-14);scrollbar-width:thin}
-  .registration-screen select::picker(select){position-area:none;position-try-fallbacks:none;inset:auto;top:anchor(bottom);left:anchor(left);bottom:8px;height:auto;min-height:0;box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain}
   .registration-screen select option{min-height:36px;padding:8px 10px;display:flex;align-items:center;gap:8px;border-radius:10px;cursor:pointer}
   .registration-screen select option:is(:hover,:focus-visible){background:var(--vitame-color-neutral-gray20);outline:none}
   .registration-screen select option:checked{background:var(--vitame-color-neutral-gray20);font-weight:600}
