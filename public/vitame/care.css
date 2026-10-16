@@ -63,9 +63,9 @@ body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front{position:r
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-swipe-row:has(.taken),body[data-screen="archive"] .dose-swipe-row{box-shadow:0 2px 10px #0000000d}
 body[data-screen="dose"] .dose-row{height:80px;min-height:80px;border:0;border-radius:16px;margin:0;padding:20px 24px;gap:24px;background:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-gray60)}
 body[data-screen="dose"] .dose-row.taken{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black)}
-body[data-screen="dose"] .dose-row b{font:var(--vitame-type-pretendard-body2-semibold-14);max-width:100%;overflow:visible;text-overflow:clip;white-space:normal;word-break:keep-all;overflow-wrap:anywhere;display:block}
+body[data-screen="dose"] .dose-row b{font:var(--vitame-type-pretendard-body2-semibold-14);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
 body[data-screen="dose"] .dose-row>span:nth-child(2){flex:1;min-width:0}
-body[data-screen="dose"] :is(.dose-swipe-row,.dose-row-front,.dose-row){height:auto;min-height:80px}
+body[data-screen="dose"] :is(.dose-swipe-row,.dose-row-front,.dose-row){height:80px;min-height:80px}
 body[data-screen="dose"] .dose-row small{font:var(--vitame-type-pretendard-body2-regular-14);color:inherit}
 body:is([data-screen="dose"],[data-screen="archive"]) .pill{width:24px;height:10px;min-width:24px;border-radius:999px;transform:none;box-shadow:none;background:var(--vitame-color-neutral-gray60)}
 body[data-screen="dose"] .taken .pill,body[data-screen="archive"] .p0{background:var(--vitame-color-accent-yellow-main)}
@@ -78,7 +78,6 @@ body[data-screen="dose"] .care-swipe-hint{position:absolute;right:88px;top:50%;t
 body[data-screen="dose"] .care-swipe-hint{animation:care-hint-pulse 2.4s ease-in-out infinite}
 @keyframes care-hint-pulse{0%,100%{opacity:1}50%{opacity:.3}}
 @media(prefers-reduced-motion:reduce){body[data-screen="dose"] .care-swipe-hint{animation:none}}
-body[data-screen="dose"] .dose-row:has(.care-swipe-hint)>span:nth-child(2){padding-right:64px}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-item-edit,body:is([data-screen="dose"],[data-screen="archive"]) .dose-delete{width:64px;background:var(--vitame-color-neutral-white);border:0;z-index:0;min-height:80px}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-swipe-row{border:0;outline:0;box-shadow:0 2px 10px #0000000d}
 /* Outline the shared back box, not its individual action buttons. A separate
