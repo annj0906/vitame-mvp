@@ -143,7 +143,7 @@ function periodChart(){
   const referenceScore=periodScore(chartSelection||anchor);
 return `<div class="period-chart" data-period-kind="${chartPeriod}" aria-label="${chartPeriods.find(p=>p[0]===chartPeriod)[1]} 단위 예시 그래프"><p class="period-hint">좌우로 넘겨 기간을 이동하고, 막대를 눌러 확인해보세요.</p><div class="period-plot"><div class="chart-scale" aria-hidden="true"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><span class="period-reference-line" style="--reference-top:${150*(1-(referenceScore??0)/100)}px" aria-hidden="true"><img src="assets/care/analysis-reference-line.svg" alt=""></span><div class="month-bars">${keys.map((key,i)=>{
     const score=periodScore(key),picked=key===chartSelection,highlight=key===(chartSelection||anchor);
-    const label=periodLabel(key,true);
+    const label=chartPeriod==='month'?periodLabel(key,true).replace(' ','<br>'):periodLabel(key,true);
     return `<div class="period-column ${i<2?'edge-left':i>4?'edge-right':''}"><button class="month-bar ${highlight?'current':''} ${picked?'picked':''}" data-period-bar="${key}" aria-pressed="${picked}" aria-label="${periodLabel(key)} ${score===null?'기록 없음':score+'점'}" ${score===null?'disabled':''}><span class="month-bar-track"><i style="--bar-height:${score??4}%"></i></span><span class="month-bar-label">${label}</span></button>${picked?`<div class="period-tooltip" role="status" style="bottom:calc(28px + ${score*1.5}px + 8px)"><small>${periodLabel(key)}</small><b>${score}<span>점</span></b></div>`:''}</div>`;
   }).join('')}</div></div></div>`;
 }
