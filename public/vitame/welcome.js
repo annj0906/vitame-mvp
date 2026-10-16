@@ -1,14 +1,7 @@
 'use strict';
 function jellyArt(index){
-  const shapes=[
-    'M100 13C120 13 122 40 142 43C178 45 186 80 164 102C152 113 165 140 145 153C123 170 112 149 96 153C69 171 46 158 47 134C49 113 18 112 22 82C25 51 50 52 62 42C74 30 75 13 100 13Z',
-    'M62 23C27 23 13 58 30 79C39 92 55 94 58 100C23 105 15 137 34 154C48 168 68 163 99 163C129 163 154 169 167 148C183 120 159 103 141 100C163 90 179 70 166 46C155 21 128 23 101 23Z',
-    'M100 10C120 10 127 36 127 58C157 56 185 69 185 91C185 114 153 122 129 122C128 151 120 180 101 180C81 180 73 151 73 123C41 124 15 112 15 91C15 70 45 56 74 58C75 35 81 10 100 10Z',
-    'M100 68C82 13 26 18 26 57C26 82 53 93 69 100C15 117 20 174 60 174C84 174 95 147 100 130C116 183 175 177 175 138C175 114 148 104 132 99C184 81 176 24 139 24C115 24 104 50 100 68Z',
-    'M94 20Q100 16 107 21L174 70Q181 75 178 84L153 163Q151 171 141 171H59Q49 171 47 162L22 84Q19 75 27 69Z'
-  ];
-  const colors=[['#7572ff','#e348df'],['#ff94c9','#67e5a8','#599fe8'],['#ff288e','#ffd13f','#ffd0b4'],['#ff663b','#ffce3b'],['#2757ff','#00c5ff']][index];
-  return `<div class="jelly-scene"><svg class="jelly-body" viewBox="0 0 200 200" role="img" aria-label="${['보라색 미소 젤리','무지개빛 젤리','분홍빛 별 젤리','주황 네잎 젤리','파란 오각형 젤리'][index]}"><defs><linearGradient id="jelly-gradient" x2=".7" y2="1">${colors.map((c,i)=>`<stop offset="${i/(colors.length-1)*100}%" stop-color="${c}"/>`).join('')}</linearGradient><filter id="jelly-grain"><feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".13"/></feComponentTransfer><feBlend in="SourceGraphic" mode="soft-light"/></filter><clipPath id="jelly-clip"><path d="${shapes[index]}"/></clipPath></defs><g clip-path="url(#jelly-clip)"><path d="${shapes[index]}" fill="url(#jelly-gradient)"/><path d="${shapes[index]}" fill="url(#jelly-gradient)" /></g><g fill="none" stroke="white" stroke-width="3.4" stroke-linecap="round"><path d="${index===2?'M85 79l5 3m21 0 5-3':'M83 84h4m26 0h4'}"/>${(index===0||index===4)?'<path d="M83 102q17 14 34 0"/>':index===1?'<ellipse cx="100" cy="102" rx="9" ry="5"/>' :index===3?'<path d="M91 102h18"/>':'<path d="M81 104q19-13 38 0"/>'}</g></svg><div class="jelly-shadow"></div></div>`;
+  // Old callers reuse approved character assets instead of generated SVG copies.
+  return typeof initialCharacter==='function'?initialCharacter(['good','bad','very-bad','normal','very-good'][index]||'good'):'';
 }
 const onboardingBeforeJelly=onboarding;
 onboarding=function(){

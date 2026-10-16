@@ -24,10 +24,8 @@ const wellnessPaths={
   chevron:'m7 10 5 5 5-5'
 };
 function wellnessIcon(name){return `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="${wellnessPaths[name]||paths[name]||wellnessPaths.sparkle}"/></svg>`;}
-let wellnessArtId=0;
 function wellnessArt(index){
-  const prefix=`wellness-${++wellnessArtId}-`;
-  return jellyArt(index).replace(/id="([^"]+)"/g,`id="${prefix}$1"`).replace(/url\(#([^\)]+)\)/g,`url(#${prefix}$1)`);
+  return typeof initialCharacter==='function'?initialCharacter(['bad','very-bad','good','normal','very-good'][index]||'good'):'';
 }
 function analysisTabs(isGuide=false){return `<div class="segment wellness-tabs" aria-label="분석 화면 선택"><button data-go="analysis" class="${isGuide?'':'selected'}" aria-current="${isGuide?'false':'page'}">종합 분석</button><button data-go="guide" class="${isGuide?'selected':''}" aria-current="${isGuide?'page':'false'}">AI 가이드</button></div>`;}
 function nutritionCard(group){
