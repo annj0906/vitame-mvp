@@ -9,10 +9,13 @@ for(const archived of [false,true]){
     const front={style:{}},edit={},remove={};
     const row={style:{},classList:{remove(){},toggle(){}},dataset:archived?{archivedId:'test'}:{rowId:'test'},querySelector:s=>s==='.dose-row-front'?front:s==='.dose-item-edit'?edit:remove};
     let action=null;
+    const doseRows=()=>{};
     const context=vm.createContext({doseGesture:{id:1,row,x:0,offset:0,active:true},doseBlockUntil:0,Date,Math,deleteArchivedNow(){action='delete'},restoreArchivedNow(){action='restore'},archiveDoseNow(){action='archive'},editRegisteredSupplement(){action='edit'}});
     vm.runInContext(finish,context);
+    context.doseRows=doseRows;context.document={querySelectorAll:()=>[]};
     vm.runInContext(`endDoseGesture({pointerId:1,clientX:${distance},type:'pointerup'})`,context);
     assert.equal(action,expected);
+    assert.equal(!!doseRows.swipeHintDismissed,!archived&&Math.abs(distance)>=60);
     assert.equal(front.style.transform,'');
   }
 }

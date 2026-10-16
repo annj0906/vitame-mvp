@@ -183,9 +183,10 @@ function updateAnalysisScore(entering=false){
     analysisScoreFrame=requestAnimationFrame(tick);
   }
   analysisDisplayedKey=`${chartPeriod}:${key}`;
-  if(entering&&!reduced)document.querySelectorAll('.period-chart .month-bar-track i').forEach((bar,index)=>{
+  if((entering||updateAnalysisScore.animateNext)&&!reduced)document.querySelectorAll('.period-chart .month-bar-track i').forEach((bar,index)=>{
     bar.animate([{transform:'scaleY(0)',transformOrigin:'bottom'},{transform:'scaleY(1)',transformOrigin:'bottom'}],{duration:650,delay:index*85,fill:'backwards',easing:'cubic-bezier(.22,1,.36,1)'});
   });
+  updateAnalysisScore.animateNext=false;
 }
 analysis=function(){
   const anchor=chartSelection||periodStart(chartAnchor),score=periodScore(anchor);
@@ -195,7 +196,7 @@ nutrientPage=analysis;
 function moveChart(step){
   const next=periodOffset(chartAnchor,step*7);
   if(next>periodStart(dateKey())||next<'2000-01-01')return;
-  dismissPeriodChartHint();chartAnchor=next;chartSelection=null;render();
+  dismissPeriodChartHint();chartAnchor=next;chartSelection=null;updateAnalysisScore.animateNext=true;render();
   const chart=document.querySelector('.period-chart');
   if(chart&&!matchMedia('(prefers-reduced-motion: reduce)').matches)chart.animate([{opacity:.5,transform:`translateX(${step*18}px)`},{opacity:1,transform:'translateX(0)'}],{duration:220,easing:'ease-out'});
 }
@@ -525,7 +526,7 @@ slideAdapters.push({
     try{chartAnchor=next;chartSelection=null;return slideElement(periodChart(),'.month-bars');}
     finally{chartAnchor=previous;chartSelection=selection;}
   },
-  commit(direction){dismissPeriodChartHint();chartAnchor=periodOffset(chartAnchor,direction*7);chartSelection=null;render();}
+  commit(direction){dismissPeriodChartHint();chartAnchor=periodOffset(chartAnchor,direction*7);chartSelection=null;updateAnalysisScore.animateNext=true;render();}
 });
 // Shared reveal motion for the comprehensive analysis and AI guide graphs.
 function animateNutrientRows(body){
@@ -616,7 +617,7 @@ document.addEventListener('click',e=>{
   const period=e.target.closest('[data-chart-period]'),step=e.target.closest('[data-period-step]'),bar=e.target.closest('[data-period-bar]'),add=e.target.closest('[data-guide-add]'),character=e.target.closest('[data-guide-character]');
   if(period){
     const previous=chartPeriod,from=getComputedStyle(period.parentElement,'::before').transform;
-    chartPeriod=period.dataset.chartPeriod;chartAnchor=dateKey();chartSelection=null;render();
+    chartPeriod=period.dataset.chartPeriod;chartAnchor=dateKey();chartSelection=null;updateAnalysisScore.animateNext=previous!==chartPeriod;render();
     const tabs=document.querySelector('.analysis-periods');
     if(tabs&&previous!==chartPeriod&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
       tabs.animate([{transform:from},{transform:getComputedStyle(tabs,'::before').transform}],{duration:300,easing:'cubic-bezier(.22,1,.36,1)',pseudoElement:'::before'});

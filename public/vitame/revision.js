@@ -247,6 +247,10 @@ function endDoseGesture(e){
   else{
     g.row.querySelector('.dose-row-front').style.transform='';
     if(e.type==='pointercancel'||Math.abs(dx)<60)return;
+    if(!g.row.dataset.archivedId){
+      doseRows.swipeHintDismissed=true;
+      document.querySelectorAll('.care-swipe-hint').forEach(hint=>hint.remove());
+    }
     if(g.row.dataset.archivedId){
       if(dx<0)deleteArchivedNow(g.row.dataset.archivedId);
       else restoreArchivedNow(g.row.dataset.archivedId);

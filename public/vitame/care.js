@@ -39,7 +39,7 @@ dose=function(){
     row.querySelector('.dose-delete').innerHTML=careAsset('archive-action');
     const check=row.querySelector('.check');if(check)check.innerHTML='<img src="assets/home/check.svg" alt="">';
     row.querySelector('small').textContent=state.supplements[i].time;
-    if(i===0&&!doseEditing)row.querySelector('.dose-row').insertAdjacentHTML('beforeend','<span class="care-swipe-hint">좌우로 스와이프 해보세요</span>');
+    if(i===0&&!doseEditing&&!doseRows.swipeHintDismissed)row.querySelector('.dose-row').insertAdjacentHTML('beforeend','<span class="care-swipe-hint">좌우로 스와이프 해보세요</span>');
   });
   const sort=t.content.querySelector('[data-dose-sort]');if(sort)sort.innerHTML=careAsset('sort')+'시간순 정렬';
   const edit=t.content.querySelector('[data-dose-edit]');if(edit)edit.innerHTML=careAsset('edit')+(doseEditing?'완료':'편집');
