@@ -133,7 +133,8 @@ dialog.registration-sheet[open]{animation:registration-sheet-enter .3s cubic-bez
 .registration-sheet>.registration-product{margin-bottom:24px}
 .registration-sheet-actions{display:flex;gap:8px;margin-top:40px}
 .registration-sheet-actions>button{width:0;flex:1;border-radius:999px;height:56px;font:var(--vitame-type-pretendard-body1-bold-16)}
-.registration-sheet-actions>button:not(.registration-primary){background:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-gray60)}
+.registration-sheet-actions>button:not(.registration-primary){position:relative;background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);box-shadow:0 2px 5px #0000000d}
+.registration-sheet-actions>button:not(.registration-primary)::before{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
 .registration-wheel{display:flex;height:220px;position:relative;margin-top:24px;background:linear-gradient(to bottom,transparent 88px,var(--vitame-color-neutral-gray20) 88px,var(--vitame-color-neutral-gray20) 132px,transparent 132px)}
 .registration-wheel-column{flex:1;overflow-y:auto;scroll-snap-type:y mandatory;padding:88px 0;scrollbar-width:none;overscroll-behavior:contain;touch-action:pan-y}
 .registration-wheel-column::-webkit-scrollbar{display:none}
