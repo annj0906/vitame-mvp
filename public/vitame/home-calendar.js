@@ -132,12 +132,32 @@ function setCalendarOpen(open) {
   const el = document.querySelector('.home-calendar');
   if (el) {el.outerHTML = homeCalendar();const next=document.querySelector('.home-calendar');if(height&&!matchMedia('(prefers-reduced-motion: reduce)').matches)next.animate([{height:height+'px'},{height:next.getBoundingClientRect().height+'px'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'});}
 }
+function returnCalendarToToday(selector,commit){
+  const old=document.querySelector(selector),today=dateKey();
+  const unchanged=selectedDate===today&&old?.querySelector('.is-today');
+  const direction=selectedDate>today?-1:1;
+  cancelLiveSlide();commit();
+  if(unchanged||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const calendar=document.querySelector(selector);if(!calendar)return;
+  const days=[...calendar.querySelectorAll('.calendar-day')].filter(day=>day.getClientRects().length);
+  days.forEach((day,index)=>{
+    const column=index%7,order=direction>0?column:6-column;
+    day.animate([
+      {opacity:0,transform:`translateX(${direction*28}px) translateY(6px)`},
+      {opacity:1,transform:'translateX(0) translateY(0)'}
+    ],{duration:360,delay:order*24,easing:'cubic-bezier(.22,1,.36,1)',fill:'backwards'});
+  });
+  calendar.querySelectorAll('.month-toolbar h2,.calendar-date').forEach(title=>title.animate(
+    [{opacity:.3,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],
+    {duration:300,easing:'cubic-bezier(.22,1,.36,1)'}));
+}
+
 document.addEventListener('click', event => {
   const b = event.target.closest('[data-cal]');
   if (!b || b.disabled) return;
   if (b.dataset.cal === 'toggle') setCalendarOpen(!calendarOpen);
   else if (b.dataset.cal === 'select') { selectedDate = b.dataset.date; render(); }
-  else if (b.dataset.cal === 'today') { selectedDate = dateKey(); calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1); render(); }
+  else if (b.dataset.cal === 'today') returnCalendarToToday('.home-calendar',()=>{selectedDate=dateKey();const d=new Date(selectedDate+'T12:00:00');calendarMonth=new Date(d.getFullYear(),d.getMonth(),1);render();});
   else animateSlide(document.querySelector('.calendar-surface'),homeSlideAdapter,b.dataset.cal==='prev'?-1:1);
 });
 

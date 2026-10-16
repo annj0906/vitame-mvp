@@ -55,6 +55,7 @@ body[data-screen="dose"] .dose-progress-track>span{background:var(--vitame-color
 body[data-screen="dose"] .section-head{margin:0 8px 16px;gap:8px}
 body[data-screen="dose"] .section-head h2{font:var(--vitame-type-pretendard-subtitle-semibold-18);margin-right:auto}
 body[data-screen="dose"] .section-head button{padding:0;display:flex;align-items:center;gap:3px;font:var(--vitame-type-pretendard-body2-regular-14);color:var(--vitame-color-neutral-gray60);white-space:nowrap}
+body[data-screen="dose"] .section-head [data-dose-sort]+[data-dose-edit]{margin-left:4px}
 body[data-screen="dose"] .dose-edit-list{padding:0;margin:0;border:0;background:transparent;box-shadow:none;display:flex;flex-direction:column;gap:8px;overflow:visible}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-swipe-row{height:80px;margin:0;position:relative;overflow:hidden;border-radius:16px;touch-action:pan-y;background:var(--vitame-color-neutral-white)}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-row-front{position:relative;height:80px;border:0;border-radius:16px;background:var(--vitame-color-neutral-gray20);touch-action:pan-y;transition:transform .16s ease-out;user-select:none}

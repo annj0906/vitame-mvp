@@ -308,8 +308,10 @@ document.addEventListener('click',e=>{
     clearTimeout(doseUndoTimer);document.querySelector('.dose-undo')?.remove();save();render();
   }
   if(e.target.closest('[data-dose-today]')){
-    selectedDate=dateKey();doseWeekAnchor=null;
-    const d=new Date(selectedDate+'T12:00:00');doseMonth=new Date(d.getFullYear(),d.getMonth(),1);render();
+    returnCalendarToToday('.dose-calendar',()=>{
+      selectedDate=dateKey();doseWeekAnchor=null;
+      const d=new Date(selectedDate+'T12:00:00');doseMonth=new Date(d.getFullYear(),d.getMonth(),1);render();
+    });
   }
 });
 const doseBeforeTodayPlacement=dose;
