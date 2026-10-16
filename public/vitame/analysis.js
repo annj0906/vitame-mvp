@@ -535,9 +535,14 @@ function animateGuideSpeech(){
   const face=speaker?.getBoundingClientRect();
   const stage=bubble.closest('.ai-character-stage');
   if(stage){
-    const size=bubble.getBoundingClientRect(),width=size.width,stageBounds=stage.getBoundingClientRect();
+    const stageBounds=stage.getBoundingClientRect(),available=stageBounds.width-72;
+    const longLine=(label?.textContent.length||0)>55;
+    bubble.style.maxWidth=Math.min(available,Math.max(150,available*((longLine ? .8 : .58)+Math.random()*(longLine ? .2 : .42))))+'px';
+    if(bubble.getBoundingClientRect().height>120)bubble.style.maxWidth=available+'px';
+    bubble.style.borderRadius=(22+Math.round(Math.random()*10))+'px';
+    const size=bubble.getBoundingClientRect(),width=size.width;
     const offset=guideSpeechOffset(stageBounds.width,width);
-    if(face)bubble.style.top=Math.max(8,face.top-stageBounds.top-size.height-(18+Math.random()*12))+'px';
+    if(face)bubble.style.top=Math.max(0,face.top-stageBounds.top-size.height-(18+Math.random()*60))+'px';
     bubble.style.left=offset+'px';bubble.style.right=-offset+'px';
     const tip=width/2-offset,base=Math.max(20,Math.min(width-20,tip)),left=Math.min(base-9,tip-1);
     bubble.style.setProperty('--tail-left',left+'px');
@@ -550,22 +555,22 @@ function animateGuideSpeech(){
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const bounds=bubble.getBoundingClientRect();
   const originX=face?face.left+face.width/2-bounds.left:bounds.width/2;
-  bubble.style.transformOrigin=`${originX}px 100%`;
+  const originY=face?face.top+face.height*.4-bounds.top:bounds.height+30;
+  bubble.style.transformOrigin=`${originX}px ${originY}px`;
   if(!guideCarousel.frame&&!guideCarousel.drag&&!document.querySelector(`[data-ai-item="${guideCharacter}"] .initial-character`)?.dataset.motion)playGuideMotion('speak');
   bubble.inert=false;
   parts.forEach(part=>{
     part.getAnimations().forEach(animation=>animation.cancel());part.style.visibility='visible';
     if(!reduced)part.animate([
-      {opacity:0,transform:'translateY(12px) scale(.985)',offset:0},
-      {opacity:.85,transform:'translateY(4px) scale(.995)',offset:.4},
-      {opacity:1,transform:'translateY(-2px) scale(1)',offset:.78},
-      {opacity:1,transform:'translateY(0) scale(1)',offset:1}
-    ],{duration:760,easing:'cubic-bezier(.25,.46,.45,.94)'});
+      {opacity:0,transform:'scale(.2)',offset:0},
+      {opacity:.45,transform:'scale(.72)',offset:.45},
+      {opacity:1,transform:'scale(1)',offset:1}
+    ],{duration:900,easing:'cubic-bezier(.37,0,.63,1)'});
   });
   guideSpeechTimer=setTimeout(()=>{
     if(!bubble.isConnected||route()!=='guide')return;
     bubble.inert=true;
-    parts.forEach(part=>{if(!reduced)part.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-6px)'}],{duration:240,fill:'forwards',easing:'ease-in'});else part.style.visibility='hidden';});
+    parts.forEach(part=>{if(!reduced)part.animate([{opacity:1,transform:'scale(1)'},{opacity:.35,transform:'scale(.65)',offset:.6},{opacity:0,transform:'scale(.2)'}],{duration:650,fill:'forwards',easing:'cubic-bezier(.37,0,.63,1)'});else part.style.visibility='hidden';});
     guideSpeechTimer=setTimeout(()=>{
       if(!bubble.isConnected||route()!=='guide')return;
       guideMessage(true);
