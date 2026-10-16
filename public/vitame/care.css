@@ -248,3 +248,12 @@ body[data-screen="home"] .home-dose .dose-mini>button.taken::after{border-color:
 body[data-screen="dose"] .dose-row{position:relative;outline:none}
 body[data-screen="dose"] .dose-row::after{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
 body[data-screen="dose"] .dose-row.taken::after{border-color:var(--dose-accent)}
+/* Match the stationary swipe shell to the completed card, including action areas. */
+body[data-screen="dose"] .dose-swipe-row:has(.taken){--dose-shell-accent:var(--vitame-color-accent-yellow-main)}
+body[data-screen="dose"] .dose-swipe-row:has(.taken .p1){--dose-shell-accent:var(--vitame-color-accent-green-main)}
+body[data-screen="dose"] .dose-swipe-row:has(.taken .p2){--dose-shell-accent:var(--vitame-color-accent-purple-main)}
+body[data-screen="dose"] .dose-swipe-row:has(.taken .p3){--dose-shell-accent:var(--vitame-color-accent-blue-main)}
+body[data-screen="dose"] .dose-swipe-row:has(.taken .p4){--dose-shell-accent:var(--vitame-color-accent-pink-main)}
+body[data-screen="dose"] .dose-swipe-row:has(.taken .p5){--dose-shell-accent:var(--vitame-color-accent-red-main)}
+body[data-screen="dose"] .dose-swipe-row:has(.taken .p6){--dose-shell-accent:#43c9ec}
+body[data-screen="dose"] .dose-swipe-row:has(.taken)::before{border-color:var(--dose-shell-accent)}
