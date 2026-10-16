@@ -1,7 +1,7 @@
 /* Only MY and interest settings; existing page and character styles stay untouched. */
 dialog.my-profile-sheet{position:fixed;inset:auto 0 var(--profile-keyboard-inset,0px);margin:0 auto;box-sizing:border-box;width:100%;max-width:100%;max-height:calc(var(--profile-viewport-height,100dvh) - 16px);overflow-y:auto;overscroll-behavior:contain;padding:0 20px max(24px,env(safe-area-inset-bottom));border:0;border-radius:24px 24px 0 0;background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);box-shadow:0 -4px 24px #00000012;scroll-padding:16px;font:var(--vitame-type-pretendard-body2-regular-14)}
 @media(min-width:600px){dialog.my-profile-sheet{max-width:430px}}
-.my-profile-sheet::backdrop{background:#00000040;animation:my-profile-backdrop-in .25s ease both}
+.my-profile-sheet::backdrop{background:transparent;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);animation:my-profile-backdrop-in .25s ease both}
 .my-profile-sheet.is-closing::backdrop{animation:my-profile-backdrop-out .25s ease both}
 .my-profile-sheet-head{position:relative;padding:34px 44px 24px;text-align:center;touch-action:none;cursor:grab}
 .my-profile-sheet-head h2{margin:0;font:var(--vitame-type-pretendard-subtitle-semibold-18)}
@@ -72,7 +72,7 @@ body:is([data-screen="my"],[data-screen="interest-settings"]) .app{background:va
 @media(max-width:380px){.my-health-card{padding:18px 10px;gap:6px}.my-identity{gap:14px}.my-edit-profile{font-size:14px}}
 /* Shared informational dialogs use a neutral overlay, not the legacy green tint. */
 body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet){color:var(--vitame-color-neutral-black)}
-body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet)::backdrop{background:rgba(0,0,0,.24)}
+body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet):not(.my-profile-sheet)::backdrop{background:rgba(0,0,0,.24)}
 body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet) p{color:var(--vitame-color-neutral-gray60)}
 body:is([data-screen="my"],[data-screen="guide"]) dialog:not(.registration-sheet) button:focus-visible{outline:none}
 /* Match onboarding interest cards without changing their layout or state. */
