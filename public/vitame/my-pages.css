@@ -1,4 +1,34 @@
 /* Only MY and interest settings; existing page and character styles stay untouched. */
+dialog.my-profile-sheet{position:fixed;inset:auto 0 var(--profile-keyboard-inset,0px);margin:0 auto;width:100%;max-width:430px;max-height:calc(var(--profile-viewport-height,100dvh) - 16px);overflow-y:auto;overscroll-behavior:contain;padding:0 20px max(24px,env(safe-area-inset-bottom));border:0;border-radius:24px 24px 0 0;background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);box-shadow:0 -4px 24px #00000012;scroll-padding:16px;font:var(--vitame-type-pretendard-body2-regular-14)}
+.my-profile-sheet::backdrop{background:#00000040;animation:my-profile-backdrop-in .25s ease both}
+.my-profile-sheet.is-closing::backdrop{animation:my-profile-backdrop-out .25s ease both}
+.my-profile-sheet-head{position:relative;padding:34px 44px 16px;text-align:center;touch-action:none;cursor:grab}
+.my-profile-sheet-head h2{margin:0;font:var(--vitame-type-pretendard-subtitle-semibold-18)}
+.my-profile-handle{position:absolute;top:10px;left:calc(50% - 20px);width:40px;height:4px;border-radius:99px;background:var(--vitame-color-neutral-gray30)}
+.my-profile-close{position:absolute;right:-8px;top:22px;width:44px;height:44px;padding:0;background:none;font-size:28px;font-weight:400;color:var(--vitame-color-neutral-gray60)}
+#my-profile-form{display:flex;flex-direction:column;gap:12px}
+.my-profile-preview{width:96px;height:96px;margin:0 auto 8px;position:relative}
+.my-profile-preview .initial-character-box{position:absolute;left:0;top:0;transform:scale(.793388);transform-origin:top left}
+.my-profile-choices{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.my-profile-choices>button{position:relative;min-width:0;height:70px;display:grid;place-items:center;padding:4px;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:16px;background:white}
+.my-profile-choices>button[aria-pressed="true"]{border-color:var(--profile-accent);background:var(--profile-light);box-shadow:0 2px 5px #0000000d}
+.my-profile-art{position:relative;width:40px;height:40px;display:block}
+.my-profile-art .initial-character-box{position:absolute;left:0;top:0;transform:scale(.330579);transform-origin:top left}
+.my-profile-choice-check{position:absolute;right:4px;top:4px;width:14px;height:14px;min-height:0;display:grid;place-items:center;border-radius:50%;background:var(--profile-accent);color:white;font-size:10px;opacity:0}
+[aria-pressed="true"]>.my-profile-choice-check{opacity:1}
+.my-profile-sheet .initial-character-box *{animation:none!important;pointer-events:none}
+:is(.my-profile-sheet,.my-avatar) .ob-good-charBtn{width:156.21px;height:158.82px;left:-19.81px;top:-23.44px}
+:is(.my-profile-sheet,.my-avatar) .ob-bad-charBtn{width:148.38px;height:148.25px;left:-16.34px;top:-15.45px}
+:is(.my-profile-sheet,.my-avatar) .ob-very-bad-charBtn{width:174.60px;height:154.30px;left:-29.65px;top:-21.93px}
+:is(.my-profile-sheet,.my-avatar) .ob-normal-charBtn{width:121px;height:121px;left:0;top:0}
+:is(.my-profile-sheet,.my-avatar) .ob-very-good-charBtn{width:121px;height:122.4px;left:0;top:0}
+.my-profile-sheet .my-profile-name{font:var(--vitame-type-pretendard-body1-semibold-16)}
+.my-profile-sheet input{box-sizing:border-box;width:100%;height:48px;min-height:48px;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:16px;padding:12px 16px;background:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-black);font-size:16px}
+.my-profile-save{width:100%;height:52px;min-height:52px;margin-top:8px;border:0;border-radius:999px;background:var(--vitame-color-neutral-black);color:white;font:var(--vitame-type-pretendard-body1-bold-16)}
+.my-profile-save:disabled{background:var(--vitame-color-neutral-gray20);color:var(--vitame-color-neutral-gray60);cursor:default}
+@keyframes my-profile-backdrop-in{from{opacity:0}to{opacity:1}}
+@keyframes my-profile-backdrop-out{from{opacity:1}to{opacity:0}}
+@media(prefers-reduced-motion:reduce){.my-profile-sheet::backdrop,.my-profile-sheet.is-closing::backdrop{animation:none}}
 body:is([data-screen="my"],[data-screen="interest-settings"]) .app{background:var(--vitame-color-neutral-background,#fcfcfc);color:var(--vitame-color-neutral-black)}
 .my-page-header{height:64px;display:flex;align-items:center;justify-content:center;position:relative;padding:0 20px}
 .my-page-header h1{font:var(--vitame-type-pretendard-subtitle-semibold-18);letter-spacing:-.02em}

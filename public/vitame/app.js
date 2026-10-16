@@ -10,7 +10,9 @@ const groups=[['부족','low','보완 필요','등록된 섭취량을 확인해�
 const interests=['에너지','피부','눈 건강','면역','뼈 · 관절','심혈관','두뇌 · 집중력','소화 · 장 건강','근육 · 운동','수면 · 스트레스'];
 const initial={started:false,name:'서연',supplements:[],records:{},interests:[],likes:[],cart:{},demo:false};
 let state;try{state={...initial,...JSON.parse(localStorage.getItem('vitame-v1')||'{}')}}catch{state={...initial}}
-const save=()=>{try{localStorage.setItem('vitame-v1',JSON.stringify(state))}catch{toast('현재 환경에서는 기록을 저장할 수 없어요.')}};
+// Profile edits last only for this app run; all other user records keep persisting.
+state.name=initial.name;state.profileCharacter='good';
+const save=()=>{try{const {name,profileCharacter,...persisted}=state;localStorage.setItem('vitame-v1',JSON.stringify(persisted))}catch{toast('현재 환경에서는 기록을 저장할 수 없어요.')}};
 const dateKey=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 let selectedDate=dateKey(),draft=null,selectedProduct='d',quantity=1,detailTab='제품 정보',uploadURL='',toastTimer;
 const completed=(date=selectedDate)=>state.supplements.filter(s=>state.records[date]?.[s.id]).length;
