@@ -565,12 +565,12 @@ function animateGuideSpeech(){
       {opacity:0,transform:'scale(.2)',offset:0},
       {opacity:.45,transform:'scale(.72)',offset:.45},
       {opacity:1,transform:'scale(1)',offset:1}
-    ],{duration:900,easing:'cubic-bezier(.37,0,.63,1)'});
+    ],{duration:650,easing:'cubic-bezier(.37,0,.63,1)'});
   });
   guideSpeechTimer=setTimeout(()=>{
     if(!bubble.isConnected||route()!=='guide')return;
     bubble.inert=true;
-    parts.forEach(part=>{if(!reduced)part.animate([{opacity:1,transform:'scale(1)'},{opacity:.35,transform:'scale(.65)',offset:.6},{opacity:0,transform:'scale(.2)'}],{duration:650,fill:'forwards',easing:'cubic-bezier(.37,0,.63,1)'});else part.style.visibility='hidden';});
+    parts.forEach(part=>{if(!reduced)part.animate([{opacity:1,transform:'scale(1)'},{opacity:.35,transform:'scale(.65)',offset:.6},{opacity:0,transform:'scale(.2)'}],{duration:450,fill:'forwards',easing:'cubic-bezier(.37,0,.63,1)'});else part.style.visibility='hidden';});
     guideSpeechTimer=setTimeout(()=>{
       if(!bubble.isConnected||route()!=='guide')return;
       guideMessage(true);
