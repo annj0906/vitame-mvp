@@ -39,6 +39,7 @@ function openMyProfileSheet(){
   sheet.innerHTML=`<div class="my-profile-sheet-head" data-profile-drag><span class="my-profile-handle" aria-hidden="true"></span><h2 id="my-profile-title">프로필 수정</h2><button type="button" class="my-profile-close" aria-label="프로필 수정 닫기">×</button></div><form id="my-profile-form"><div class="my-profile-preview" aria-label="선택한 프로필 캐릭터">${initialCharacter(selected)}</div><div class="my-profile-choices" role="group" aria-label="프로필 캐릭터 선택">${myProfileCharacters.map(([key,label,color])=>`<button type="button" data-profile-character="${key}" aria-label="${label} 캐릭터" aria-pressed="${key===selected}" style="--profile-accent:var(--vitame-color-accent-${color}-main);--profile-light:var(--vitame-color-accent-${color}-light)"><span class="my-profile-art">${initialCharacter(key)}</span><span class="my-profile-choice-check" aria-hidden="true">✓</span></button>`).join('')}</div><label class="my-profile-name" for="my-profile-name">이름</label><input id="my-profile-name" name="profileName" value="${esc(state.name)}" maxlength="20" autocomplete="nickname" required><button class="my-profile-save" type="submit">저장하기</button></form>`;
   document.body.append(sheet);
   const form=sheet.querySelector('form'),input=sheet.querySelector('input'),submit=sheet.querySelector('.my-profile-save');
+  input.type='text';input.inputMode='text';
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
   const syncViewport=()=>{
