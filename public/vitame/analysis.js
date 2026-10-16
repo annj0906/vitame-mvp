@@ -528,6 +528,7 @@ function animateGuideSpeech(){
   stopGuideSpeech();
   const bubble=document.querySelector('.ai-guide-message');
   if(!bubble?.matches?.('.ai-guide-message')||route()!=='guide')return;
+  bubble.getAnimations().forEach(animation=>animation.cancel());
   const label=bubble.querySelector('[aria-live]');
   if(label)label.textContent=guideCharacterMessage();
   const stage=bubble.closest('.ai-character-stage');
@@ -544,16 +545,22 @@ function animateGuideSpeech(){
   }
   const parts=[bubble];
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const speaker=document.querySelector(`[data-ai-item="${guideCharacter}"] .ai-character-main`);
+  const bounds=bubble.getBoundingClientRect(),face=speaker?.getBoundingClientRect();
+  const originX=face?face.left+face.width/2-bounds.left:bounds.width/2;
+  const rise=face?Math.max(0,face.top+face.height*.4-bounds.bottom):60;
+  bubble.style.transformOrigin=`${originX}px 100%`;
   if(!guideCarousel.frame&&!guideCarousel.drag&&!document.querySelector(`[data-ai-item="${guideCharacter}"] .initial-character`)?.dataset.motion)playGuideMotion('speak');
   bubble.inert=false;
   parts.forEach(part=>{
     part.getAnimations().forEach(animation=>animation.cancel());part.style.visibility='visible';
     if(!reduced)part.animate([
-      {opacity:0,transform:'translateY(22px) scale(.92)',offset:0},
-      {opacity:1,transform:'translateY(-5px) scale(1.025)',offset:.62},
+      {opacity:0,transform:`translateY(${rise}px) scale(.08)`,offset:0},
+      {opacity:.9,transform:`translateY(${rise*.3}px) scale(.65)`,offset:.28},
+      {opacity:1,transform:'translateY(-5px) scale(1.025)',offset:.67},
       {opacity:1,transform:'translateY(1px) scale(.995)',offset:.84},
       {opacity:1,transform:'translateY(0) scale(1)',offset:1}
-    ],{duration:580,easing:'cubic-bezier(.22,1,.36,1)'});
+    ],{duration:620,easing:'cubic-bezier(.22,1,.36,1)'});
   });
   guideSpeechTimer=setTimeout(()=>{
     if(!bubble.isConnected||route()!=='guide')return;
