@@ -157,21 +157,39 @@ function analysisScoreDate(key){
 }
 function analysisScoreMessage(score){
   if(score===null)return '아직 기록이 없어요.<br>복용 기록을 시작해보세요.';
-  return score>=80?'꾸준히 관리하고 있어요.<br>지금의 복용 습관을 유지해보세요.':score>=60?'균형을 찾아가는 중이에요.<br>복용을 유지해보세요.':'작은 습관부터 시작해봐요.<br>복용 기록을 차근차근 이어가세요.';
+  const messages=[
+    '오늘부터 가볍게 시작해봐요.<br>첫 복용 기록을 남겨보세요.',
+    '첫걸음을 내디뎠어요.<br>부담 없이 하나씩 기록해보세요.',
+    '조금씩 기록이 쌓이고 있어요.<br>오늘도 작은 습관을 이어가세요.',
+    '나만의 루틴을 만들어가는 중이에요.<br>챙기기 편한 시간을 정해보세요.',
+    '차근차근 이어가고 있어요.<br>놓친 날이 있어도 다시 시작하면 돼요.',
+    '작은 습관이 자리 잡고 있어요.<br>복용 기록을 꾸준히 이어가세요.',
+    '균형을 찾아가는 중이에요.<br>지금의 복용 루틴을 이어가세요.',
+    '꾸준함이 쌓이고 있어요.<br>내 페이스대로 한 걸음 더 가봐요.',
+    '꾸준히 관리하고 있어요.<br>지금의 복용 습관을 유지해보세요.',
+    '정말 성실하게 이어왔어요.<br>무리하지 말고 이 흐름을 유지해요.'
+  ];
+  return messages[Math.max(0,Math.min(9,Math.floor(score/10)))];
 }
-let analysisScoreFrame=0,analysisDisplayedKey='';
+let analysisScoreFrame=0,analysisDisplayedKey='',analysisDisplayedMessage='';
 function updateAnalysisScore(entering=false){
   const key=chartSelection||periodStart(chartAnchor),score=periodScore(key);
   const heading=document.querySelector('.analysis-month-score');
   if(!heading)return;
   cancelAnimationFrame(analysisScoreFrame);
   document.querySelector('.analysis-score-label').textContent=analysisScoreDate(key);
-  document.querySelector('.analysis-month-description').innerHTML=analysisScoreMessage(score);
+  const description=document.querySelector('.analysis-month-description'),message=analysisScoreMessage(score);
+  description.innerHTML=message;
   heading.innerHTML=`<span>${score??'—'}</span><small>점</small>`;
   heading.setAttribute('aria-label',score===null?'기록 없음':`${score}점`);
   const number=heading.querySelector('span');
   number.setAttribute('aria-hidden','true');
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduced&&(entering||analysisDisplayedMessage!==message)&&typeof description.animate==='function'){
+    description.getAnimations?.().forEach(animation=>animation.cancel());
+    description.animate([{opacity:0,transform:'translateY(6px)'},{opacity:1,transform:'translateY(0)'}],{duration:300,easing:'cubic-bezier(.22,1,.36,1)'});
+  }
+  analysisDisplayedMessage=message;
   if(!reduced&&score!==null&&(entering||analysisDisplayedKey!==`${chartPeriod}:${key}`)){
     const start=performance.now();number.textContent='0';
     const tick=now=>{
