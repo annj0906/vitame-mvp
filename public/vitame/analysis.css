@@ -292,8 +292,8 @@ body[data-screen="guide"] .ai-character-main .initial-character-box{pointer-even
 body[data-screen="guide"] .ai-character-item .ai-character-shadow{margin-top:22px}
 body[data-screen="guide"] .ai-character-item:has([class$="-tap"])>.character-shadow>img{animation:var(--shadow-tap) var(--shadow-tap-duration) ease-out 1}
 body[data-screen="guide"] .ai-character-item:has([class$="-success"])>.character-shadow>img{animation:var(--shadow-success) var(--shadow-success-duration) ease-in-out 1}
-body[data-screen="guide"] .ai-character-stage{padding-top:108px;margin-top:-16px}
-body[data-screen="guide"] .ai-character-prev,body[data-screen="guide"] .ai-character-next{top:167px;width:28px;height:44px;z-index:40}
+body[data-screen="guide"] .ai-character-stage{padding-top:128px;margin-top:-16px}
+body[data-screen="guide"] .ai-character-prev,body[data-screen="guide"] .ai-character-next{top:187px;width:28px;height:44px;z-index:40}
 body[data-screen="guide"] .ai-guide-message{width:max-content;max-width:calc(100% - 72px);min-height:36px;align-self:center;justify-content:center;box-sizing:border-box;flex:none;position:absolute;top:0;bottom:auto;left:0;right:0;margin:0 auto;gap:10px}
 body[data-screen="guide"] .ai-guide-message{padding:12px 16px;text-align:center;box-shadow:inset 0 0 0 1.5px var(--vitame-color-neutral-gray20);filter:drop-shadow(0 2px 5px #0000000d)}
 body[data-screen="guide"] .ai-guide-message::after{content:"";position:absolute;top:calc(100% - 1.5px);left:var(--tail-left,calc(50% - 9px));width:var(--tail-width,18px);height:17px;background:var(--tail-art) center top/100% 100% no-repeat;pointer-events:none}
