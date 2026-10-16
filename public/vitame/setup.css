@@ -124,8 +124,9 @@
   .initial-character, .initial-character * { animation: none !important; }
 }
 /* Latest interest-card design, Figma 372:966; inset strokes preserve geometry. */
-.initial-health-grid button{background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);outline:1.5px solid var(--vitame-color-neutral-gray20);outline-offset:-1.5px;box-shadow:0 2px 5px #0000000d}
-.initial-health-grid button[aria-pressed="true"]{outline-color:var(--health-color)}
+.initial-health-grid button{position:relative;background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);outline:none;box-shadow:0 2px 5px #0000000d}
+.initial-health-grid button::after{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
+.initial-health-grid button[aria-pressed="true"]::after{border-color:var(--health-color)}
 .initial-health-grid button .initial-health-icon{background:var(--health-tint)}
 .initial-health-grid button .initial-health-icon>span{background:var(--health-color)}
 .initial-health-grid button[aria-pressed="false"] .initial-health-icon img{filter:none}
