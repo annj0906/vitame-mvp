@@ -23,7 +23,7 @@ body[data-screen="registration"] .app,.registration-screen{background:var(--vita
 .registration-fields h2{font:var(--vitame-type-pretendard-body1-semibold-16);margin:0 0 12px 5px}
 .registration-ingredients{display:flex;flex-direction:column;gap:4px}
 .registration-ingredients>div{display:grid;grid-template-columns:minmax(0,1fr) 64px 74px 32px;gap:4px}
-.registration-screen .registration-ingredients input:not([type="checkbox"]),.registration-screen .registration-ingredients select{height:48px}
+.registration-screen .registration-ingredients input:not([type="checkbox"]),.registration-screen .registration-ingredients select{height:44px}
 .registration-ingredients input{padding:12px 10px!important}
 .registration-ingredients button{padding:0;display:grid;place-items:center}
 .registration-ingredients img{width:24px;height:24px}
