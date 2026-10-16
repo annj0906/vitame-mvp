@@ -132,25 +132,39 @@ function setCalendarOpen(open) {
   const el = document.querySelector('.home-calendar');
   if (el) {el.outerHTML = homeCalendar();const next=document.querySelector('.home-calendar');if(height&&!matchMedia('(prefers-reduced-motion: reduce)').matches)next.animate([{height:height+'px'},{height:next.getBoundingClientRect().height+'px'}],{duration:320,easing:'cubic-bezier(.22,1,.36,1)'});}
 }
-function returnCalendarToToday(selector,commit){
-  const old=document.querySelector(selector),today=dateKey();
-  const unchanged=selectedDate===today&&old?.querySelector('.is-today');
-  const direction=selectedDate>today?-1:1;
-  cancelLiveSlide();commit();
-  if(unchanged||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  const calendar=document.querySelector(selector);if(!calendar)return;
-  const days=[...calendar.querySelectorAll('.calendar-day')].filter(day=>day.getClientRects().length);
-  days.forEach((day,index)=>{
-    const column=index%7,order=direction>0?column:6-column;
-    day.animate([
-      {opacity:0,transform:`translateX(${direction*28}px) translateY(6px)`},
-      {opacity:1,transform:'translateX(0) translateY(0)'}
-    ],{duration:360,delay:order*24,easing:'cubic-bezier(.22,1,.36,1)',fill:'backwards'});
-  });
-  calendar.querySelectorAll('.month-toolbar h2,.calendar-date').forEach(title=>title.animate(
-    [{opacity:.3,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],
-    {duration:300,easing:'cubic-bezier(.22,1,.36,1)'}));
+let todayCalendarReturn=null;
+function calendarReturnOffsets(from,today,monthly){
+  const weekIndex=d=>{const day=new Date(d.getFullYear(),d.getMonth(),d.getDate());day.setDate(day.getDate()-day.getDay());return Math.round(Date.UTC(day.getFullYear(),day.getMonth(),day.getDate())/604800000);};
+  const distance=monthly?(today.getFullYear()-from.getFullYear())*12+today.getMonth()-from.getMonth():weekIndex(today)-weekIndex(from);
+  const count=Math.min(8,Math.abs(distance));
+  return Array.from({length:count},(_,i)=>Math.round(distance*(i+1)/count));
 }
+function returnCalendarToToday(selector,commit){
+  if(todayCalendarReturn)return;
+  cancelLiveSlide();
+  const home=selector==='.home-calendar',surface=home?'.calendar-surface':selector;
+  const old=document.querySelector(surface),adapter=slideAdapters.find(a=>a.selector===surface);
+  const monthly=home?calendarOpen:dosePeriod==='month',today=new Date(dateKey()+'T12:00:00');
+  const from=home?(monthly?calendarMonth:new Date(selectedDate+'T12:00:00')):(monthly?doseMonth:(doseWeekAnchor||new Date(selectedDate+'T12:00:00')));
+  const offsets=calendarReturnOffsets(from,today,monthly);
+  if(!old||!adapter||!offsets.length||matchMedia('(prefers-reduced-motion: reduce)').matches){commit();return;}
+  const pages=offsets.map(offset=>adapter.preview(offset));
+  const width=old.getBoundingClientRect().width,style=old.getAttribute('style');
+  const frame=document.createElement('div'),track=document.createElement('div');
+  frame.className='continuous-slide-viewport';frame.style.margin=getComputedStyle(old).margin;
+  frame.style.height=old.getBoundingClientRect().height+'px';track.style.display='flex';
+  old.before(frame);frame.append(track);track.append(old,...pages);track.inert=true;
+  const direction=Math.sign(offsets.at(-1));
+  if(direction<0){track.style.flexDirection='row-reverse';track.style.width=(pages.length+1)*width+'px';track.style.marginLeft=-pages.length*width+'px';}
+  [old,...pages].forEach(page=>{page.style.width=width+'px';page.style.flex='0 0 '+width+'px';page.style.margin='0';});
+  frame.style.height=Math.max(...[old,...pages].map(page=>page.scrollHeight))+'px';
+  const animation=track.animate([{transform:'translateX(0)'},{transform:`translateX(${-direction*pages.length*width}px)`}],{duration:Math.min(900,360+pages.length*65),easing:'cubic-bezier(.3,0,.18,1)',fill:'forwards'});
+  const cleanup=()=>{if(style===null)old.removeAttribute('style');else old.setAttribute('style',style);if(frame.isConnected)frame.replaceWith(old);todayCalendarReturn=null;};
+  todayCalendarReturn={animation,cleanup};
+  animation.finished.then(()=>{const connected=frame.isConnected;cleanup();if(connected)commit();},cleanup);
+}
+window.addEventListener('hashchange',()=>{if(todayCalendarReturn){todayCalendarReturn.animation.cancel();todayCalendarReturn.cleanup();}});
+window.addEventListener('resize',()=>{if(todayCalendarReturn){todayCalendarReturn.animation.cancel();todayCalendarReturn.cleanup();}});
 
 document.addEventListener('click', event => {
   const b = event.target.closest('[data-cal]');
