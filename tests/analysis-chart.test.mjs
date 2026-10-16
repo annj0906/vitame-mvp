@@ -33,6 +33,11 @@ for(const period of ['week','month','half','year']){
 run("chartPeriod='week'");assert.equal(run("periodOffset('2026-10-13',1)"),'2026-10-14');
 assert.equal(run("periodLabel('2026-10-14',true)"),'수');
 run("chartPeriod='month'");assert.equal(run("periodOffset('2026-12-01',1)"),'2026-12-06');
+assert.equal(run("periodLabel('2026-06-07',true)"),'6월 1주');
+assert.equal(run("periodLabel('2026-06-14')"),'6월 2주');
+assert.equal(run("analysisScoreDate('2026-10-11')"),'10월 2주');
+assert.equal(run("periodLabel('2026-09-27',true)"),'9월 4주');
+assert.equal(run("periodLabel('2026-10-04',true)"),'10월 1주');
 run("chartPeriod='half'");assert.equal(run("periodOffset('2026-12-01',1)"),'2027-01-01');
 assert.equal(run("periodScore('2027-01-01')"),null);
 assert.notEqual(run('analysisScoreMessage(59)'),run('analysisScoreMessage(80)'));
