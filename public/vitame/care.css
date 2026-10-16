@@ -100,6 +100,8 @@ body[data-screen="guide"] .wellness-tabs .selected{background:var(--vitame-color
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-item-edit:focus-visible,body:is([data-screen="dose"],[data-screen="archive"]) .dose-delete:focus-visible{z-index:3}
 body[data-screen="dose"] .dose-add-action{margin-top:8px;justify-content:flex-start}
 body[data-screen="dose"] .dose-add-action button{background:var(--vitame-color-neutral-white);box-shadow:0 2px 5px #0000000d;border:0;border-radius:13px;padding:11px 13px;color:var(--vitame-color-neutral-black);font:var(--vitame-type-pretendard-body2-bold-14)}
+body[data-screen="dose"] .dose-add-action button{position:relative}
+body[data-screen="dose"] .dose-add-action button::before{content:"";position:absolute;inset:0;border:1.5px solid var(--vitame-color-neutral-gray20);border-radius:inherit;pointer-events:none}
 body[data-screen="archive"] .archive-content{padding-top:40px}
 body[data-screen="archive"] .care-archive-copy{margin-bottom:24px}
 body[data-screen="archive"] .care-archive-copy h3{font:var(--vitame-type-pretendard-subtitle-semibold-18);letter-spacing:-.02em}
