@@ -150,9 +150,13 @@ body .wellness-guide-hero h1{font-size:24px;line-height:1.45;letter-spacing:-.8p
 @media(prefers-reduced-motion:reduce){.wellness-guide-section .jelly-body,.wellness-guide-hero .jelly-body,.guide-interest-summary .jelly-body,.analysis-guide-cta .jelly-body{animation:none}.month-bar-track i,.nutrition-panel-toggle>.icon{transition:none}}
 
 /* September interaction refinement: period chart and editable interest orbit. */
-.analysis-periods{display:flex;background:#f1f1f3;border-radius:24px;padding:3px;margin-bottom:18px}
-.analysis-periods button{flex:1;min-height:34px;font-size:12px;border-radius:22px}
-.analysis-periods button[aria-pressed="true"]{background:#fff;box-shadow:0 1px 4px #0000000a;font-weight:700}
+.analysis-periods{display:flex;background:#f1f1f3;border-radius:24px;padding:3px;margin-bottom:18px;position:relative;isolation:isolate;--period-index:0}
+.analysis-periods:has(button:nth-child(2)[aria-pressed="true"]){--period-index:1}
+.analysis-periods:has(button:nth-child(3)[aria-pressed="true"]){--period-index:2}
+.analysis-periods:has(button:nth-child(4)[aria-pressed="true"]){--period-index:3}
+.analysis-periods::before{content:"";position:absolute;inset:3px auto 3px 3px;width:calc((100% - 6px)/4);border-radius:22px;background:#fff;box-shadow:0 1px 4px #0000000a;transform:translateX(calc(var(--period-index)*100%));z-index:-1;pointer-events:none}
+.analysis-periods button{flex:1;min-width:0;min-height:34px;font-size:12px;border-radius:22px}
+.analysis-periods button[aria-pressed="true"]{background:transparent;box-shadow:none;font-weight:700}
 .period-navigation{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#777;margin-bottom:8px}
 .period-navigation button{width:38px;height:38px;display:grid;place-items:center}
 .period-navigation .icon{width:16px;height:16px}.period-navigation button:disabled{opacity:.25}

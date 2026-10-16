@@ -610,7 +610,14 @@ window.addEventListener('hashchange',()=>{wellnessDrag=null;if(route()==='guide'
 document.addEventListener('click',e=>{
   if(performance.now()<suppressWellnessClickUntil&&e.target.closest('[data-guide-add],.period-chart')){e.preventDefault();return;}
   const period=e.target.closest('[data-chart-period]'),step=e.target.closest('[data-period-step]'),bar=e.target.closest('[data-period-bar]'),add=e.target.closest('[data-guide-add]'),character=e.target.closest('[data-guide-character]');
-  if(period){chartPeriod=period.dataset.chartPeriod;chartAnchor=dateKey();chartSelection=null;render();}
+  if(period){
+    const previous=chartPeriod,from=getComputedStyle(period.parentElement,'::before').transform;
+    chartPeriod=period.dataset.chartPeriod;chartAnchor=dateKey();chartSelection=null;render();
+    const tabs=document.querySelector('.analysis-periods');
+    if(tabs&&previous!==chartPeriod&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+      tabs.animate([{transform:from},{transform:getComputedStyle(tabs,'::before').transform}],{duration:300,easing:'cubic-bezier(.22,1,.36,1)',pseudoElement:'::before'});
+    }
+  }
   if(step&&!step.disabled)moveChart(Number(step.dataset.periodStep));
   if(bar&&!bar.disabled){chartSelection=bar.dataset.periodBar;document.querySelector('.period-chart').outerHTML=periodChart();updateAnalysisScore();document.querySelector(`[data-period-bar="${chartSelection}"]`)?.focus({preventScroll:true});}
   if(add)addGuide(add.dataset.guideAdd);
