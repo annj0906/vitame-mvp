@@ -106,7 +106,7 @@ function scanSuppliedLabel(){
     scanBusy=false;scanText='';
     registrationDraft=suppliedLabelRegistrationDraft();registrationTab='manual';registrationSource='provided';
     go('supplement-register');
-  },3200);
+  },1800);
 }
 async function captureLabel(){
   const video=document.querySelector('.live-scanner video');if(!video?.videoWidth){scanStatus('카메라 준비 후 다시 촬영해주세요.');return;}

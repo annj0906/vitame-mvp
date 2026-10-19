@@ -32,12 +32,14 @@
 .scan-final .bottom-left{left:0;bottom:0}
 .scan-final .bottom-right{right:0;bottom:0;transform:scaleX(-1)}
 .scan-final .scan-line{position:absolute;top:50%;left:1px;right:1px;height:2px;overflow:hidden;display:flex;justify-content:center;transform:translateY(-1px)}
-.scan-final .scan-line{display:none;height:1px}
-.scan-final .is-scanning .scan-line{display:flex;animation:vitame-label-sweep 1.6s ease-in-out infinite alternate}
+.scan-final .scan-line{display:none;height:3px;overflow:visible;background:var(--vitame-color-accent-orange-main);border-radius:999px;box-shadow:0 0 8px #ff8a3db3,0 0 2px #fff}
+.scan-final .scan-line::before{content:"";position:absolute;left:0;right:0;bottom:3px;height:64px;background:linear-gradient(transparent,#ff8a3d33);pointer-events:none}
+.scan-final .is-scanning .scan-line{display:flex;animation:vitame-label-sweep 1.5s ease-in-out infinite alternate}
+.scan-final .is-scanning .scan-corner{filter:brightness(0) saturate(100%);opacity:.5}
 .scan-final .is-capturing::after{content:'';position:absolute;inset:0;z-index:4;background:white;pointer-events:none;animation:vitame-label-flash .18s ease-out both}
 @keyframes vitame-label-sweep{from{top:8%}to{top:92%}}
 @keyframes vitame-label-flash{from{opacity:.8}to{opacity:0}}
-.scan-final .scan-line img{max-width:none;flex-shrink:0}
+.scan-final .scan-line img{display:none}
 .scan-final .live-scanner [data-scan-status]{top:48px;bottom:auto;left:50%;right:auto;transform:translateX(-50%);width:max-content;max-width:calc(100% - 48px);margin:0;padding:8px;border-radius:999px;background:#1a1a1a66;color:var(--vitame-color-neutral-white);font:var(--vitame-type-pretendard-body2-semibold-14);letter-spacing:var(--vitame-tracking-pretendard-body2-semibold-14)}
 .scan-final .scan-shutter{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);width:64px;height:64px;padding:0;display:grid;place-items:center;border-radius:50%;background:var(--vitame-color-neutral-black);box-shadow:0 10px 5px #0000000d;z-index:3}
 .scan-final .scan-shutter:disabled{opacity:.5;cursor:wait}
