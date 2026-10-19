@@ -32,8 +32,8 @@
 .scan-final .bottom-left{left:0;bottom:0}
 .scan-final .bottom-right{right:0;bottom:0;transform:scaleX(-1)}
 .scan-final .scan-line{position:absolute;top:50%;left:1px;right:1px;height:2px;overflow:hidden;display:flex;justify-content:center;transform:translateY(-1px)}
-.scan-final .scan-line{display:none;height:3px;overflow:visible;background:var(--vitame-color-accent-orange-main);border-radius:999px;box-shadow:0 0 8px #ff8a3db3,0 0 2px #fff}
-.scan-final .scan-line::before{content:"";position:absolute;left:0;right:0;bottom:3px;height:64px;background:linear-gradient(transparent,#ff8a3d33);pointer-events:none}
+.scan-final .scan-line{display:none;height:1.5px;overflow:visible;background:var(--vitame-color-neutral-black);border-radius:999px;box-shadow:0 0 3px #1a1a1a26}
+.scan-final .scan-line::before{content:"";position:absolute;left:0;right:0;bottom:1.5px;height:48px;background:linear-gradient(transparent,#1a1a1a14);pointer-events:none}
 .scan-final .is-scanning .scan-line{display:flex;animation:vitame-label-sweep 1.5s ease-in-out infinite alternate}
 .scan-final .is-scanning .scan-corner{filter:brightness(0) saturate(100%);opacity:.5}
 .scan-final .is-capturing::after{content:'';position:absolute;inset:0;z-index:4;background:white;pointer-events:none;animation:vitame-label-flash .18s ease-out both}
