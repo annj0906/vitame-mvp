@@ -13,6 +13,8 @@ const initial={started:false,name:'서연',supplements:[],records:{},interests:[
 let state;try{state={...initial,...JSON.parse(localStorage.getItem('vitame-v1')||'{}')}}catch{state={...initial}}
 // Profile edits last only for this app run; all other user records keep persisting.
 state.name=initial.name;state.profileCharacter='good';
+// A single editable demo item keeps an unregistered user's routine visible.
+if(!state.supplements.length)state.supplements=[{id:'default-vitamin-d',name:'비타민 D',dose:1,time:'08:00',frequency:'매일',ingredients:[],colorIndex:2,example:true}];
 const save=()=>{try{const {name,profileCharacter,...persisted}=state;localStorage.setItem('vitame-v1',JSON.stringify(persisted))}catch{toast('현재 환경에서는 기록을 저장할 수 없어요.')}};
 const dateKey=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 let selectedDate=dateKey(),draft=null,selectedProduct='d',quantity=1,detailTab='제품 정보',uploadURL='',toastTimer;
