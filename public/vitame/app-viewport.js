@@ -35,11 +35,15 @@ function portfolioSection(screen,active,previous='onboarding'){
       .desktop-intro p{font:400 18px/1.6 var(--vitame-font-nanum-square-round);letter-spacing:-.025em;color:#777;margin:0;word-break:keep-all}
       .desktop-intro small{display:block;margin-top:64px;font:400 13px/1.9 var(--vitame-font-pretendard);color:#999;letter-spacing:-.01em}
       @media(min-width:1520px){.desktop-intro{display:block}}
-      body{transition:background-color 500ms ease}
+      body{isolation:isolate}
+      .portfolio-color-panel{position:fixed;inset:0;right:calc(50% + 311px);z-index:-1;background:#ededf0;transition:background-color 500ms ease;pointer-events:none}
+      body[data-portfolio-section]:not([data-portfolio-section="onboarding"]) .desktop-intro p{color:var(--vitame-color-neutral-black);opacity:.8}
+      body[data-portfolio-section]:not([data-portfolio-section="onboarding"]) .desktop-intro small{color:var(--vitame-color-neutral-black);opacity:.65}
+      @media(max-width:1519px){.portfolio-color-panel{display:none}}
       .desktop-intro-copy{height:176px}
       .desktop-intro h1{font-size:28px;height:74px}
       .desktop-intro p{font-size:17px}
-      @media(prefers-reduced-motion:reduce){body{transition:none}}
+      @media(prefers-reduced-motion:reduce){.portfolio-color-panel{transition:none}}
     `;
     document.head.append(introStyle);
     const intro=document.createElement('aside');
@@ -48,6 +52,7 @@ function portfolioSection(screen,active,previous='onboarding'){
     const copy=document.createElement('div');copy.className='desktop-intro-copy';
     copy.append(intro.querySelector('h1'),intro.querySelector('p'));
     intro.querySelector('small').before(copy);
+    const colorPanel=document.createElement('div');colorPanel.className='portfolio-color-panel';colorPanel.setAttribute('aria-hidden','true');
     let section='',copyVersion=0;
     const reduced=matchMedia('(prefers-reduced-motion: reduce)');
     async function updatePortfolio(){
@@ -56,7 +61,7 @@ function portfolioSection(screen,active,previous='onboarding'){
       if(next===section)return;
       section=next;document.body.dataset.portfolioSection=next;
       const info=portfolioSections[next],version=++copyVersion;
-      document.body.style.backgroundColor=info.color?`var(--vitame-color-accent-${info.color}-light)`:'#ededf0';
+      colorPanel.style.backgroundColor=info.color?`var(--vitame-color-accent-${info.color}-main)`:'#ededf0';
       const opacity=getComputedStyle(copy).opacity;
       copy.getAnimations().forEach(a=>a.cancel());
       if(!reduced.matches){
@@ -72,7 +77,7 @@ function portfolioSection(screen,active,previous='onboarding'){
     const frame=document.createElement('iframe');
     frame.className='app-viewport';frame.title='VITAME 앱';
     frame.allow='camera';frame.src=location.href;
-    document.body.replaceChildren(intro,frame);
+    document.body.replaceChildren(colorPanel,intro,frame);
     let child;
     frame.addEventListener('load',()=>{
       child=frame.contentWindow;

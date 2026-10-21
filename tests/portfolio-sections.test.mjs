@@ -12,7 +12,8 @@ for(const [route,parent] of [['archive','dose'],['shop-eye-berry','shop'],['cart
 assert.equal(section('supplement-register',undefined,'dose'),'dose');
 const sections=vm.runInContext('portfolioSections',ctx);
 const tokens=readFileSync(new URL('../public/vitame/design-system.css',import.meta.url),'utf8');
-for(const value of Object.values(sections))if(value.color)assert.ok(tokens.includes(`--vitame-color-accent-${value.color}-light:`));
+for(const value of Object.values(sections))if(value.color)assert.ok(tokens.includes(`--vitame-color-accent-${value.color}-main:`));
 assert.match(source,/background-color 500ms/);
 assert.match(source,/prefers-reduced-motion/);
-console.log('Portfolio: six tabs, distinct guide, onboarding/completion, nested routes and existing Light tokens passed.');
+assert.match(source,/colorPanel.style.backgroundColor/);
+console.log('Portfolio: six tabs, distinct guide, onboarding/completion, nested routes and existing Main tokens passed.');
