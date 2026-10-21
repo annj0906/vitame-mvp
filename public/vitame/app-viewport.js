@@ -37,6 +37,9 @@ function portfolioSection(screen,active,previous='onboarding'){
       @media(min-width:1520px){.desktop-intro{display:block}}
       body{transition:background-color 500ms ease}
       body[data-portfolio-section]:not([data-portfolio-section="onboarding"]) .desktop-intro-copy :is(h1,p){color:var(--portfolio-accent)}
+      body[data-portfolio-section]:not([data-portfolio-section="onboarding"]) .desktop-intro small{color:var(--portfolio-accent)}
+      body[data-portfolio-section]:not([data-portfolio-section="onboarding"]) .desktop-intro-logo{height:52px;background:var(--portfolio-accent);mask:url('assets/onboarding/logo.png') left center/contain no-repeat;-webkit-mask:url('assets/onboarding/logo.png') left center/contain no-repeat}
+      body[data-portfolio-section]:not([data-portfolio-section="onboarding"]) .desktop-intro-logo img{visibility:hidden}
       .desktop-intro-copy{height:176px}
       .desktop-intro h1{font-size:28px;height:74px}
       .desktop-intro p{font-size:17px}
