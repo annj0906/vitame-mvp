@@ -9,9 +9,9 @@
     const introStyle=document.createElement('style');
     introStyle.textContent=`
       .desktop-intro{display:none;position:fixed;right:calc(50% + 407px);top:50%;transform:translateY(-50%);width:320px;color:var(--vitame-color-neutral-black);text-align:left}
-      .desktop-intro-logo{display:block;width:300px;margin-bottom:56px}
+      .desktop-intro-logo{display:block;width:270px;margin-bottom:56px}
       .desktop-intro-logo img{display:block;width:100%;height:auto;max-width:none}
-      .desktop-intro h1{font:800 32px/1.3 var(--vitame-font-nanum-square-round);letter-spacing:-.035em;margin:0 0 24px}
+      .desktop-intro h1{font:800 29px/1.3 var(--vitame-font-nanum-square-round);letter-spacing:-.035em;margin:0 0 24px}
       .desktop-intro p{font:400 18px/1.6 var(--vitame-font-nanum-square-round);letter-spacing:-.025em;color:#777;margin:0;word-break:keep-all}
       .desktop-intro small{display:block;margin-top:64px;font:400 13px/1.9 var(--vitame-font-pretendard);color:#999;letter-spacing:-.01em}
       @media(min-width:1520px){.desktop-intro{display:block}}
