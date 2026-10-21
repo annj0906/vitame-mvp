@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+const source=readFileSync(new URL('../public/vitame/app-viewport.js',import.meta.url),'utf8');
+const ctx=vm.createContext({});
+vm.runInContext(source.slice(0,source.indexOf('// The desktop host')),ctx);
+const section=(screen,active,previous)=>ctx.portfolioSection(screen,active,previous);
+for(const name of ['home','dose','analysis','guide','shop','my'])assert.equal(section(name,name),name);
+assert.equal(section('guide','analysis'),'guide');
+for(const name of ['intro','onboarding','setup-complete','health-interests','login'])assert.equal(section(name,'home'),'onboarding');
+for(const [route,parent] of [['archive','dose'],['shop-eye-berry','shop'],['cart','shop'],['profile','my'],['interest-settings','my'],['nutrients','analysis']])assert.equal(section(route),parent);
+assert.equal(section('supplement-register',undefined,'dose'),'dose');
+const sections=vm.runInContext('portfolioSections',ctx);
+const tokens=readFileSync(new URL('../public/vitame/design-system.css',import.meta.url),'utf8');
+for(const value of Object.values(sections))if(value.color)assert.ok(tokens.includes(`--vitame-color-accent-${value.color}-light:`));
+assert.match(source,/background-color 500ms/);
+assert.match(source,/prefers-reduced-motion/);
+console.log('Portfolio: six tabs, distinct guide, onboarding/completion, nested routes and existing Light tokens passed.');
