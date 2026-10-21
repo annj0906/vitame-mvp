@@ -606,6 +606,9 @@ function playGuideMotion(type){
   guideCarousel.motionTimer=setTimeout(finish,parseFloat(getComputedStyle(action).animationDuration)*1000+80);
 }
 function settleGuideCarousel(target){
+  stopGuideSpeech();
+  const bubble=document.querySelector('.ai-guide-message');
+  if(bubble){bubble.getAnimations().forEach(animation=>animation.cancel());bubble.style.visibility='hidden';bubble.inert=true;}
   cancelAnimationFrame(guideCarousel.frame);
   const from=guideCarousel.offset,start=performance.now(),duration=matchMedia('(prefers-reduced-motion: reduce)').matches?0:320;
   const tick=now=>{
@@ -613,9 +616,18 @@ function settleGuideCarousel(target){
     guideCarousel.offset=from+(target-from)*(1-Math.pow(1-t,3));paintGuideCarousel();
     if(t<1){guideCarousel.frame=requestAnimationFrame(tick);return;}
     guideCarousel.frame=0;guideCarousel.offset=0;
-    guideCharacter=(guideCharacter+target+5)%5;paintGuideCarousel();guideMessage();
+    guideCharacter=(guideCharacter+target+5)%5;paintGuideCarousel();
     if(guideCarousel.queue){const next=Math.sign(guideCarousel.queue);guideCarousel.queue-=next;moveGuideCharacter(next);}
-    else if(target){if(guideCarousel.motionCleanup)guideCarousel.arrivalPending=true;else playGuideMotion('success');}
+    else if(target){
+      if(guideCarousel.motionCleanup)guideCarousel.arrivalPending=true;else playGuideMotion('success');
+      const speaker=guideCharacter;
+      const afterArrival=()=>{
+        if(route()!=='guide'||speaker!==guideCharacter)return;
+        if(guideCarousel.motionCleanup||guideCarousel.frame||guideCarousel.drag||guideCarousel.queue){guideSpeechTimer=setTimeout(afterArrival,50);return;}
+        guideMessage();
+      };
+      guideSpeechTimer=setTimeout(afterArrival,50);
+    }else guideMessage();
   };
   guideCarousel.frame=requestAnimationFrame(tick);
 }
