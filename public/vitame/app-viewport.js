@@ -20,6 +20,11 @@
     window.addEventListener('hashchange',()=>{if(child&&child.location.hash!==location.hash)child.location.hash=location.hash;});
     return;
   }
+  if(window.top!==window){
+    const style=document.createElement('style');
+    style.textContent='html,body{scrollbar-width:none}html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}';
+    document.head.append(style);
+  }
   const files=['home-calendar','app','revision','welcome','onboarding','setup','scanner','analysis','home','care','registration','shop','my-pages','onboarding-flow','utility-pages'];
   for(const file of files){
     await new Promise((resolve,reject)=>{
