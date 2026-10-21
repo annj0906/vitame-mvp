@@ -8,18 +8,18 @@
     document.head.append(style);
     const introStyle=document.createElement('style');
     introStyle.textContent=`
-      .desktop-intro{display:none;position:fixed;right:calc(50% + 343px);top:50%;transform:translateY(-50%);width:240px;color:var(--vitame-color-neutral-black);text-align:left}
-      .desktop-intro-logo{display:block;width:210px;margin-bottom:32px}
+      .desktop-intro{display:none;position:fixed;right:calc(50% + 343px);top:50%;transform:translateY(-50%);width:320px;color:var(--vitame-color-neutral-black);text-align:left}
+      .desktop-intro-logo{display:block;width:300px;margin-bottom:56px}
       .desktop-intro-logo img{display:block;width:100%;height:auto;max-width:none}
-      .desktop-intro h1{font:700 23px/1.5 var(--vitame-font-pretendard);letter-spacing:-.04em;margin:0 0 14px}
-      .desktop-intro p{font:400 14px/1.8 var(--vitame-font-pretendard);letter-spacing:-.02em;color:#777;margin:0;word-break:keep-all}
-      .desktop-intro small{display:block;margin-top:36px;font:400 11px/1.8 var(--vitame-font-pretendard);color:#999;letter-spacing:0}
-      @media(min-width:1280px){.desktop-intro{display:block}}
+      .desktop-intro h1{font:800 32px/1.3 var(--vitame-font-nanum-square-round);letter-spacing:-.035em;margin:0 0 24px}
+      .desktop-intro p{font:400 18px/1.6 var(--vitame-font-nanum-square-round);letter-spacing:-.025em;color:#777;margin:0;word-break:keep-all}
+      .desktop-intro small{display:block;margin-top:64px;font:400 13px/1.9 var(--vitame-font-pretendard);color:#999;letter-spacing:-.01em}
+      @media(min-width:1400px){.desktop-intro{display:block}}
     `;
     document.head.append(introStyle);
     const intro=document.createElement('aside');
     intro.className='desktop-intro';intro.setAttribute('aria-label','프로젝트 소개');
-    intro.innerHTML='<span class="desktop-intro-logo"><img src="assets/onboarding/logo.png" alt="VITAME"></span><h1>영양제를 챙기는<br>작은 습관</h1><p>등록부터 복용 기록까지,<br>나만의 건강 루틴</p><small>개인 프로젝트<br>UX/UI Design &amp; Front-end</small>';
+    intro.innerHTML='<span class="desktop-intro-logo"><img src="assets/onboarding/logo.png" alt="VITAME"></span><h1>영양제 관리,<br>더 쉽고 꾸준하게</h1><p>영양제 등록부터 복용 기록,<br>영양 분석과 맞춤 가이드까지.</p><small>개인 프로젝트 · 2026.09.21 — 2026.10.21<br>UX/UI Design &amp; Front-end Development</small>';
     const frame=document.createElement('iframe');
     frame.className='app-viewport';frame.title='VITAME 앱';
     frame.allow='camera';frame.src=location.href;
