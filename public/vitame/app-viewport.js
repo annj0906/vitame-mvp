@@ -8,13 +8,13 @@
     document.head.append(style);
     const introStyle=document.createElement('style');
     introStyle.textContent=`
-      .desktop-intro{display:none;position:fixed;right:calc(50% + 279px);top:50%;transform:translateY(-50%);width:240px;color:var(--vitame-color-neutral-black);text-align:left}
-      .desktop-intro-logo{display:block;width:153px;height:44px;overflow:hidden;margin-bottom:32px}
-      .desktop-intro-logo img{display:block;width:220px;height:auto;max-width:none;transform:translateX(-67px)}
+      .desktop-intro{display:none;position:fixed;right:calc(50% + 343px);top:50%;transform:translateY(-50%);width:240px;color:var(--vitame-color-neutral-black);text-align:left}
+      .desktop-intro-logo{display:block;width:210px;margin-bottom:32px}
+      .desktop-intro-logo img{display:block;width:100%;height:auto;max-width:none}
       .desktop-intro h1{font:700 23px/1.5 var(--vitame-font-pretendard);letter-spacing:-.04em;margin:0 0 14px}
       .desktop-intro p{font:400 14px/1.8 var(--vitame-font-pretendard);letter-spacing:-.02em;color:#777;margin:0;word-break:keep-all}
       .desktop-intro small{display:block;margin-top:36px;font:400 11px/1.8 var(--vitame-font-pretendard);color:#999;letter-spacing:0}
-      @media(min-width:1200px){.desktop-intro{display:block}}
+      @media(min-width:1280px){.desktop-intro{display:block}}
     `;
     document.head.append(introStyle);
     const intro=document.createElement('aside');
