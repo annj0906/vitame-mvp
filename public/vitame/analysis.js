@@ -618,16 +618,7 @@ function settleGuideCarousel(target){
     guideCarousel.frame=0;guideCarousel.offset=0;
     guideCharacter=(guideCharacter+target+5)%5;paintGuideCarousel();
     if(guideCarousel.queue){const next=Math.sign(guideCarousel.queue);guideCarousel.queue-=next;moveGuideCharacter(next);}
-    else if(target){
-      if(guideCarousel.motionCleanup)guideCarousel.arrivalPending=true;else playGuideMotion('success');
-      const speaker=guideCharacter;
-      const afterArrival=()=>{
-        if(route()!=='guide'||speaker!==guideCharacter)return;
-        if(guideCarousel.motionCleanup||guideCarousel.frame||guideCarousel.drag||guideCarousel.queue){guideSpeechTimer=setTimeout(afterArrival,50);return;}
-        guideMessage();
-      };
-      guideSpeechTimer=setTimeout(afterArrival,50);
-    }else guideMessage();
+    else guideMessage();
   };
   guideCarousel.frame=requestAnimationFrame(tick);
 }
