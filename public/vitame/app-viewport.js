@@ -60,8 +60,8 @@ function portfolioSection(screen,active,previous='onboarding'){
       if(next===section)return;
       section=next;document.body.dataset.portfolioSection=next;
       const info=portfolioSections[next],version=++copyVersion;
-      document.body.style.backgroundColor=info.color?`var(--vitame-color-accent-${info.color}-light)`:'#ededf0';
-      intro.style.setProperty('--portfolio-accent',info.color?`var(--vitame-color-accent-${info.color}-main)`:'var(--vitame-color-neutral-black)');
+      document.body.style.backgroundColor=info.color?`var(--vitame-color-accent-${info.color}-main)`:'#ededf0';
+      intro.style.setProperty('--portfolio-accent',info.color&&next!=='analysis'?'var(--vitame-color-neutral-white)':'var(--vitame-color-neutral-black)');
       const opacity=getComputedStyle(copy).opacity;
       copy.getAnimations().forEach(a=>a.cancel());
       if(!reduced.matches){

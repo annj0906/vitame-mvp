@@ -21,4 +21,6 @@ assert.match(source,/prefers-reduced-motion/);
 assert.match(source,/document.body.style.backgroundColor/);
 assert.match(source,/color:var\(--portfolio-accent\)/);
 assert.ok(!source.includes('portfolio-color-panel'));
-console.log('Portfolio: tab mapping, Light backgrounds, Main text accents and neutral onboarding passed.');
+assert.match(source,/backgroundColor=info.color\?`var\(--vitame-color-accent-\$\{info.color\}-main\)`/);
+assert.match(source,/next!=='analysis'\?'var\(--vitame-color-neutral-white\)'/);
+console.log('Portfolio: Main backgrounds, white foreground, black analysis and neutral onboarding passed.');
