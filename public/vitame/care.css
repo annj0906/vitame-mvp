@@ -132,7 +132,11 @@ body[data-screen="analysis"] .analysis-month-description b{color:inherit}
 body[data-screen="analysis"] .period-chart{margin-top:24px;padding:64px 0 0}
 body[data-screen="analysis"] .period-chart:has(.period-hint.is-dismissed){padding-top:0}
 body[data-screen="analysis"] .analysis-month-description{margin:0}
-body[data-screen="analysis"] .period-hint{position:absolute;top:24px;left:0;right:34px;font:var(--vitame-type-pretendard-caption-regular-12);color:var(--vitame-color-neutral-gray60);margin:0;text-align:center;word-break:keep-all;pointer-events:none;animation:period-hint-pulse 2s ease-in-out infinite}
+body[data-screen="analysis"] .period-hint{position:absolute;top:24px;left:0;right:0;font:500 13px/1.5 var(--vitame-font-pretendard);color:var(--vitame-color-neutral-gray70);margin:0;text-align:center;word-break:keep-all;pointer-events:none;animation:none}
+body[data-screen="analysis"] .period-navigation{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:72px;color:var(--vitame-color-neutral-gray70);font:500 13px/1.5 var(--vitame-font-pretendard)}
+body[data-screen="analysis"] .period-navigation button{width:44px;min-height:44px;border:1px solid var(--vitame-color-neutral-gray30);border-radius:50%;background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);font-size:20px;touch-action:manipulation}
+body[data-screen="analysis"] .period-navigation button:disabled{opacity:.35;cursor:default}
+body[data-screen="dose"] .dose-gesture-help{font:500 13px/1.5 var(--vitame-font-pretendard);color:var(--vitame-color-neutral-gray70);margin:-12px 0 16px;text-align:center}
 body[data-screen="analysis"] .period-hint.is-dismissed{visibility:hidden;animation:none}
 @keyframes period-hint-pulse{0%,100%{opacity:1}50%{opacity:.35}}
 @media(prefers-reduced-motion:reduce){body[data-screen="analysis"] .period-hint{animation:none}}

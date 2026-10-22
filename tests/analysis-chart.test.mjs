@@ -21,7 +21,10 @@ for(const period of ['week','month','half','year']){
   run(`chartPeriod='${period}';chartSelection=null;`);
   const html=run('periodChart()');
   assert.equal((html.match(/data-period-bar=/g)||[]).length,7);
-  assert.equal((html.match(/ disabled/g)||[]).length,period==='week'?4:3);
+  assert.equal((html.match(/<button class="month-bar[^>]* disabled/g)||[]).length,period==='week'?4:3);
+  assert.match(html,/data-period-step="-1"/);
+  assert.match(html,/data-period-step="1"/);
+  assert.match(html,/period-tooltip/,'initial selected score is visible');
   run('chartSelection=periodOffset(chartAnchor,-1)');
   const selected=run('periodChart()');
   assert.equal((selected.match(/class="month-bar current/g)||[]).length,1);

@@ -140,10 +140,13 @@ function periodChart(){
   const keys=Array.from({length:7},(_,i)=>periodOffset(start,i));
   const referenceScore=periodScore(chartSelection||anchor);
 return `<div class="period-chart" data-period-kind="${chartPeriod}" aria-label="${chartPeriods.find(p=>p[0]===chartPeriod)[1]} 단위 예시 그래프"><p class="period-hint">좌우로 넘겨 기간을 이동하고, 막대를 눌러 확인해보세요.</p><div class="period-plot"><div class="chart-scale" aria-hidden="true"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><span class="period-reference-line" style="--reference-top:${150*(1-(referenceScore??0)/100)}px" aria-hidden="true"><img src="assets/care/analysis-reference-line.svg" alt=""></span><div class="month-bars">${keys.map((key,i)=>{
-    const score=periodScore(key),picked=key===chartSelection,highlight=key===(chartSelection||anchor);
+    const score=periodScore(key),picked=key===chartSelection||(!periodChart.hintDismissed&&!chartSelection&&key===anchor&&score!==null),highlight=key===(chartSelection||anchor);
     const label=chartPeriod==='month'?periodLabel(key,true).replace(' ','<br>'):periodLabel(key,true);
     return `<div class="period-column ${i<2?'edge-left':i>4?'edge-right':''}"><button class="month-bar ${highlight?'current':''} ${picked?'picked':''}" data-period-bar="${key}" aria-pressed="${picked}" aria-label="${periodLabel(key)} ${score===null?'기록 없음':score+'점'}" ${score===null?'disabled':''}><span class="month-bar-track"><i style="--bar-height:${score??4}%"></i></span><span class="month-bar-label">${label}</span></button>${picked?`<div class="period-tooltip" role="status" style="bottom:calc(28px + ${score*1.5}px + 8px)"><small>${periodLabel(key)}</small><b>${score}<span>점</span></b></div>`:''}</div>`;
-  }).join('')}</div></div></div>`.replace('class="period-hint"',`class="period-hint${periodChart.hintDismissed?' is-dismissed':''}"`);
+  }).join('')}</div></div></div>`
+    .replace('좌우로 넘겨 기간을 이동하고, 막대를 눌러 확인해보세요.','막대를 누르면 날짜와 점수를 볼 수 있어요')
+    .replace('<div class="period-plot">',`<div class="period-navigation"><button type="button" data-period-step="-1" aria-label="이전 기록 보기">←</button><span>좌우로 넘겨 기록 보기</span><button type="button" data-period-step="1" aria-label="다음 기록 보기" ${periodOffset(chartAnchor,7)>periodStart(dateKey())?'disabled':''}>→</button></div><div class="period-plot">`)
+    .replace('class="period-hint"',`class="period-hint${periodChart.hintDismissed?' is-dismissed':''}"`);
 }
 function dismissPeriodChartHint(){
   if(!periodChart.hintDismissed)periodChart.hintCollapseStarted=performance.now();
