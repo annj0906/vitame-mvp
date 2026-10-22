@@ -85,6 +85,8 @@ body {
 
 #symbol {
   position: absolute;
+  /* Match the first motion frame before scripts/fonts finish loading. */
+  transform: translateX(-65vw) rotate(-540deg);
 
   left: 0;
   top: 0;
@@ -526,6 +528,7 @@ function reset() {
 
   symbol.style.opacity =
     "1";
+  symbol.style.transform = "translateX(-65vw) rotate(-540deg)";
 
 
   medicine1.style.opacity =
