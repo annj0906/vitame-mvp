@@ -55,6 +55,21 @@ function careArchive(){
   }).join('')||'<p class="care-archive-empty">보관한 영양제가 없어요.</p>'}</div></main>`;
 }
 const renderBeforeCare=render;
+let doseDemoShown=false,doseDemoAnimation=null;
+function demonstrateDoseSwipe(){
+  if(route()!=='dose'||doseEditing||doseDemoShown||doseRows.swipeHintDismissed)return;
+  const front=document.querySelector('.dose-row-front');if(!front)return;
+  doseDemoShown=true;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  doseDemoAnimation=front.animate([
+    {transform:'translateX(0)',offset:0},
+    {transform:'translateX(56px)',offset:.25},
+    {transform:'translateX(0)',offset:.45},
+    {transform:'translateX(-56px)',offset:.7},
+    {transform:'translateX(0)',offset:1}
+  ],{duration:1700,delay:450,easing:'ease-in-out'});
+}
+document.addEventListener('pointerdown',e=>{if(e.target.closest('.dose-swipe-row')){doseDemoAnimation?.cancel();doseDemoAnimation=null;}},true);
 let carePreviousRoute='';
 render=function(){
   const r=route(),enteringAnalysis=r==='analysis'&&carePreviousRoute!=='analysis';
@@ -64,6 +79,7 @@ render=function(){
     clearTimeout(introTimer);document.body.dataset.screen=r;document.title='아카이브 · VITAME';$('#app').innerHTML=careArchive();return;
   }
   renderBeforeCare();if(!careScreens.includes(r))return;
+  if(r==='dose')requestAnimationFrame(demonstrateDoseSwipe);
   const header=document.querySelector('.top');
   header.querySelector('.icon-btn[data-go="home"]')?.remove();
   if(r==='dose')header.querySelector('.top-actions').innerHTML=`<button class="icon-btn" data-go="scan" aria-label="영양제 스캔"><img src="assets/home/scan.svg" alt=""></button><button class="icon-btn" data-go="archive" aria-label="영양제 아카이브">${careAsset('archive')}</button>`;
