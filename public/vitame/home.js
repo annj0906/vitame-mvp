@@ -70,7 +70,7 @@ render=function(){
   requestAnimationFrame(tick);
 };
 
-render();
+if(!globalThis.vitameBooting)render();
 document.addEventListener('click',event=>{
   const banner=event.target.closest('.home-scan-banner');
   if(banner&&!event.target.closest('.alert-close,button,a'))go('scan');

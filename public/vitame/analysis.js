@@ -760,4 +760,4 @@ document.addEventListener('click',e=>{
 });
 const renderBeforeGuideSpeech=render;
 render=function(){renderBeforeGuideSpeech();if(route()==='guide')animateGuideSpeech();else stopGuideSpeech();};
-render();
+if(!globalThis.vitameBooting)render();

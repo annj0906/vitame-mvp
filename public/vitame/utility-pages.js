@@ -92,4 +92,4 @@ render=function(){
     duration:340,easing:'cubic-bezier(.22,1,.36,1)',pseudoElement:'::before'
   });
 };
-render();
+if(!globalThis.vitameBooting)render();

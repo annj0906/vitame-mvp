@@ -17,7 +17,10 @@ render=function(){
     return;
   }
   welcomeRender();
-  if(route()==='intro')clearTimeout(introTimer);
+  if(route()==='intro'){
+    clearTimeout(introTimer);
+    introTimer=setTimeout(()=>{if(route()==='intro'&&!logoHandoff)skipIntroAnimation();},12000);
+  }
 };
 document.addEventListener('submit',e=>{
   if(e.target.id!=='demo-login-form')return;
@@ -231,4 +234,4 @@ document.addEventListener('click',e=>{
   const dot=e.target.closest('[data-revision="slide"]'),next=e.target.closest('[data-revision="next-slide"]');
   if(dot||(next&&introPage<2)){e.preventDefault();e.stopImmediatePropagation();changeOnboarding(dot?Number(dot.dataset.index):introPage+1);}
 },true);
-render();
+if(!globalThis.vitameBooting)render();

@@ -188,4 +188,4 @@ render=function(){
     active?.animate([{backgroundColor:previous==='guide'?'#43c982':'#ffc94a'},{backgroundColor:next==='guide'?'#43c982':'#ffc94a'}],{duration:320});
   }
 };
-render();
+if(!globalThis.vitameBooting)render();

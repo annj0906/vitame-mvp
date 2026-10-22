@@ -77,6 +77,8 @@ function portfolioSection(screen,active,previous='onboarding'){
     document.body.replaceChildren(intro,frame);
     let child;
     frame.addEventListener('load',()=>{
+      // Ignore the transient blank document before the app document is ready.
+      if(!frame.contentDocument?.body)return;
       child=frame.contentWindow;
       const observer=new MutationObserver(updatePortfolio);
       observer.observe(frame.contentDocument.body,{subtree:true,childList:true,attributes:true,attributeFilter:['data-screen','data-active']});
@@ -94,9 +96,14 @@ function portfolioSection(screen,active,previous='onboarding'){
     document.head.append(style);
   }
   const files=['home-calendar','app','revision','welcome','onboarding','setup','scanner','analysis','home','care','registration','shop','my-pages','onboarding-flow','utility-pages'];
+  globalThis.vitameBooting=true;
+  // Fetch in parallel, execute in dependency order, then mount just once.
+  for(const file of files){const preload=document.createElement('link');preload.rel='preload';preload.as='script';preload.href=file+'.js';document.head.append(preload);}
   for(const file of files){
     await new Promise((resolve,reject)=>{
       const script=document.createElement('script');script.src=file+'.js';script.onload=resolve;script.onerror=reject;document.body.append(script);
     });
   }
+  globalThis.vitameBooting=false;
+  render();
 })();

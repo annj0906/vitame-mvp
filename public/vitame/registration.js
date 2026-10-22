@@ -263,4 +263,4 @@ document.addEventListener('submit',e=>{
   }
 });
 window.addEventListener('hashchange',closeRegistrationDialog);
-render();
+if(!globalThis.vitameBooting)render();

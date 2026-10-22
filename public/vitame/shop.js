@@ -168,4 +168,4 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-shop-story]')){e.preventDefault();$('#shop-berry-story').scrollIntoView({behavior:'smooth'});return;}
   const unavailable=e.target.closest('[data-shop-unavailable]');if(unavailable)toast(`${unavailable.dataset.shopUnavailable} 기능은 아직 준비 중이에요.`);
 });
-render();
+if(!globalThis.vitameBooting)render();

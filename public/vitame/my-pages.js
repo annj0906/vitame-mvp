@@ -115,4 +115,4 @@ document.addEventListener('click',e=>{
   const unavailable=e.target.closest('[data-my-unavailable]');
   if(unavailable&&route()==='my')modal(unavailable.dataset.myUnavailable,'아직 제공되지 않는 기능이에요. 현재 등록 정보와 복용 기록은 이 브라우저에 저장됩니다.');
 });
-render();
+if(!globalThis.vitameBooting)render();

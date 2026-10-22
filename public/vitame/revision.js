@@ -434,4 +434,4 @@ render=function(){
     requestAnimationFrame(tick);
   }
 };
-history.replaceState(null,'',location.pathname+location.search+'#intro');render();
+history.replaceState(null,'',location.pathname+location.search+'#intro');if(!globalThis.vitameBooting)render();

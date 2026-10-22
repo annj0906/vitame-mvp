@@ -82,8 +82,8 @@ else if(a==='insight')modal(b.dataset.name,'일상에서 실천할 수 있는 �
 });
 document.addEventListener('submit',e=>{if(e.target.id==='register-form'){e.preventDefault();readDraft();if(!draft.name.trim()||draft.ingredients.some(n=>!n.name.trim()||!Number.isFinite(n.amount)||n.amount<=0)){toast('제품명과 성분 정보를 확인해주세요.');return}state.supplements.push({...draft,id:'s-'+Date.now()});state.started=true;save();draft=null;go('home');toast('영양제를 등록했어요.')}else if(e.target.id==='profile-form'){e.preventDefault();const name=new FormData(e.target).get('name').trim();if(!name){toast('이름을 입력해주세요.');return}state.name=name;save();go('my');toast('내 정보를 저장했어요.')}});
 document.addEventListener('change',e=>{if(e.target.id==='dose-date'&&e.target.value){selectedDate=e.target.value;render()}else if(e.target.dataset.time){if(!e.target.value){toast('복용 시간을 입력해주세요.');render();return}state.supplements.find(s=>s.id===e.target.dataset.time).time=e.target.value;save();toast('복용 시간을 저장했어요.')}else if(['camera-input','album-input'].includes(e.target.id)){const file=e.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){toast('이미지 파일을 선택해주세요.');return}if(uploadURL)URL.revokeObjectURL(uploadURL);uploadURL=URL.createObjectURL(file);draft={name:'',dose:1,time:'08:00',frequency:'매일',ingredients:[{name:'',amount:'',unit:'mg'}]};go('result');toast('사진을 확인하고 제품 정보를 입력해주세요.')}});
-window.addEventListener('hashchange',()=>{render();window.scrollTo(0,0)});
+window.addEventListener('hashchange',()=>{if(globalThis.vitameBooting)return;render();window.scrollTo(0,0)});
 // Each new visit (including reloads and saved #home links) begins with onboarding.
 // Existing supplements and daily records remain saved on this device.
 history.replaceState(null, '', location.pathname + location.search + '#onboarding');
-render();
+if(!globalThis.vitameBooting)render();

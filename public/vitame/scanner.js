@@ -123,4 +123,4 @@ document.addEventListener('change',e=>{if(e.target.id!=='label-photo')return;con
 window.addEventListener('hashchange',()=>{if(!scanRoutes.includes(route()))cancelLabelScan();});
 window.addEventListener('pagehide',cancelLabelScan);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopLabelCamera();});
-render();
+if(!globalThis.vitameBooting)render();
