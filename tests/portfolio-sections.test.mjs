@@ -16,11 +16,11 @@ for(const value of Object.values(sections))if(value.color){
   assert.ok(tokens.includes(`--vitame-color-accent-${value.color}-main:`));
   assert.ok(tokens.includes(`--vitame-color-accent-${value.color}-light:`));
 }
-assert.match(source,/background-color 500ms/);
 assert.match(source,/prefers-reduced-motion/);
-assert.match(source,/document.body.style.backgroundColor/);
-assert.match(source,/color:var\(--portfolio-accent\)/);
+assert.ok(!source.includes('document.body.style.backgroundColor'));
+assert.match(source,/background:#ededf0/);
+assert.match(source,/\.desktop-intro-copy h1\{color:var\(--portfolio-accent/);
 assert.ok(!source.includes('portfolio-color-panel'));
-assert.match(source,/backgroundColor=info.color\?`var\(--vitame-color-accent-\$\{info.color\}-main\)`/);
-assert.match(source,/next!=='analysis'\?'var\(--vitame-color-neutral-white\)'/);
-console.log('Portfolio: Main backgrounds, white foreground, black analysis and neutral onboarding passed.');
+assert.ok(!source.includes('mask:url'));
+assert.match(source,/next!=='analysis'\?`var\(--vitame-color-accent-\$\{info.color\}-main\)`/);
+console.log('Portfolio: fixed neutral background, title-only accents, black analysis and original logo passed.');
