@@ -19,6 +19,7 @@ function updateDoseCompletionCelebration(){
   effect.style.setProperty('--dose-pop-top',bounds.top+'px');
   effect.style.setProperty('--celebration-rise',-Math.min(180,Math.max(40,bounds.top-18))+'px');
   effect.style.setProperty('--celebration-floor',Math.max(150,window.innerHeight-bounds.top-10)+'px');
+  setTimeout(()=>effect.remove(),4000);
   let remaining=5;
   effect.addEventListener('animationend',event=>{
     if(event.animationName==='dose-celebration-flight'&&event.target.classList.contains('completion-pop')&&--remaining===0)effect.remove();
@@ -39,13 +40,10 @@ dose=function(){
     row.querySelector('.dose-delete').innerHTML=careAsset('archive-action');
     const check=row.querySelector('.check');if(check)check.innerHTML='<img src="assets/home/check.svg" alt="">';
     row.querySelector('small').textContent=state.supplements[i].time;
+    if(i===0&&!doseEditing&&!doseRows.swipeHintDismissed)row.querySelector('.dose-row').insertAdjacentHTML('beforeend','<span class="care-swipe-hint">좌우로 스와이프 해보세요</span>');
   });
   const sort=t.content.querySelector('[data-dose-sort]');if(sort)sort.innerHTML=careAsset('sort')+'시간순 정렬';
   const edit=t.content.querySelector('[data-dose-edit]');if(edit)edit.innerHTML=careAsset('edit')+(doseEditing?'완료':'편집');
-  if(!doseRows.swipeHintDismissed&&!doseEditing&&t.content.querySelector('.dose-swipe-row')){
-    const help=document.createElement('p');help.className='dose-gesture-help';help.textContent='← 밀어서 수정 · 보관 →';
-    t.content.querySelector('.dose-swipe-row').parentElement.before(help);
-  }
   t.content.querySelector('.dose-add-action button').textContent='영양제 등록하기';
   return t.innerHTML;
 };
@@ -57,21 +55,6 @@ function careArchive(){
   }).join('')||'<p class="care-archive-empty">보관한 영양제가 없어요.</p>'}</div></main>`;
 }
 const renderBeforeCare=render;
-let doseDemoShown=false,doseDemoAnimation=null;
-function demonstrateDoseSwipe(){
-  if(route()!=='dose'||doseEditing||doseDemoShown||doseRows.swipeHintDismissed)return;
-  const front=document.querySelector('.dose-row-front');if(!front)return;
-  doseDemoShown=true;
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  doseDemoAnimation=front.animate([
-    {transform:'translateX(0)',offset:0},
-    {transform:'translateX(56px)',offset:.25},
-    {transform:'translateX(0)',offset:.45},
-    {transform:'translateX(-56px)',offset:.7},
-    {transform:'translateX(0)',offset:1}
-  ],{duration:1700,delay:450,easing:'ease-in-out'});
-}
-document.addEventListener('pointerdown',e=>{if(e.target.closest('.dose-swipe-row')){doseDemoAnimation?.cancel();doseDemoAnimation=null;}},true);
 let carePreviousRoute='';
 render=function(){
   const r=route(),enteringAnalysis=r==='analysis'&&carePreviousRoute!=='analysis';
@@ -84,7 +67,6 @@ render=function(){
   const header=document.querySelector('.top');
   header.querySelector('.icon-btn[data-go="home"]')?.remove();
   if(r==='dose')header.querySelector('.top-actions').innerHTML=`<button class="icon-btn" data-go="scan" aria-label="영양제 스캔"><img src="assets/home/scan.svg" alt=""></button><button class="icon-btn" data-go="archive" aria-label="영양제 아카이브">${careAsset('archive')}</button>`;
-  if(r==='dose')requestAnimationFrame(demonstrateDoseSwipe);
   if(r==='analysis'){
     const cta=document.querySelector('.analysis-guide-cta');
     cta.querySelector('button').insertAdjacentHTML('beforebegin',`<div class="care-guide-character">${initialCharacter('normal')}${characterShadow('normal', 'care-character-shadow')}</div>`);
@@ -140,6 +122,7 @@ function archiveTransitionSnapshot(){
   const viewport=document.createElement('div');viewport.inert=true;viewport.setAttribute('aria-hidden','true');
   Object.assign(viewport.style,{position:'fixed',left:rect.left+'px',top:'0',width:rect.width+'px',height:'100dvh',overflow:'hidden',zIndex:'60',pointerEvents:'none'});
   Object.assign(snapshot.style,{position:'absolute',left:'0',top:-window.scrollY+'px',width:rect.width+'px',margin:'0',transform:'none',visibility:'visible'});
+  snapshot.querySelectorAll('.dose-completion-celebration,.initial-completion-celebration').forEach(effect=>effect.remove());
   viewport.append(snapshot);document.body.append(viewport);
   return {viewport,snapshot};
 }

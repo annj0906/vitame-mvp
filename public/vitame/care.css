@@ -74,8 +74,8 @@ body[data-screen="archive"] .p2{background:var(--vitame-color-accent-purple-main
 body[data-screen="archive"] .p3{background:var(--vitame-color-accent-blue-main)}
 body[data-screen="dose"] .check{width:20px;height:20px;min-width:20px;border:0;background:var(--vitame-color-neutral-gray40);display:grid;place-items:center}
 body[data-screen="dose"] .taken .check{background:var(--vitame-color-neutral-black)}
-body[data-screen="dose"] .care-swipe-hint{position:absolute;right:88px;top:calc(50% + 10px);transform:translateY(-50%);text-align:center;color:var(--vitame-color-neutral-gray60);font:400 10px/1.4 var(--vitame-font-pretendard);pointer-events:none}
-body[data-screen="dose"] .care-swipe-hint{animation:care-hint-pulse 2.4s ease-in-out infinite}
+body[data-screen="dose"] .care-swipe-hint{position:absolute;right:88px;top:calc(50% + 10px);transform:translateY(-50%);text-align:center;color:var(--vitame-color-neutral-gray60);font:400 14px/1.4 var(--vitame-font-pretendard);pointer-events:none}
+body[data-screen="dose"] .care-swipe-hint{animation:none;color:var(--vitame-color-neutral-black)}
 @keyframes care-hint-pulse{0%,100%{opacity:1}50%{opacity:.3}}
 @media(prefers-reduced-motion:reduce){body[data-screen="dose"] .care-swipe-hint{animation:none}}
 body:is([data-screen="dose"],[data-screen="archive"]) .dose-item-edit,body:is([data-screen="dose"],[data-screen="archive"]) .dose-delete{width:64px;background:var(--vitame-color-neutral-white);border:0;z-index:0;min-height:80px}
@@ -123,7 +123,6 @@ body[data-screen="analysis"] .analysis-periods button{flex:1;min-width:0;padding
 body[data-screen="analysis"] .analysis-periods button[aria-pressed="true"]{background:transparent;color:var(--vitame-color-neutral-black);font-weight:700;box-shadow:none}
 body[data-screen="analysis"] .analysis-periods::before{inset:8px auto 8px 8px;width:calc((100% - 16px)/4);border-radius:999px;box-shadow:0 4px 2px #0000000d}
 body[data-screen="analysis"] .analysis-overview{margin:0 24px 40px;padding:0}
-body[data-screen="analysis"] .period-navigation{margin:0 0 4px;justify-content:space-between;font:var(--vitame-type-pretendard-subtitle-semibold-18)}
 body[data-screen="analysis"] .analysis-score-label{font:var(--vitame-type-pretendard-subtitle-semibold-18);color:var(--vitame-color-neutral-black);margin:0 0 4px;min-height:28px}
 body[data-screen="analysis"] .analysis-month-score{font:var(--vitame-type-nanumsquareround-display-extrabold-44);letter-spacing:-.025em;margin:0 0 8px}
 body[data-screen="analysis"] .analysis-month-score small{font:var(--vitame-type-nanumsquareround-subtitle-regular-18);margin-left:4px;color:var(--vitame-color-neutral-black)}
@@ -132,11 +131,7 @@ body[data-screen="analysis"] .analysis-month-description b{color:inherit}
 body[data-screen="analysis"] .period-chart{margin-top:24px;padding:64px 0 0}
 body[data-screen="analysis"] .period-chart:has(.period-hint.is-dismissed){padding-top:0}
 body[data-screen="analysis"] .analysis-month-description{margin:0}
-body[data-screen="analysis"] .period-hint{position:absolute;top:24px;left:0;right:0;font:500 13px/1.5 var(--vitame-font-pretendard);color:var(--vitame-color-neutral-gray70);margin:0;text-align:center;word-break:keep-all;pointer-events:none;animation:none}
-body[data-screen="analysis"] .period-navigation{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:72px;color:var(--vitame-color-neutral-gray70);font:500 13px/1.5 var(--vitame-font-pretendard)}
-body[data-screen="analysis"] .period-navigation button{width:44px;min-height:44px;border:1px solid var(--vitame-color-neutral-gray30);border-radius:50%;background:var(--vitame-color-neutral-white);color:var(--vitame-color-neutral-black);font-size:20px;touch-action:manipulation}
-body[data-screen="analysis"] .period-navigation button:disabled{opacity:.35;cursor:default}
-body[data-screen="dose"] .dose-gesture-help{font:500 13px/1.5 var(--vitame-font-pretendard);color:var(--vitame-color-neutral-gray70);margin:-12px 0 16px;text-align:center}
+body[data-screen="analysis"] .period-hint{position:absolute;top:24px;left:0;right:34px;font:400 14px/1.6 var(--vitame-font-pretendard);color:var(--vitame-color-neutral-black);margin:0;text-align:center;word-break:keep-all;pointer-events:none;animation:none}
 body[data-screen="analysis"] .period-hint.is-dismissed{visibility:hidden;animation:none}
 @keyframes period-hint-pulse{0%,100%{opacity:1}50%{opacity:.35}}
 @media(prefers-reduced-motion:reduce){body[data-screen="analysis"] .period-hint{animation:none}}

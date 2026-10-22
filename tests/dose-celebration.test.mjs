@@ -5,6 +5,8 @@ const source=readFileSync(new URL('../public/vitame/care.js',import.meta.url),'u
 const snippet=source.slice(source.indexOf('let doseCelebrationKey='),source.indexOf('const originalNutritionCard='));
 let screen='dose',done=4,plays=0,reduced=false;
 const ctx={window:{innerHeight:800},dateKey:()=>'2026-10-15',selectedDate:'2026-10-15',route:()=>screen,state:{supplements:Array(5).fill({})},completed:()=>done,matchMedia:()=>({matches:reduced}),completionCelebrationShapes:className=>{assert.match(className,/initial-setup-complete/,'reuse onboarding shape size and motion');return '<span></span>';},document:{querySelector:()=>({getBoundingClientRect:()=>({left:20,top:250,width:300}),insertAdjacentHTML(){plays++;},querySelector:()=>({style:{setProperty(){}},addEventListener(){}})})}};
+const cleanupTimers=[];
+ctx.setTimeout=(fn,delay)=>cleanupTimers.push({fn,delay});
 vm.createContext(ctx);vm.runInContext(snippet,ctx);
 ctx.updateDoseCompletionCelebration();assert.equal(plays,0);
 done=5;ctx.updateDoseCompletionCelebration();assert.equal(plays,1,'last check triggers once');
@@ -14,4 +16,7 @@ screen='home';ctx.updateDoseCompletionCelebration();screen='dose';ctx.updateDose
 ctx.selectedDate='2026-10-14';ctx.updateDoseCompletionCelebration();assert.equal(plays,3,'past dates excluded');
 ctx.selectedDate='2026-10-15';ctx.state.supplements=[];done=0;ctx.updateDoseCompletionCelebration();assert.equal(plays,3,'empty list excluded');
 ctx.state.supplements=Array(5).fill({});done=5;reduced=true;ctx.updateDoseCompletionCelebration();assert.equal(plays,3,'reduced motion skips decoration');
-console.log('Dose celebration: last check, completed entry, uncheck/recomplete, no duplicate, past/empty exclusions and reduced motion passed.');
+assert.equal(cleanupTimers.length,3);
+assert.ok(cleanupTimers.every(timer=>timer.delay===4000),'every effect has a hard cleanup deadline');
+assert.match(source,/snapshot.querySelectorAll\('\.dose-completion-celebration,\.initial-completion-celebration'\)/,'frozen snapshots exclude confetti');
+console.log('Dose celebration: completion rules, reduced motion, cleanup deadline and snapshot exclusion passed.');
