@@ -36,6 +36,8 @@ function portfolioSection(screen,active,previous='onboarding'){
       .desktop-intro small{display:block;margin-top:64px;font:400 13px/1.9 var(--vitame-font-pretendard);color:#999;letter-spacing:-.01em}
       @media(min-width:1520px){.desktop-intro{display:block}}
       .desktop-intro-copy h1{color:var(--portfolio-accent,var(--vitame-color-neutral-black))}
+      body[data-portfolio-section]:not([data-portfolio-section="onboarding"]) .desktop-intro-logo{height:52px;background:var(--portfolio-accent);mask:url('assets/onboarding/logo.png') left center/contain no-repeat;-webkit-mask:url('assets/onboarding/logo.png') left center/contain no-repeat}
+      body[data-portfolio-section]:not([data-portfolio-section="onboarding"]) .desktop-intro-logo img{visibility:hidden}
       .desktop-intro-copy{height:176px}
       .desktop-intro h1{font-size:28px;height:74px}
       .desktop-intro p{font-size:17px}
@@ -62,7 +64,7 @@ function portfolioSection(screen,active,previous='onboarding'){
         try{await out.finished;}catch{return;}
       }
       if(version!==copyVersion)return;
-      intro.style.setProperty('--portfolio-accent',info.color&&next!=='analysis'?`var(--vitame-color-accent-${info.color}-main)`:'var(--vitame-color-neutral-black)');
+      intro.style.setProperty('--portfolio-accent',info.color?`var(--vitame-color-accent-${info.color}-main)`:'var(--vitame-color-neutral-black)');
       copy.querySelector('h1').innerHTML=info.title.join('<br>');
       copy.querySelector('p').innerHTML=info.copy.join('<br>');
       copy.getAnimations().forEach(a=>a.cancel());
