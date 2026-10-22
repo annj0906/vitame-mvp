@@ -47,7 +47,8 @@ function portfolioSection(screen,active,previous='onboarding'){
     const copy=document.createElement('div');copy.className='desktop-intro-copy';
     copy.append(intro.querySelector('h1'),intro.querySelector('p'));
     intro.querySelector('small').before(copy);
-    let section='',copyVersion=0;
+    // The initial markup already shows onboarding; do not animate it out on boot.
+    let section='onboarding',copyVersion=0;
     const reduced=matchMedia('(prefers-reduced-motion: reduce)');
     async function updatePortfolio(){
       const doc=frame.contentDocument;if(!doc?.body)return;

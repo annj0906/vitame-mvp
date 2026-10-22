@@ -24,3 +24,14 @@ assert.ok(!source.includes('portfolio-color-panel'));
 assert.ok(!source.includes('--portfolio-accent'));
 assert.ok(!source.includes('mask:url'));
 console.log('Portfolio: neutral background, black title/original logo and section copy mapping passed.');
+assert.match(source,/let section='onboarding',copyVersion=0/);
+const update=source.slice(source.indexOf('    async function updatePortfolio(){'),source.indexOf('    const frame=document.createElement'));
+const body={dataset:{screen:'intro'}};
+const startup=vm.createContext({portfolioSection:ctx.portfolioSection,section:'onboarding',
+  frame:{contentDocument:{body,querySelector:()=>null},contentWindow:{location:{hash:'#intro'}}},
+  getComputedStyle(){assert.fail('Initial onboarding must not restart the copy animation');}});
+vm.runInContext(update,startup);
+await startup.updatePortfolio();
+body.dataset.screen='onboarding';
+await startup.updatePortfolio();
+console.log('Portfolio startup: intro and onboarding keep the initial copy visible without replaying transitions.');
