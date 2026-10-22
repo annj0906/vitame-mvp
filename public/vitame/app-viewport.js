@@ -55,17 +55,20 @@ function portfolioSection(screen,active,previous='onboarding'){
       if(next===section)return;
       section=next;document.body.dataset.portfolioSection=next;
       const info=portfolioSections[next],version=++copyVersion;
-      const opacity=getComputedStyle(copy).opacity;
+      const visual=getComputedStyle(copy),opacity=visual.opacity,transform=visual.transform;
       copy.getAnimations().forEach(a=>a.cancel());
       if(!reduced.matches){
-        const out=copy.animate([{opacity},{opacity:0}],{duration:110,fill:'forwards'});
+        const out=copy.animate([{opacity,transform},{opacity:0,transform:'translateY(-6px)'}],{duration:150,fill:'forwards',easing:'cubic-bezier(.4,0,1,1)'});
         try{await out.finished;}catch{return;}
       }
       if(version!==copyVersion)return;
       copy.querySelector('h1').innerHTML=info.title.join('<br>');
       copy.querySelector('p').innerHTML=info.copy.join('<br>');
       copy.getAnimations().forEach(a=>a.cancel());
-      if(!reduced.matches)copy.animate([{opacity:0},{opacity:1}],{duration:180,easing:'ease-out'});
+      if(!reduced.matches)copy.animate([
+        {opacity:0,transform:'translateY(10px)'},
+        {opacity:1,transform:'translateY(0)'}
+      ],{duration:380,easing:'cubic-bezier(.22,1,.36,1)'});
     }
     const frame=document.createElement('iframe');
     frame.className='app-viewport';frame.title='VITAME 앱';
