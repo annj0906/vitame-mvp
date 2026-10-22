@@ -19,8 +19,8 @@ for(const value of Object.values(sections))if(value.color){
 assert.match(source,/prefers-reduced-motion/);
 assert.ok(!source.includes('document.body.style.backgroundColor'));
 assert.match(source,/background:#ededf0/);
-assert.match(source,/\.desktop-intro-copy h1\{color:var\(--portfolio-accent/);
+assert.match(source,/\.desktop-intro-copy h1\{color:var\(--vitame-color-neutral-black\)/);
 assert.ok(!source.includes('portfolio-color-panel'));
-assert.match(source,/desktop-intro-logo\{height:52px;background:var\(--portfolio-accent\)/);
-assert.match(source,/info.color\?`var\(--vitame-color-accent-\$\{info.color\}-main\)`/);
-console.log('Portfolio: fixed neutral background, matching title/logo accents including analysis, neutral onboarding passed.');
+assert.ok(!source.includes('--portfolio-accent'));
+assert.ok(!source.includes('mask:url'));
+console.log('Portfolio: neutral background, black title/original logo and section copy mapping passed.');
