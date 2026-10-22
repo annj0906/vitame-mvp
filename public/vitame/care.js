@@ -63,9 +63,9 @@ function demonstrateDoseSwipe(){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   doseDemoAnimation=front.animate([
     {transform:'translateX(0)',offset:0},
-    {transform:'translateX(56px)',offset:.25},
+    {transform:'translateX(24px)',offset:.25},
     {transform:'translateX(0)',offset:.45},
-    {transform:'translateX(-56px)',offset:.7},
+    {transform:'translateX(-24px)',offset:.7},
     {transform:'translateX(0)',offset:1}
   ],{duration:1700,delay:450,easing:'ease-in-out'});
 }
