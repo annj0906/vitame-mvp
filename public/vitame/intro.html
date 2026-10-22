@@ -54,6 +54,7 @@ body {
 ======================================== */
 
 #logoGroup {
+  visibility: hidden;
   position: absolute;
 
   left: 50%;
@@ -84,9 +85,10 @@ body {
 ======================================== */
 
 #symbol {
+  will-change: transform;
   position: absolute;
   /* Match the first motion frame before scripts/fonts finish loading. */
-  transform: translateX(-65vw) rotate(-540deg);
+  transform: translateX(-200vw) rotate(-540deg);
 
   left: 0;
   top: 0;
@@ -528,7 +530,7 @@ function reset() {
 
   symbol.style.opacity =
     "1";
-  symbol.style.transform = "translateX(-65vw) rotate(-540deg)";
+  symbol.style.transform = "translateX(-200vw) rotate(-540deg)";
 
 
   medicine1.style.opacity =
@@ -943,7 +945,7 @@ async function play() {
 
       {
         transform:
-          "translateX(-65vw) rotate(-540deg)"
+          "translateX(-200vw) rotate(-540deg)"
       },
 
 
@@ -1390,7 +1392,18 @@ async function play() {
 
 
 
+async function startPreparedIntro() {
+  if(document.readyState!=='complete')await new Promise(resolve=>window.addEventListener('load',resolve,{once:true}));
+  // Font downloads must not block the intro forever on a slow connection.
+  if(document.fonts?.ready)await Promise.race([document.fonts.ready,wait(2500)]);
+  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  await wait(100);
+  document.querySelector('#logoGroup').style.visibility='visible';
+  return play();
+}
+
 if (new URLSearchParams(location.search).has('static')) {
+  document.querySelector('#logoGroup').style.visibility='visible';
   document.querySelector('#logoGroup').style.transform='translate(-50%, -50%) scale(.21)';
   document.body.style.background = 'transparent';
   document.querySelector('.stage').style.background = 'transparent';
@@ -1404,7 +1417,7 @@ if (new URLSearchParams(location.search).has('static')) {
 } else {
   document.addEventListener('pointerdown',()=>parent.postMessage({type:'vitame-intro-skip'},location.origin),{once:true});
   document.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' ')parent.postMessage({type:'vitame-intro-skip'},location.origin);});
-  play();
+  startPreparedIntro();
 }
 
 </script>
